@@ -1,0 +1,5 @@
+__pycache__
+.env
+TLEdata
+venv
+.DS_Store
