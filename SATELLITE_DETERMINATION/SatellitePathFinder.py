@@ -23,15 +23,12 @@ def FindOverflight(facility, res_start, res_end):
     interferers = []
     incident_time = []
     for sat in satellites:
-        #geo = sat.at(ts.utc(2022, 10, 30, 0, 0))
-        #geo2 = sat.at(ts.utc(2022, 10, 30, 0, 15))
-        #print(sat.name, 'start: ', geo.position.km, 'end: ', geo2.position.km) #x,y,z coordinates relative to Earth's center (GCRS)
         t, events = sat.find_events(facility, t0, t1, altitude_degrees=85.0)
         for ti, event in zip(t, events):
-            #name = ('rise above 85°', 'culminate', 'set below 85°')[event]
+            name = ('rise above 85°', 'culminate', 'set below 85°')[event]
             interferers.append(sat)
             incident_time.append(ti)
-            #print(ti.utc_strftime('%Y %b %d %H:%M:%S'), name)
+            print(ti.utc_strftime('%Y %b %d %H:%M:%S'), name)
             i+=1
     print('# of satellites overhead during reservation window: ', i/3)
     for sat in interferers:
@@ -39,11 +36,4 @@ def FindOverflight(facility, res_start, res_end):
         print('Satellite name: ', sat.name, 'Time of interference: ', time.utc_strftime('%Y %b %d %H:%M:%S'))
         y+=1
 
-def main():
-    facility = str(sys.argv[1])
-    res_start = sys.argv[2]
-    res_end = sys.argv[3]
-    print('Finding satellites over', facility, 'from ', res_start, ' to ', res_end)
-    FindOverflight(HCRO, 0, 1)
 
-main()
