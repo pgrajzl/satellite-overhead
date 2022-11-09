@@ -5,7 +5,8 @@ from typing import List
 from satellite_determination.dataclasses.reservation import Reservation
 from satellite_determination.dataclasses.facility import Facility
 from satellite_determination.dataclasses.coordinates import Coordinates
-from satellite_determination.reservation_retriever.reservation_retriever_json_file import ReservationRetrieverJsonFile
+from satellite_determination.retrievers.reservation_retriever.reservation_retriever_json_file import \
+    ReservationRetrieverJsonFile
 from tests.utilities import get_script_directory
 
 
