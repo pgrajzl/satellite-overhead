@@ -1,5 +1,5 @@
 import json
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -52,6 +52,7 @@ class Reservation:
 
 
 class ReservationRetriever(ABC):
+    @abstractmethod
     def retrieve(self) -> List[Reservation]:
         pass
 
@@ -70,7 +71,10 @@ class ReservationRetrieverJsonFile(ReservationRetriever):
 
 
 class TestReservationRetriever:
-    def test(self):
+    def test_must_implement_retrieve_method(self):
+        pass
+
+    def test_can_retrieve_from_json_file(self):
         reservations_directory = get_script_directory(__file__)
         reservations_filepath = Path(reservations_directory, 'reservations.json')
         retriever = ReservationRetrieverJsonFile(filepath=reservations_filepath)
@@ -89,10 +93,9 @@ class TestReservationRetriever:
                 facility=Facility(
                     angle_of_visibility_cone=20.1,
                     point_coordinates=Coordinates(latitude=4., longitude=5.),
-                    name='ArbitraryFacilityName1'
+                    name='ArbitraryFacilityName2'
                 ),
                 time_start=datetime(year=1994, month=7, day=16, hour=3),
-                time_end=datetime(year=2022, month=7, day=18, hour=2)
+                time_end=datetime(year=1994, month=7, day=18, hour=2)
             ),
         ]
-
