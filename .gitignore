@@ -2,5 +2,6 @@ __pycache__
 .env
 .DS_Store
 .idea
+.pytest_cache
 TLEdata
 venv
