@@ -18,7 +18,7 @@ class Facility:
 
     @classmethod
     def from_json(cls, info: dict) -> 'Facility':
-        return Facility(
+        return cls(
             angle_of_visibility_cone=info[FacilityJsonKey.angle_of_visibility.value],
             point_coordinates=Coordinates.from_json(info[FacilityJsonKey.point_coordinates.value]),
             name=info[FacilityJsonKey.name.value]

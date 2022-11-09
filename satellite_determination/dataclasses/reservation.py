@@ -19,7 +19,7 @@ class Reservation:
 
     @classmethod
     def from_json(cls, info: dict) -> 'Reservation':
-        return Reservation(
+        return cls(
             facility=Facility.from_json(info[ReservationJsonKey.facility.value]),
             time_start=datetime.fromisoformat(info[ReservationJsonKey.time_start.value]),
             time_end=datetime.fromisoformat(info[ReservationJsonKey.time_end.value])

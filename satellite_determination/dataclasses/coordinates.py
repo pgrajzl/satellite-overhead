@@ -14,7 +14,7 @@ class Coordinates:
 
     @classmethod
     def from_json(cls, info: dict) -> 'Coordinates':
-        return Coordinates(
+        return cls(
             latitude=info[CoordinatesJsonKey.latitude.value],
             longitude=info[CoordinatesJsonKey.longitude.value]
         )
