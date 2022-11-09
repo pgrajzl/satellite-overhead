@@ -1,85 +1,29 @@
-import json
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import List
 
+from satellite_determination.dataclasses.reservation import Reservation
+from satellite_determination.dataclasses.facility import Facility
+from satellite_determination.dataclasses.coordinates import Coordinates
+from satellite_determination.reservation_retriever.reservation_retriever_json_file import ReservationRetrieverJsonFile
 from tests.utilities import get_script_directory
 
 
-@dataclass
-class Coordinates:
-    latitude: float
-    longitude: float
-
-    @classmethod
-    def from_json(cls, info: dict) -> 'Coordinates':
-        return Coordinates(
-            latitude=info['latitude'],
-            longitude=info['longitude']
-        )
-
-
-@dataclass
-class Facility:
-    angle_of_visibility_cone: float
-    point_coordinates: Coordinates
-    name: str
-
-    @classmethod
-    def from_json(cls, info: dict) -> 'Facility':
-        return Facility(
-            angle_of_visibility_cone=info['angle_of_visibility_cone'],
-            point_coordinates=Coordinates.from_json(info['point_coordinates']),
-            name=info['name']
-        )
-
-
-@dataclass
-class Reservation:
-    facility: Facility
-    time_start: datetime
-    time_end: datetime
-
-    @classmethod
-    def from_json(cls, info: dict) -> 'Reservation':
-        return Reservation(
-            facility=Facility.from_json(info['facility']),
-            time_start=datetime.fromisoformat(info['time_start']),
-            time_end=datetime.fromisoformat(info['time_end'])
-        )
-
-
-class ReservationRetriever(ABC):
-    @abstractmethod
-    def retrieve(self) -> List[Reservation]:
-        pass
-
-
-class ReservationRetrieverJsonFile(ReservationRetriever):
-    def __init__(self, filepath: Path):
-        self._filepath = filepath
-
-    def retrieve(self) -> List[Reservation]:
-        return [Reservation.from_json(info) for info in self._reservations_json['reservations']]
+class TestReservationRetriever:
+    def test_can_retrieve_from_json_file(self):
+        retriever = ReservationRetrieverJsonFile(filepath=self._reservations_filepath)
+        reservations = retriever.retrieve()
+        assert reservations == self._expected_reservations
 
     @property
-    def _reservations_json(self) -> dict:
-        with open(self._filepath, 'r') as f:
-            return json.load(f)
-
-
-class TestReservationRetriever:
-    def test_must_implement_retrieve_method(self):
-        pass
-
-    def test_can_retrieve_from_json_file(self):
+    def _reservations_filepath(self) -> Path:
         reservations_directory = get_script_directory(__file__)
         reservations_filepath = Path(reservations_directory, 'reservations.json')
-        retriever = ReservationRetrieverJsonFile(filepath=reservations_filepath)
-        reservations = retriever.retrieve()
-        assert reservations == [
+        return reservations_filepath
+
+    @property
+    def _expected_reservations(self) -> List[Reservation]:
+        return [
             Reservation(
                 facility=Facility(
                     angle_of_visibility_cone=45.,
