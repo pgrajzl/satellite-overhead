@@ -1,0 +1,28 @@
+{
+  "reservations": [
+    {
+      "facility": {
+        "angle_of_visibility_cone": 45.0,
+        "point_coordinates": {
+          "latitude": 1.0,
+          "longitude": 2.0
+        },
+        "name": "ArbitraryFacilityName1"
+      },
+      "time_start": 0,
+      "time_end": 0
+    },
+    {
+      "facility": {
+        "angle_of_visibility_cone": 20.1,
+        "point_coordinates": {
+          "latitude": 4.0,
+          "longitude": 5.0
+        },
+        "name": "ArbitraryFacilityName2"
+      },
+      "time_start": 0,
+      "time_end": 0
+    }
+  ]
+}
