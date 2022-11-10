@@ -2,7 +2,8 @@ from typing import List
 
 from satellite_determination.dataclasses.frequency_range import FrequencyRange
 from satellite_determination.dataclasses.satellite import Satellite
-from satellite_determination.retrievers.satellite_retriever.satellite_retriever import SatelliteRetrieverJsonFile
+from satellite_determination.retrievers.satellite_retriever.satellite_retriever_json_file import \
+    SatelliteRetrieverJsonFile
 from tests.retrievers.retriever_json_file_tester import RetrieverJsonFileTester
 
 
