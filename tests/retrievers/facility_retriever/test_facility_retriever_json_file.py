@@ -10,17 +10,17 @@ from tests.utilities import get_script_directory
 class TestFacilityRetrieverJsonFile:
     def test_can_retrieve_from_json_file(self):
         retriever = FacilityRetrieverJsonFile(filepath=self._reservations_filepath)
-        reservations = retriever.retrieve()
-        assert reservations == self._expected_reservations
+        facilities = retriever.retrieve()
+        assert facilities == self._expected_facilities
 
     @property
     def _reservations_filepath(self) -> Path:
-        reservations_directory = get_script_directory(__file__)
-        reservations_filepath = Path(reservations_directory, 'facilities.json')
+        facilities_directory = get_script_directory(__file__)
+        reservations_filepath = Path(facilities_directory, 'facilities.json')
         return reservations_filepath
 
     @property
-    def _expected_reservations(self) -> List[Facility]:
+    def _expected_facilities(self) -> List[Facility]:
         return [
             Facility(
                 angle_of_visibility_cone=45.,
