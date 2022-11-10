@@ -1,26 +1,20 @@
-from pathlib import Path
 from typing import List
 
 from satellite_determination.dataclasses.coordinates import Coordinates
 from satellite_determination.dataclasses.facility import Facility
 from satellite_determination.retrievers.facility_retriever.facility_retriever_json_file import FacilityRetrieverJsonFile
-from tests.utilities import get_script_directory
+from tests.retrievers.retriever_json_file_tester import RetrieverJsonFileTester
 
 
 class TestFacilityRetrieverJsonFile:
     def test_can_retrieve_from_json_file(self):
-        retriever = FacilityRetrieverJsonFile(filepath=self._reservations_filepath)
-        reservations = retriever.retrieve()
-        assert reservations == self._expected_reservations
+        assert RetrieverJsonFileTester(__file__,
+                                       expected_list=self._expected_facilities,
+                                       retriever_class=FacilityRetrieverJsonFile,
+                                       json_filename='facilities.json').can_retrieve_from_json_file()
 
     @property
-    def _reservations_filepath(self) -> Path:
-        reservations_directory = get_script_directory(__file__)
-        reservations_filepath = Path(reservations_directory, 'facilities.json')
-        return reservations_filepath
-
-    @property
-    def _expected_reservations(self) -> List[Facility]:
+    def _expected_facilities(self) -> List[Facility]:
         return [
             Facility(
                 angle_of_visibility_cone=45.,
