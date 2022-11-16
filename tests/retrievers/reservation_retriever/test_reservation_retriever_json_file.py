@@ -1,25 +1,20 @@
 from datetime import datetime
-from pathlib import Path
 from typing import List
 
 from satellite_determination.dataclasses.reservation import Reservation
 from satellite_determination.dataclasses.facility import Facility
 from satellite_determination.dataclasses.coordinates import Coordinates
-from satellite_determination.reservation_retriever.reservation_retriever_json_file import ReservationRetrieverJsonFile
-from tests.utilities import get_script_directory
+from satellite_determination.retrievers.reservation_retriever.reservation_retriever_json_file import \
+    ReservationRetrieverJsonFile
+from tests.retrievers.retriever_json_file_tester import RetrieverJsonFileTester
 
 
 class TestReservationRetriever:
     def test_can_retrieve_from_json_file(self):
-        retriever = ReservationRetrieverJsonFile(filepath=self._reservations_filepath)
-        reservations = retriever.retrieve()
-        assert reservations == self._expected_reservations
-
-    @property
-    def _reservations_filepath(self) -> Path:
-        reservations_directory = get_script_directory(__file__)
-        reservations_filepath = Path(reservations_directory, 'reservations.json')
-        return reservations_filepath
+        assert RetrieverJsonFileTester(__file__,
+                                       expected_list=self._expected_reservations,
+                                       retriever_class=ReservationRetrieverJsonFile,
+                                       json_filename='reservations.json').can_retrieve_from_json_file()
 
     @property
     def _expected_reservations(self) -> List[Reservation]:
