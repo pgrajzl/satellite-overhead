@@ -9,7 +9,7 @@ from satellite_determination.retrievers.reservation_retriever.reservation_retrie
 from tests.retrievers.retriever_json_file_tester import RetrieverJsonFileTester
 
 
-class TestReservationRetriever:
+class TestReservationRetrieverJsonFile:
     def test_can_retrieve_from_json_file(self):
         assert RetrieverJsonFileTester(__file__,
                                        expected_list=self._expected_reservations,
