@@ -12,4 +12,4 @@ class TimeWindow:
         return self.end - self.begin
 
     def overlaps(self, time_window: 'TimeWindow'):
-        return self.begin <= time_window.end and self.end >= time_window.begin
+        return self.begin < time_window.end and self.end > time_window.begin
