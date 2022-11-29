@@ -3,6 +3,7 @@ from datetime import datetime
 from enum import Enum
 
 from satellite_determination.dataclasses.facility import Facility
+from satellite_determination.dataclasses.time_window import TimeWindow
 
 
 class ReservationJsonKey(Enum):
@@ -14,13 +15,12 @@ class ReservationJsonKey(Enum):
 @dataclass
 class Reservation:
     facility: Facility
-    time_start: datetime
-    time_end: datetime
+    time: TimeWindow
 
     @classmethod
     def from_json(cls, info: dict) -> 'Reservation':
         return cls(
             facility=Facility.from_json(info[ReservationJsonKey.facility.value]),
-            time_start=datetime.fromisoformat(info[ReservationJsonKey.time_start.value]),
-            time_end=datetime.fromisoformat(info[ReservationJsonKey.time_end.value])
+            time=TimeWindow(begin=datetime.fromisoformat(info[ReservationJsonKey.time_start.value]),
+                            end=datetime.fromisoformat(info[ReservationJsonKey.time_end.value]))
         )
