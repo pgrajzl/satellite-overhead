@@ -6,6 +6,7 @@ from satellite_determination.dataclasses.reservation import Reservation
 from satellite_determination.dataclasses.satellite import Satellite
 
 
+
 class Validator(ABC):
     @abstractmethod
     def overhead_list(self, list_of_satellites: List[Satellite], reservation: Reservation) -> List[OverheadWindow]:

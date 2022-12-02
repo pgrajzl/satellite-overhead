@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-
-from satellite_determination.dataclasses.satellite import Satellite
+from skyfield.api import EarthSatellite
+from satellite_determination.dataclasses.skyfield_satellite import SkyfieldSatelliteList
 from satellite_determination.dataclasses.time_window import TimeWindow
 
 
 @dataclass
 class OverheadWindow:
-    satellite: Satellite
+    satellite_name: EarthSatellite
     overhead_time: TimeWindow
