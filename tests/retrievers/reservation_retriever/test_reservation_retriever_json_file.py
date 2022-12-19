@@ -4,6 +4,7 @@ from typing import List
 from satellite_determination.dataclasses.reservation import Reservation
 from satellite_determination.dataclasses.facility import Facility
 from satellite_determination.dataclasses.coordinates import Coordinates
+from satellite_determination.dataclasses.time_window import TimeWindow
 from satellite_determination.retrievers.reservation_retriever.reservation_retriever_json_file import \
     ReservationRetrieverJsonFile
 from tests.retrievers.retriever_json_file_tester import RetrieverJsonFileTester
@@ -25,8 +26,10 @@ class TestReservationRetrieverJsonFile:
                     point_coordinates=Coordinates(latitude=1., longitude=2.),
                     name='ArbitraryFacilityName1'
                 ),
-                time_start=datetime(year=2022, month=3, day=30, hour=16),
-                time_end=datetime(year=2022, month=3, day=30, hour=17)
+                time=TimeWindow(
+                    begin=datetime(year=2022, month=3, day=30, hour=16),
+                    end=datetime(year=2022, month=3, day=30, hour=17)
+                )
             ),
             Reservation(
                 facility=Facility(
@@ -34,7 +37,9 @@ class TestReservationRetrieverJsonFile:
                     point_coordinates=Coordinates(latitude=4., longitude=5.),
                     name='ArbitraryFacilityName2'
                 ),
-                time_start=datetime(year=1994, month=7, day=16, hour=3),
-                time_end=datetime(year=1994, month=7, day=18, hour=2)
-            ),
+                time=TimeWindow(
+                    begin=datetime(year=1994, month=7, day=16, hour=3),
+                    end=datetime(year=1994, month=7, day=18, hour=2)
+                )
+            )
         ]
