@@ -4,11 +4,6 @@ from enum import Enum
 from typing import List
 
 
-
-@dataclass
-class SkyfieldSatellite:
-    satellite: EarthSatellite
-'''
 @dataclass
 class SkyfieldSatelliteList:
     satellites: List[EarthSatellite]
@@ -18,4 +13,3 @@ class SkyfieldSatelliteList:
         return cls(
             satellites = load.tle_file(tle_file)
         )
-'''

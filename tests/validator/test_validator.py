@@ -1,6 +1,7 @@
 from skyfield.api import load, wgs84
 import datetime
 import sys
+import os
 import numpy as nps
 from datetime import datetime
 from satellite_determination.dataclasses.coordinates import Coordinates
@@ -8,22 +9,22 @@ from satellite_determination.dataclasses.facility import Facility
 from satellite_determination.dataclasses.time_window import TimeWindow
 from satellite_determination.dataclasses.reservation import Reservation
 from satellite_determination.dataclasses.overhead_window import OverheadWindow
-from satellite_determination.dataclasses.skyfield_satellite import SkyfieldSatelliteList
+from satellite_determination.retrievers.satellite_retriever.skyfield_satellite_retriever import SkyfieldSatelliteList
 from satellite_determination.validator.validator import Validator
 from satellite_determination.dataclasses.time_window import TimeWindow
-
+from satellite_determination.utilities import convert_dt_to_utc
+import json
+import filecmp
 from skyfield.timelib import Timescale
 from skyfield.api import utc
 
-class ValidatorRhodesMill(Validator):
+class TestValidatorRhodesMill(Validator):
 
     def overhead_list(self, list_of_satellites: SkyfieldSatelliteList, reservation: Reservation):
         ts = load.timescale()
         interferers = []
-        #t0 = ts.utc(ts.from_datetime(reservation.time.begin)) #ts.utc(reservation.time.begin)
-        #t1 = ts.utc(ts.from_datetime(reservation.time.end)) #ts.utc(reservation.time.end)
-        t0 = ts.utc(reservation.time.begin.replace(tzinfo=utc))
-        t1 = ts.utc(reservation.time.end.replace(tzinfo=utc))
+        t0 = ts.utc(convert_dt_to_utc(reservation.time.begin))
+        t1 = ts.utc(convert_dt_to_utc(reservation.time.end))
         coordinates = wgs84.latlon(reservation.facility.point_coordinates.latitude, reservation.facility.point_coordinates.longitude)
         for sat in list_of_satellites.satellites:
             t, events = sat.find_events(coordinates, t0, t1, altitude_degrees=reservation.facility.angle_of_visibility_cone)
@@ -49,14 +50,19 @@ class ValidatorRhodesMill(Validator):
                     name='ArbitraryFacilityName2'
                 ),
                 time=TimeWindow(
-                    begin=datetime(year=2022, month=12, day=30, hour=16),
-                    end=datetime(year=2022, month=12, day=30, hour=17)
+                    begin=datetime(year=2022, month=12, day=15, hour=16),
+                    end=datetime(year=2022, month=12, day=15, hour=17)
                 )
         )
         interferers = self.overhead_list(list_of_satellites, reservation)
+        dict = {
+            "satellite_name": []
+        }
         for interferer in interferers:
-            print(interferer)
-
-
-validator = ValidatorRhodesMill()
-validator.test_can_get_overhead_list()
+                print(interferer.satellite.name)
+                dict["satellite_name"].append(interferer.satellite.name)
+        with open ("satellite_overhead_test", "a") as outfile:
+            json.dump(dict, outfile)
+            outfile.close()
+        assert filecmp.cmp('./tests/validator/satellite_reference_file', 'satellite_overhead_test') == 1
+        os.remove("satellite_overhead_test")
