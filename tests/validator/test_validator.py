@@ -2,6 +2,7 @@ from skyfield.api import load, wgs84
 import datetime
 import sys
 import os
+from pathlib import Path
 import numpy as nps
 from datetime import datetime
 from satellite_determination.dataclasses.coordinates import Coordinates
@@ -13,6 +14,7 @@ from satellite_determination.retrievers.satellite_retriever.skyfield_satellite_r
 from satellite_determination.validator.validator import Validator
 from satellite_determination.dataclasses.time_window import TimeWindow
 from satellite_determination.utilities import convert_dt_to_utc
+from tests.utilities import get_script_directory
 import json
 import filecmp
 from skyfield.timelib import Timescale
@@ -42,7 +44,8 @@ class TestValidatorRhodesMill(Validator):
         return interferers
 
     def test_can_get_overhead_list(self):
-        list_of_satellites = SkyfieldSatelliteList.load_tle('TLEdata/test.txt')
+        tle_file = Path(get_script_directory(__file__), 'TLEdata', 'test.txt')
+        list_of_satellites = SkyfieldSatelliteList.load_tle(str(tle_file))
         reservation = Reservation(
                 facility=Facility(
                     angle_of_visibility_cone=20.1,
@@ -50,8 +53,8 @@ class TestValidatorRhodesMill(Validator):
                     name='ArbitraryFacilityName2'
                 ),
                 time=TimeWindow(
-                    begin=datetime(year=2022, month=12, day=15, hour=16),
-                    end=datetime(year=2022, month=12, day=15, hour=17)
+                    begin=datetime(year=2022, month=12, day=1, hour=16),
+                    end=datetime(year=2022, month=12, day=1, hour=17)
                 )
         )
         interferers = self.overhead_list(list_of_satellites, reservation)
