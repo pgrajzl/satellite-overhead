@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from satellite_determination.dataclasses.satellite import EPOCH_START_YEAR, InternationalDesignator, Satellite
+from satellite_determination.dataclasses.satellite import EPOCH_START_YEAR, InternationalDesignator, MeanMotion, \
+    Satellite
 
 
 class TestToTle:
@@ -53,6 +54,11 @@ class TestToTle:
         arbitrary_datetime_with_fractional_day = datetime(year=2000, month=2, day=1, hour=6)
         tle_data = Satellite(timestamp=arbitrary_datetime_with_fractional_day).to_tle()
         assert tle_data[1][20:32] == '32.250000000'
+
+    def test_mean_motion_first_derivative_is_padded(self):
+        arbitrary_mean_motion_less_than_10_characters = -.002182
+        tle_data = Satellite(mean_motion=MeanMotion(value=0, first_derivative=arbitrary_mean_motion_less_than_10_characters, second_derivative=0)).to_tle()
+        assert tle_data[1][20:32] == '-.00218200'
 
     def test_spaces_exist_in_correct_positions(self):
         expected_space_positions = [1, 8, 17, 32]

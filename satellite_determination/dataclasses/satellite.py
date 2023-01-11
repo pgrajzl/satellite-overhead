@@ -25,6 +25,7 @@ class SatelliteJsonKey(Enum):
     satellite_number = 'satellite_number'
     name = 'name'
 
+
 @dataclass
 class InternationalDesignator:
     year: int
@@ -33,6 +34,13 @@ class InternationalDesignator:
 
     def __str__(self):
         return f'{str(self.year).zfill(2)}{str(self.launch_number).zfill(3)}{self.launch_piece: <3}'
+
+
+@dataclass
+class MeanMotion:
+    value: float
+    first_derivative: float
+    second_derivative: float
 
 
 @dataclass
@@ -49,9 +57,7 @@ class Satellite:
     inclination: Optional[str] = None
     international_designator: Optional[InternationalDesignator] = None
     mean_anomaly: Optional[str] = None
-    mean_motion: Optional[str] = None
-    mean_motion_first_derivative: Optional[str] = None
-    mean_motion_second_derivative: Optional[str] = None
+    mean_motion: Optional[MeanMotion] = None
     name: Optional[str] = None
     radiation_pressure_coefficient: Optional[str] = None
     revolution_number_at_epoch: Optional[str] = None
