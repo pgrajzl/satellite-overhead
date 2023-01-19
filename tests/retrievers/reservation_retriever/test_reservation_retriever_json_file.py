@@ -1,10 +1,10 @@
 from datetime import datetime
 from typing import List
 
-from satellite_determination.dataclasses.reservation import Reservation
-from satellite_determination.dataclasses.facility import Facility
-from satellite_determination.dataclasses.coordinates import Coordinates
-from satellite_determination.dataclasses.time_window import TimeWindow
+from satellite_determination.custom_dataclasses.reservation import Reservation
+from satellite_determination.custom_dataclasses.facility import Facility
+from satellite_determination.custom_dataclasses.coordinates import Coordinates
+from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.retrievers.reservation_retriever.reservation_retriever_json_file import \
     ReservationRetrieverJsonFile
 from tests.retrievers.retriever_json_file_tester import RetrieverJsonFileTester

@@ -1,7 +1,7 @@
 from typing import List
 
-from satellite_determination.dataclasses.coordinates import Coordinates
-from satellite_determination.dataclasses.facility import Facility
+from satellite_determination.custom_dataclasses.coordinates import Coordinates
+from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.retrievers.facility_retriever.facility_retriever_json_file import FacilityRetrieverJsonFile
 from tests.retrievers.retriever_json_file_tester import RetrieverJsonFileTester
 
