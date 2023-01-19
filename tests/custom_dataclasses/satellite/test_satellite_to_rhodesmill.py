@@ -3,7 +3,8 @@ import re
 import types
 from pathlib import Path
 
-from satellite_determination.ListOfSatellites import loadSatellites
+from skyfield.api import load
+
 from satellite_determination.custom_dataclasses.satellite.international_designator import InternationalDesignator
 from satellite_determination.custom_dataclasses.satellite.mean_motion import MeanMotion
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
@@ -46,7 +47,7 @@ class TestSatelliteToRhodesMill:
 
     def given_a_rhodesmill_satellite_loaded_from_the_international_space_station_tle(self) -> None:
         tle_file = Path(get_script_directory(__file__), 'international_space_station_tle.tle')
-        self._rhodesmill_satellite = loadSatellites(sat_tles=str(tle_file))[0]
+        self._rhodesmill_satellite = load.tle_file(url=str(tle_file))[0]
 
     def when_the_cu_satellite_is_converted_into_rhodesmill(self) -> None:
         self._converted_satellite = self._cu_satellite.to_rhodesmill()
