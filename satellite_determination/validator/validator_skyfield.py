@@ -1,13 +1,11 @@
 from skyfield.api import load, wgs84
-import datetime
 from satellite_determination.dataclasses.reservation import Reservation
 from satellite_determination.dataclasses.overhead_window import OverheadWindow
 from satellite_determination.retrievers.satellite_retriever.skyfield_satellite_retriever import SkyfieldSatelliteList
 from satellite_determination.validator.validator import Validator
 from satellite_determination.dataclasses.time_window import TimeWindow
 from satellite_determination.utilities import convert_tz_to_utc
-from skyfield.timelib import Timescale
-from skyfield.api import utc
+
 
 class ValidatorRhodesMill(Validator):
 
