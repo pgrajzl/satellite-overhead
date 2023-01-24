@@ -53,8 +53,8 @@ class TestValidatorRhodesMill(Validator):
                     name='ArbitraryFacilityName2'
                 ),
                 time=TimeWindow(
-                    begin=datetime(year=2022, month=12, day=1, hour=16),
-                    end=datetime(year=2022, month=12, day=1, hour=17)
+                    begin=datetime(year=2022, month=12, day=1, hour=16, minute=0),
+                    end=datetime(year=2022, month=12, day=1, hour=16, minute=30)
                 )
         )
         interferers = self.overhead_list(list_of_satellites, reservation)
