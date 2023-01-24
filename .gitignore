@@ -3,6 +3,7 @@ __pycache__
 .DS_Store
 .idea
 .pytest_cache
+.tmp
 cookies.txt
 TLEData
 venv

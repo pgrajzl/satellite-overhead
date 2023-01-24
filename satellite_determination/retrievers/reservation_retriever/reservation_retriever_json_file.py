@@ -1,6 +1,6 @@
 from typing import List
 
-from satellite_determination.dataclasses.reservation import Reservation
+from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.retrievers.reservation_retriever.reservation_retriever import ReservationRetriever
 from satellite_determination.retrievers.retriever_json_file import RetrieverJsonFile
 
