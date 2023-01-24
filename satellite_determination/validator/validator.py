@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from satellite_determination.dataclasses.overhead_window import OverheadWindow
-from satellite_determination.dataclasses.reservation import Reservation
-from satellite_determination.dataclasses.satellite import Satellite
+from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
+from satellite_determination.custom_dataclasses.reservation import Reservation
+from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 
 
 class Validator(ABC):

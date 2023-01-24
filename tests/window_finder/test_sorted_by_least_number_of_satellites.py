@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
 from typing import List
 
-from satellite_determination.dataclasses.frequency_range import FrequencyRange
-from satellite_determination.dataclasses.overhead_window import OverheadWindow
-from satellite_determination.dataclasses.reservation import Reservation
-from satellite_determination.dataclasses.satellite import Satellite
-from satellite_determination.dataclasses.time_window import TimeWindow
+from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
+from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
+from satellite_determination.custom_dataclasses.reservation import Reservation
+from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
+from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.window_finder import SuggestedReservation, WindowFinder
 from tests.window_finder.definitions import ARBITRARY_FACILITY
 from tests.window_finder.support.validator_satellites_are_overhead_at_specific_times import \
@@ -13,7 +13,6 @@ from tests.window_finder.support.validator_satellites_are_overhead_at_specific_t
 
 
 _ARBITRARY_FREQUENCY_RANGE = FrequencyRange(high_in_megahertz=2., low_in_megahertz=1.)
-_ARBITRARY_SATELLITE_NUMBER = 'satellite_number'
 
 
 class TestSortedByLeastNumberOfSatellites:
@@ -59,12 +58,10 @@ class TestSortedByLeastNumberOfSatellites:
     def _two_overhead_windows_on_ideal_reservation(self) -> List[OverheadWindow]:
         return [
             OverheadWindow(satellite=Satellite(frequency=_ARBITRARY_FREQUENCY_RANGE,
-                                               satellite_number=_ARBITRARY_SATELLITE_NUMBER,
                                                name='name1'),
                            overhead_time=TimeWindow(begin=datetime(year=2022, month=11, day=20),
                                                     end=datetime(year=2022, month=11, day=20, hour=1))),
             OverheadWindow(satellite=Satellite(frequency=_ARBITRARY_FREQUENCY_RANGE,
-                                               satellite_number=_ARBITRARY_SATELLITE_NUMBER,
                                                name='name2'),
                            overhead_time=TimeWindow(begin=datetime(year=2022, month=11, day=20),
                                                     end=datetime(year=2022, month=11, day=20, hour=1)))
@@ -74,7 +71,6 @@ class TestSortedByLeastNumberOfSatellites:
     def _one_overhead_window_on_second_closest_reservation(self) -> List[OverheadWindow]:
         return [
             OverheadWindow(satellite=Satellite(frequency=_ARBITRARY_FREQUENCY_RANGE,
-                                               satellite_number=_ARBITRARY_SATELLITE_NUMBER,
                                                name='name3'),
                            overhead_time=TimeWindow(begin=datetime(year=2022, month=11, day=21),
                                                     end=datetime(year=2022, month=11, day=21, hour=1))),

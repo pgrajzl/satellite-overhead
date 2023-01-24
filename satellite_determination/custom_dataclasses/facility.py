@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from satellite_determination.dataclasses.coordinates import Coordinates
+from satellite_determination.custom_dataclasses.coordinates import Coordinates
 
 
 class FacilityJsonKey(Enum):

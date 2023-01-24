@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from typing import List
 
-from satellite_determination.dataclasses.reservation import Reservation
-from satellite_determination.dataclasses.time_window import TimeWindow
+from satellite_determination.custom_dataclasses.reservation import Reservation
+from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.window_finder import SuggestedReservation, WindowFinder
 from tests.window_finder.definitions import ARBITRARY_FACILITY
 from tests.window_finder.support.validator_satellites_are_overhead_at_specific_times import \
