@@ -12,8 +12,8 @@ from satellite_determination.custom_dataclasses.time_window import TimeWindow
 
 
 class EventTypesRhodesmill(Enum):
-    ENTERS = auto()
-    EXITS = auto()
+    ENTERS = auto() #Skyfield API returns events as 0, 1, or 2 for enters, culminates, exits
+    EXITS = auto() #ASK NICK WHY AUTO()
 
 
 @dataclass
@@ -31,6 +31,13 @@ class OverheadWindowFromEvents:
     def get(self) -> List[OverheadWindow]:
         enter_events, exit_events = ([event for event in self._events if event.event_type == event_type]
                                      for event_type in EventTypesRhodesmill)
+        if len(enter_events) != len(exit_events): #Handle case where a satellite starts or ends in observation area
+            if self._events[0].event_type == EventTypesRhodesmill.ENTERS: #the first event is the satellite entering view, so it didn't start in observation area
+                end_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=self._events[0].satellite, timestamp=self._reservation.time.end)
+                exit_events.append(end_reservation_event)
+            elif self._events[0].event_type == EventTypesRhodesmill.EXITS: #the first event is an exit, so the sat starts in view
+                start_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=self._events[0].satellite, timestamp=self._reservation.time.begin)
+                enter_events.insert(0, start_reservation_event)
         enter_and_exit_pairs = zip(enter_events, exit_events)
         time_windows = [TimeWindow(begin=begin_event.timestamp, end=exit_event.timestamp) for begin_event, exit_event in enter_and_exit_pairs]
         overhead_windows = [OverheadWindow(satellite=self._events[0].satellite, overhead_time=time_window) for time_window in time_windows]
@@ -51,6 +58,23 @@ class TestOverheadWindowFromEvents:
                 overhead_time=TimeWindow(
                     begin=self._arbitrary_reservation_with_nonzero_timewindow.time.begin,
                     end=event.timestamp
+                )
+            )
+        ]
+
+    def test_one_satellite_only_enters(self):
+        event = EventRhodesmill(
+            event_type=EventTypesRhodesmill.ENTERS,
+            satellite=self._arbitrary_satellite,
+            timestamp=self._arbitrary_date
+        )
+        overhead_windows = OverheadWindowFromEvents(events=[event], reservation=self._arbitrary_reservation_with_nonzero_timewindow).get()
+        assert overhead_windows == [
+            OverheadWindow(
+                satellite=self._arbitrary_satellite,
+                overhead_time=TimeWindow(
+                    begin=event.timestamp,
+                    end=self._arbitrary_reservation_with_nonzero_timewindow.time.end
                 )
             )
         ]
@@ -79,32 +103,82 @@ class TestOverheadWindowFromEvents:
             )
         ]
 
-        # for sat in list_of_satellites.satellites:
-        #     t, events = sat.find_events(coordinates, t0, t1, altitude_degrees=reservation.facility.angle_of_visibility_cone)
-        #
-        #     for ti, event in zip(t, events):
-        #         if event == 0:
-        #             if end == 0:
-        #                 # last interference occurrence has no end (ends with reservation)
-        #                 # save last interference occurrence
-        #                 end = reservation.time.end
-        #                 time_window = TimeWindow(begin=begin, end=end)
-        #                 overhead = OverheadWindow(sat, time_window)
-        #                 overhead_window_list.append(overhead)
-        #             else:
-        #                 # last interference occurrence has end
-        #                 # do nothing
-        #                 continue
-        #             begin = ti
-        #             end = 0 #start tracking new interference occurrence
-        #         elif event == 2:
-        #             #event 2 in skyfield api is sat leaving overhead. Event we are tracking has end event
-        #             #so set end to ti of end event and append to interferers
-        #             end = ti
-        #             time_window = TimeWindow(begin, end)
-        #             overhead = OverheadWindow(sat, time_window)
-        #             overhead_window_list.append(overhead)
-        # return overhead_window_list
+    def test_one_satellite_enters_and_leaves_twice(self):
+        events = [
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.ENTERS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date
+            ),
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.EXITS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date + timedelta(hours=1)
+            ),
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.ENTERS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date_two
+            ),
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.EXITS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date_two + timedelta(hours=1)
+            ),
+        ]
+        overhead_windows = OverheadWindowFromEvents(events=events, reservation=self._arbitrary_reservation_with_nonzero_timewindow).get()
+        assert overhead_windows == [
+            OverheadWindow(
+                satellite=self._arbitrary_satellite,
+                overhead_time=TimeWindow(
+                    begin=events[0].timestamp,
+                    end=events[1].timestamp
+                )
+            ),
+            OverheadWindow(
+                satellite=self._arbitrary_satellite,
+                overhead_time=TimeWindow(
+                    begin=events[2].timestamp,
+                    end=events[3].timestamp
+                )
+            )
+        ]
+
+    def test_one_satellite_enters_leaves_enters(self):
+        events = [
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.ENTERS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date
+            ),
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.EXITS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date + timedelta(hours=1)
+            ),
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.ENTERS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date_two
+            ),
+        ]
+        overhead_windows = OverheadWindowFromEvents(events=events, reservation=self._arbitrary_reservation_with_nonzero_timewindow).get()
+        assert overhead_windows == [
+            OverheadWindow(
+                satellite=self._arbitrary_satellite,
+                overhead_time=TimeWindow(
+                    begin=events[0].timestamp,
+                    end=events[1].timestamp
+                )
+            ),
+            OverheadWindow(
+                satellite=self._arbitrary_satellite,
+                overhead_time=TimeWindow(
+                    begin=events[2].timestamp,
+                    end=self._arbitrary_reservation_with_nonzero_timewindow.time.end
+                )
+            )
+        ]
 
     @property
     def _arbitrary_satellite(self) -> Satellite:
@@ -112,11 +186,17 @@ class TestOverheadWindowFromEvents:
 
     @property
     def _arbitrary_date(self) -> datetime:
-        return datetime(year=2000, month=1, day=1)
+        return datetime(year=2000, month=1, day=1, hour=1)
+
+    @property
+    def _arbitrary_date_two(self) -> datetime:
+        return datetime(year=2000, month=3, day=3, hour=3)
 
     @property
     def _arbitrary_reservation_with_nonzero_timewindow(self) -> Reservation:
         return Reservation(facility=Facility(angle_of_visibility_cone=0,
                                              point_coordinates=Coordinates(latitude=0, longitude=0),
                                              name='name'),
-                           time=TimeWindow(begin=datetime.now(), end=datetime.now() + timedelta(days=1)))
+                           time=TimeWindow(begin=datetime(year=2001, month=2, day=1, hour=1), end=datetime(year=2001, month=2, day=1, hour=6)))
+
+
