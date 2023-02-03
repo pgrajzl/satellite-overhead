@@ -43,6 +43,11 @@ class OverheadWindowFromEvents:
                 elif self._events[0].event_type == EventTypesRhodesmill.EXITS: #the first event is an exit, so the sat starts in view
                     start_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=self._events[0].satellite, timestamp=self._reservation.time.begin)
                     enter_events.insert(0, start_reservation_event)
+            elif len(enter_events) == len(exit_events) and self._events[0].event_type == EventTypesRhodesmill.EXITS:
+                start_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=self._events[0].satellite, timestamp=self._reservation.time.begin)
+                enter_events.insert(0, start_reservation_event)
+                end_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=self._events[0].satellite, timestamp=self._reservation.time.end)
+                exit_events.append(end_reservation_event)
             enter_and_exit_pairs = zip(enter_events, exit_events)
             time_windows = [TimeWindow(begin=begin_event.timestamp, end=exit_event.timestamp) for begin_event, exit_event in enter_and_exit_pairs]
             overhead_windows = [OverheadWindow(satellite=self._events[0].satellite, overhead_time=time_window) for time_window in time_windows]
@@ -168,6 +173,55 @@ class TestOverheadWindowFromEvents:
             )
         ]
 
+    def test_one_satellite_leaves_then_enters_twice(self):
+        events = [
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.EXITS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date
+            ),
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.ENTERS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date + timedelta(hours=1)
+            ),
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.EXITS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date_two
+            ),
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.ENTERS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date_two + timedelta(hours=1)
+            ),
+        ]
+        overhead_windows = OverheadWindowFromEvents(events=events, reservation=self._arbitrary_reservation_with_nonzero_timewindow).get()
+        assert overhead_windows == [
+            OverheadWindow(
+                satellite=self._arbitrary_satellite,
+                overhead_time=TimeWindow(
+                    begin=self._arbitrary_reservation_with_nonzero_timewindow.time.begin,
+                    end=events[0].timestamp
+                )
+            ),
+            OverheadWindow(
+                satellite=self._arbitrary_satellite,
+                overhead_time=TimeWindow(
+                    begin=events[1].timestamp,
+                    end=events[2].timestamp
+                )
+            ),
+            OverheadWindow(
+                satellite=self._arbitrary_satellite,
+                overhead_time=TimeWindow(
+                    begin=events[3].timestamp,
+                    end=self._arbitrary_reservation_with_nonzero_timewindow.time.end
+                )
+            )
+        ]
+
+
     def test_one_satellite_enters_leaves_enters(self):
         events = [
             EventRhodesmill(
@@ -200,6 +254,42 @@ class TestOverheadWindowFromEvents:
                 overhead_time=TimeWindow(
                     begin=events[2].timestamp,
                     end=self._arbitrary_reservation_with_nonzero_timewindow.time.end
+                )
+            )
+        ]
+
+    def test_one_satellite_leaves_enters_leaves(self):
+        events = [
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.EXITS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date
+            ),
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.ENTERS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date + timedelta(hours=1)
+            ),
+            EventRhodesmill(
+                event_type=EventTypesRhodesmill.EXITS,
+                satellite=self._arbitrary_satellite,
+                timestamp=self._arbitrary_date + timedelta(hours=2)
+            ),
+        ]
+        overhead_windows = OverheadWindowFromEvents(events=events, reservation=self._arbitrary_reservation_with_nonzero_timewindow).get()
+        assert overhead_windows == [
+            OverheadWindow(
+                satellite=self._arbitrary_satellite,
+                overhead_time=TimeWindow(
+                    begin=self._arbitrary_reservation_with_nonzero_timewindow.time.begin,
+                    end=events[0].timestamp
+                )
+            ),
+            OverheadWindow(
+                satellite=self._arbitrary_satellite,
+                overhead_time=TimeWindow(
+                    begin=events[1].timestamp,
+                    end=events[2].timestamp
                 )
             )
         ]
