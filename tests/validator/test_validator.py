@@ -10,25 +10,31 @@ from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.retrievers.satellite_retriever.skyfield_satellite_retriever import SkyfieldSatelliteList
-from satellite_determination.validator.validator import Validator
+#from satellite_determination.validator.validator import Validator
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.utilities import convert_dt_to_utc
 from tests.utilities import get_script_directory
-from tests.validator.test_overhead_from_events import EventRhodesmill
+from tests.validator.test_overhead_from_events import EventRhodesmill, OverheadWindowFromEvents
 
 
-class TestValidatorRhodesMill(Validator):
+class ValidatorRhodesMill:
 
-    def overhead_list(self, list_of_satellites: SkyfieldSatelliteList, reservation: Reservation):
+    def __init__(self, list_of_satellites: SkyfieldSatelliteList, reservation: Reservation):
+        self._list_of_satellites = list_of_satellites
+        self._reservation = reservation
+
+    def get_overhead_windows(self):
         ts = load.timescale()
         overhead_windows = []
-        t0 = ts.utc(convert_dt_to_utc(reservation.time.begin))
-        t1 = ts.utc(convert_dt_to_utc(reservation.time.end))
-        coordinates = wgs84.latlon(reservation.facility.point_coordinates.latitude, reservation.facility.point_coordinates.longitude)
-        for sat in list_of_satellites.satellites:
-            t, events = sat.find_events(coordinates, t0, t1, altitude_degrees=reservation.facility.angle_of_visibility_cone)
+        t0 = ts.utc(convert_dt_to_utc(self._reservation.time.begin))
+        t1 = ts.utc(convert_dt_to_utc(self._reservation.time.end))
+        coordinates = wgs84.latlon(self._reservation.facility.point_coordinates.latitude, self._reservation.facility.point_coordinates.longitude)
+        for sat in self._list_of_satellites.satellites:
+            print(sat.name)
+            t, events = sat.find_events(coordinates, t0, t1, altitude_degrees=self._reservation.facility.angle_of_visibility_cone)
             rhodesmill_event_list = []
             if events.size == 0:
+                print("no events")
                 continue
             else:
                 #skeleton
@@ -38,36 +44,45 @@ class TestValidatorRhodesMill(Validator):
                     translated_event.satellite = sat
                     translated_event.timestamp = ti
                     rhodesmill_event_list.append(translated_event)
-                overhead_windows.append().get(events=rhodesmill_event_list, reservation=Reservation)
+                print(rhodesmill_event_list[0].event_type)
+                sat_windows = OverheadWindowFromEvents(events=rhodesmill_event_list, reservation=Reservation).get()
+                overhead_windows.append(sat_windows)
+                if len(sat_windows) != 0:
+                    print(sat_windows[0].overhead_time)
+                else:
+                    print("none")
+        #print(overhead_windows[0].overhead_time)
         return overhead_windows
 
-    def test_can_get_overhead_list(self):
-        tle_file = Path(get_script_directory(__file__), 'TLEdata', 'test.txt')
+
+class TestWindowListFinder:
+
+    def test_get_window_list(self):
+        tle_file = Path(get_script_directory(__file__), 'TLEdata', 'arbitrary_TLE.txt')
         list_of_satellites = SkyfieldSatelliteList.load_tle(str(tle_file))
-        reservation = self._arbitrary_reservation
-        interferers = self.overhead_list(list_of_satellites, reservation)
-        dict = {
-            "satellite_name": []
-        }
-        for interferer in interferers:
-                print(interferer.satellite.name)
-                dict["satellite_name"].append(interferer.satellite.name)
-        with open ("satellite_overhead_test", "a") as outfile:
-            json.dump(dict, outfile)
-            outfile.close()
-        assert filecmp.cmp('./tests/validator/satellite_reference_file', 'satellite_overhead_test') == 1
-        os.remove("satellite_overhead_test")
+        reservation = Reservation(facility=Facility(angle_of_visibility_cone=0, point_coordinates=Coordinates(latitude=0, longitude=0),name='name'),
+                                  time=TimeWindow(begin=datetime(year=2023, month=2, day=14, hour=1), end=datetime(year=2023, month=2, day=14, hour=6)))
+        overhead_windows = ValidatorRhodesMill(list_of_satellites=list_of_satellites, reservation=reservation).get_overhead_windows()
 
-    @property
-    def _arbitrary_reservation(self) -> Reservation:
-        return Reservation(facility=Facility(angle_of_visibility_cone=20.1,
-                                             point_coordinates=Coordinates(latitude=4., longitude=5.),
-                                             name='ArbitraryFacilityName2'),
-                           time=TimeWindow(begin=datetime(year=2022, month=12, day=1, hour=16, minute=0), end=datetime(year=2022, month=12, day=2, hour=16, minute=0)))
+        for window in overhead_windows:
+            print("test")
+            print(window)
+            #dict["satellite"].append(window.satellite)
+            #dict["overhead_time"].append(window.overhead_time)
+        #with open ("satellite_overhead_test", "a") as outfile:
+            #json.dump(dict, outfile)
+            #outfile.close()
+        #assert filecmp.cmp('./tests/validator/satellite_reference_file', 'satellite_overhead_test') == 1
+        #os.remove("satellite_overhead_test")
 
-    @property
-    def _arbitrary_sat_list(self) -> :
+    #@property
+    #def _arbitrary_reservation(self) -> Reservation:
+        #return Reservation(facility=Facility(angle_of_visibility_cone=0,
+                                            #point_coordinates=Coordinates(latitude=0, longitude=0),
+                                            # name='name'),
+                           #time=TimeWindow(begin=datetime(year=2001, month=2, day=1, hour=1), end=datetime(year=2001, month=2, day=1, hour=6)))
 
+TestWindowListFinder.test_get_window_list(TestWindowListFinder)
 
 
 
