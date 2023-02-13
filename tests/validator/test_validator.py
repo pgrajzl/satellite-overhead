@@ -14,7 +14,7 @@ from satellite_determination.retrievers.satellite_retriever.skyfield_satellite_r
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.utilities import convert_dt_to_utc
 from tests.utilities import get_script_directory
-from tests.validator.test_overhead_from_events import EventRhodesmill, OverheadWindowFromEvents
+from tests.validator.test_overhead_from_events import EventRhodesmill, OverheadWindowFromEvents, EventTypesRhodesmill
 
 
 class ValidatorRhodesMill:
@@ -32,23 +32,28 @@ class ValidatorRhodesMill:
         for sat in self._list_of_satellites.satellites:
             print(sat.name)
             t, events = sat.find_events(coordinates, t0, t1, altitude_degrees=self._reservation.facility.angle_of_visibility_cone)
-            rhodesmill_event_list = []
             if events.size == 0:
                 print("no events")
                 continue
             else:
                 #skeleton
+                rhodesmill_event_list = []
                 for ti, event in zip(t, events):
-                    translated_event = EventRhodesmill
-                    translated_event.event_type = event
-                    translated_event.satellite = sat
-                    translated_event.timestamp = ti
+                    #print(event)
+                    if event == 0:
+                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=sat, timestamp=ti)
+                    elif event == 1:
+                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.CULMINATES, satellite=sat, timestamp=ti)
+                    elif event == 2:
+                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=sat, timestamp=ti)
                     rhodesmill_event_list.append(translated_event)
-                print(rhodesmill_event_list[0].event_type)
-                sat_windows = OverheadWindowFromEvents(events=rhodesmill_event_list, reservation=Reservation).get()
-                overhead_windows.append(sat_windows)
+                for event in rhodesmill_event_list:
+                    print(event.event_type)
+                sat_windows = OverheadWindowFromEvents(events=rhodesmill_event_list, reservation=self._reservation).get()
+                for window in sat_windows:
+                    overhead_windows.append(window)
                 if len(sat_windows) != 0:
-                    print(sat_windows[0].overhead_time)
+                    print(sat_windows)
                 else:
                     print("none")
         #print(overhead_windows[0].overhead_time)
