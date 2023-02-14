@@ -9,6 +9,7 @@ import filecmp
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.reservation import Reservation
+#from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.retrievers.satellite_retriever.skyfield_satellite_retriever import SkyfieldSatelliteList
 #from satellite_determination.validator.validator import Validator
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
@@ -68,36 +69,9 @@ class TestWindowListFinder:
         reservation = Reservation(facility=Facility(angle_of_visibility_cone=0, point_coordinates=Coordinates(latitude=0, longitude=0),name='name'),
                                   time=TimeWindow(begin=datetime(year=2023, month=2, day=14, hour=1), end=datetime(year=2023, month=2, day=14, hour=6)))
         overhead_windows = ValidatorRhodesMill(list_of_satellites=list_of_satellites, reservation=reservation).get_overhead_windows()
+        with open ("satellite_overhead_test", "w") as outfile:
+            outfile.writelines(str(overhead_windows))
+            outfile.close()
 
-        for window in overhead_windows:
-            print("test")
-            print(window)
-            #dict["satellite"].append(window.satellite)
-            #dict["overhead_time"].append(window.overhead_time)
-        #with open ("satellite_overhead_test", "a") as outfile:
-            #json.dump(dict, outfile)
-            #outfile.close()
-        #assert filecmp.cmp('./tests/validator/satellite_reference_file', 'satellite_overhead_test') == 1
-        #os.remove("satellite_overhead_test")
-
-    #@property
-    #def _arbitrary_reservation(self) -> Reservation:
-        #return Reservation(facility=Facility(angle_of_visibility_cone=0,
-                                            #point_coordinates=Coordinates(latitude=0, longitude=0),
-                                            # name='name'),
-                           #time=TimeWindow(begin=datetime(year=2001, month=2, day=1, hour=1), end=datetime(year=2001, month=2, day=1, hour=6)))
-
-TestWindowListFinder.test_get_window_list(TestWindowListFinder)
-
-
-
-'''
-                for ti, event in zip(t, events):
-                    if event == 0:
-                        begin = ti
-                    elif event == 2:
-                        end = ti
-                time_window = TimeWindow(begin, end)
-                overhead = OverheadWindow(sat, time_window)
-                interferers.append(overhead)
-'''
+        assert filecmp.cmp('./tests/validator/overhead_window_reference.txt', 'satellite_overhead_test') == 1
+        os.remove("satellite_overhead_test")
