@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from typing import List
+from skyfield.api import load
 
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
@@ -29,6 +30,7 @@ class OverheadWindowFromEvents:
         self._reservation = reservation
 
     def get(self) -> List[OverheadWindow]:
+        ts = load.timescale()
         enter_events, culminate_events, exit_events = ([event for event in self._events if event.event_type == event_type]
                                      for event_type in EventTypesRhodesmill)
 
@@ -38,21 +40,21 @@ class OverheadWindowFromEvents:
         else:
             if len(enter_events) != len(exit_events): #Handle case where a satellite starts or ends in observation area
                 if self._events[0].event_type == EventTypesRhodesmill.ENTERS: #the first event is the satellite entering view, so it didn't start in observation area
-                    end_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=self._events[0].satellite, timestamp=self._reservation.time.end)
+                    end_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=self._events[0].satellite, timestamp=ts.from_datetime(self._reservation.time.end))
                     exit_events.append(end_reservation_event)
                 elif self._events[0].event_type == EventTypesRhodesmill.EXITS or self._events[0].event_type == EventTypesRhodesmill.CULMINATES: #the first event is an exit, so the sat starts in view
-                    start_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=self._events[0].satellite, timestamp=self._reservation.time.begin)
+                    start_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=self._events[0].satellite, timestamp=ts.from_datetime(self._reservation.time.begin))
                     enter_events.insert(0, start_reservation_event)
             elif len(enter_events) == len(exit_events) and (self._events[0].event_type == EventTypesRhodesmill.EXITS or self._events[0].event_type == EventTypesRhodesmill.CULMINATES):
                 if self._events[0] == 1:
-                    start_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=self._events[0].satellite, timestamp=self._reservation.time.begin)
+                    start_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=self._events[0].satellite, timestamp=ts.from_datetime(self._reservation.time.begin))
                     enter_events.insert(0, start_reservation_event)
-                    end_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=self._events[0].satellite, timestamp=self._reservation.time.end)
+                    end_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=self._events[0].satellite, timestamp=ts.from_datetime(self._reservation.time.end))
                     exit_events.append(end_reservation_event)
                 else:
-                    start_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=self._events[0].satellite, timestamp=self._reservation.time.begin)
+                    start_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=self._events[0].satellite, timestamp=ts.from_datetime(self._reservation.time.begin))
                     enter_events.insert(0, start_reservation_event)
-                    end_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=self._events[0].satellite, timestamp=self._reservation.time.end)
+                    end_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=self._events[0].satellite, timestamp=ts.from_datetime(self._reservation.time.end))
                     exit_events.append(end_reservation_event)
             enter_and_exit_pairs = zip(enter_events, exit_events)
             time_windows = [TimeWindow(begin=begin_event.timestamp, end=exit_event.timestamp) for begin_event, exit_event in enter_and_exit_pairs]
