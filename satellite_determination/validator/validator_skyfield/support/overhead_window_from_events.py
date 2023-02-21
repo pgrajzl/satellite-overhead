@@ -35,7 +35,7 @@ class OverheadWindowFromEvents:
                                      for event_type in EventTypesRhodesmill)
 
         if (len(self._events) == 1) and (self._events[0].event_type == EventTypesRhodesmill.CULMINATES): #handles sat that is in view for entire reservation
-            time_window = TimeWindow(begin=self._reservation.time.begin, end=self._reservation.time.end)
+            time_window = TimeWindow(begin=ts.from_datetime(self._reservation.time.begin), end=ts.from_datetime(self._reservation.time.end))
             overhead_windows = [OverheadWindow(satellite=self._events[0].satellite, overhead_time=time_window)]
         else:
             if len(enter_events) != len(exit_events): #Handle case where a satellite starts or ends in observation area

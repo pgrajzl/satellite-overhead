@@ -30,7 +30,7 @@ class TestAzimuthFiltering:
                     if sat_in_view_flag == 0:
                         enter_events.append(window.overhead_time.begin)
                         sat_in_view_flag = 1
-                elif (az.degrees < (self._reservation.facility.azimuth + 1.5)) or (az.degrees > (self._reservation.facility.azimuth - 1.5)) and (sat_in_view_flag == 1):
+                elif ((az.degrees < (self._reservation.facility.azimuth + 1.5)) and (az.degrees > (self._reservation.facility.azimuth - 1.5))) and (sat_in_view_flag == 1):
                         exit_events.append(window.overhead_time.begin)
                         sat_in_view_flag = 0
                 window.overhead_time.begin += time_delta
