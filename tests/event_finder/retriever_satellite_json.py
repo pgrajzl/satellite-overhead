@@ -10,7 +10,7 @@ from satellite_determination.dataclasses.time_window import TimeWindow
 from satellite_determination.dataclasses.reservation import Reservation
 from satellite_determination.dataclasses.overhead_window import OverheadWindow
 from satellite_determination.retrievers.satellite_retriever.skyfield_satellite_retriever import SkyfieldSatelliteList
-from tests.validator.test_validator import TestValidatorRhodesMill
+from tests.event_finder.test_validator import TestValidatorRhodesMill
 from satellite_determination.dataclasses.time_window import TimeWindow
 
 from skyfield.timelib import Timescale

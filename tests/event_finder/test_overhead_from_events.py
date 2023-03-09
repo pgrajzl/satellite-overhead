@@ -6,7 +6,7 @@ from satellite_determination.custom_dataclasses.overhead_window import OverheadW
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.validator.validator_skyfield.support.overhead_window_from_events import \
+from satellite_determination.event_finder.event_finder_rhodesmill.support.overhead_window_from_events import \
     EventTypesRhodesmill, EventRhodesmill, OverheadWindowFromEvents
 
 
