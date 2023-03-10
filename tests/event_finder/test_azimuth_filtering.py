@@ -9,6 +9,7 @@ from satellite_determination.azimuth_filter.azimuth_filtering import AzimuthFilt
 from tests.utilities import get_script_directory
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
+from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
@@ -39,22 +40,17 @@ class TestAzimuthFilter:
     @property
     def _arbitrary_satellite(self) -> EarthSatellite:
         tle_file = Path(get_script_directory(__file__), 'TLEdata', 'single_TLE.txt')
-        arbitrary_satellite = load.tle_file(str(tle_file))
+        arbitrary_satellite = Satellite.from_tle_file(tle_file)
         return arbitrary_satellite
 
     @property
     def _arbitrary_date(self) -> Time:
-        ts = load.timescale()
-        date = datetime(year=2023, month=1, day=1, hour=1, tzinfo=pytz.utc)
-        datetime_to_time = ts.from_datetime(datetime=date)
-        return datetime_to_time
+        return datetime(year=2023, month=1, day=1, hour=1, tzinfo=pytz.utc)
 
     @property
     def _arbitrary_date_two(self) -> datetime:
-        ts = load.timescale()
-        date = datetime(year=2023, month=1, day=1, hour=3, tzinfo=pytz.utc)
-        datetime_to_time = ts.from_datetime(datetime=date)
-        return datetime_to_time
+        return datetime(year=2023, month=1, day=1, hour=3, tzinfo=pytz.utc)
+
 
 
 

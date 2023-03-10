@@ -395,7 +395,7 @@ class TestOverheadWindowFromEvents:
     def _arbitrary_reservation_with_nonzero_timewindow(self) -> Reservation:
         return Reservation(facility=Facility(angle_of_visibility_cone=0,
                                              point_coordinates=Coordinates(latitude=0, longitude=0),
-                                             name='name'),
+                                             name='name', azimuth=30),
                            time=TimeWindow(begin=datetime(year=2001, month=2, day=1, hour=1), end=datetime(year=2001, month=2, day=1, hour=6)))
 
 
