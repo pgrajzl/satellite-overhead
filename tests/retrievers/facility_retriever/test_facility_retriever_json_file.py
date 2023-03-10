@@ -19,11 +19,13 @@ class TestFacilityRetrieverJsonFile:
             Facility(
                 angle_of_visibility_cone=45.,
                 point_coordinates=Coordinates(latitude=1., longitude=2.),
-                name='ArbitraryFacilityName1'
+                name='ArbitraryFacilityName1',
+                azimuth=30
             ),
             Facility(
                 angle_of_visibility_cone=20.1,
                 point_coordinates=Coordinates(latitude=4., longitude=5.),
-                name='ArbitraryFacilityName2'
+                name='ArbitraryFacilityName2',
+                azimuth=0
             )
         ]

@@ -6,7 +6,8 @@
         "latitude": 1.0,
         "longitude": 2.0
       },
-      "name": "ArbitraryFacilityName1"
+      "name": "ArbitraryFacilityName1",
+      "azimuth": 30
     },
     {
       "angle_of_visibility_cone": 20.1,
@@ -14,7 +15,8 @@
         "latitude": 4.0,
         "longitude": 5.0
       },
-      "name": "ArbitraryFacilityName2"
+      "name": "ArbitraryFacilityName2",
+      "azimuth": 0
     }
   ]
 }
