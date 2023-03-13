@@ -52,7 +52,7 @@ class TleInformation:
             argument_of_perigee=satrec.argpo,
             drag_coefficient=satrec.bstar,
             eccentricity=satrec.ecco,
-            epoch_days=satrec.jdsatepoch - 2433281.5 + satrec.jdsatepochF,
+            epoch_days=satrec.jdsatepoch - 2433281.5 + satrec.jdsatepochF, #what is this number??
             inclination=satrec.inclo,
             international_designator=InternationalDesignator.from_tle_string(satrec.intldesg),
             mean_anomaly=satrec.mo,

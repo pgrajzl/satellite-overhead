@@ -31,8 +31,19 @@ class Satellite:
         with open(filepath, 'r') as f:
             lines = f.readlines()
         name_line_indices = range(0, len(lines), NUMBER_OF_LINES_PER_TLE_OBJECT)
+
         return [Satellite(
             name=lines[name_line_index].strip(),
             tle_information=TleInformation.from_tle_lines(line1=lines[name_line_index + 1],
-                                                          line2=lines[name_line_index + 2])
+                                                          line2=lines[name_line_index + 2]),
+            frequency=FrequencyRange.from_csv(tle_information.international_designator)
         ) for name_line_index in name_line_indices]
+
+
+'''
+        for name_line_index in name_line_indices:
+            name = lines[name_line_index].strip(),
+            tle_information = TleInformation.from_tle_lines(line1=lines[name_line_index + 1],
+                                                            line2=lines[name_line_index + 2]),
+            frequency = FrequencyRange.from_csv(tle_information.)
+'''
