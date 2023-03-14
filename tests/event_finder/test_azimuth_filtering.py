@@ -39,7 +39,7 @@ class TestAzimuthFilter:
 
     @property
     def _arbitrary_satellite(self) -> EarthSatellite:
-        tle_file = Path(get_script_directory(__file__), 'TLEdata', 'single_TLE.txt')
+        tle_file = Path(get_script_directory(__file__), 'TestTLEdata', 'single_TLE.txt')
         arbitrary_satellite = Satellite.from_tle_file(tle_file)
         return arbitrary_satellite
 

@@ -17,7 +17,7 @@ from tests.utilities import get_script_directory
 class TestWindowListFinder:
 
     def test_get_window_list(self):
-        tle_file = Path(get_script_directory(__file__), 'TLEdata', 'arbitrary_TLE.txt')
+        tle_file = Path(get_script_directory(__file__), 'TestTLEdata', 'arbitrary_TLE.txt')
         list_of_satellites = Satellite.from_tle_file(tle_file) #load satellites from arbitrary TLE file
         '''
         FOR TESTING
