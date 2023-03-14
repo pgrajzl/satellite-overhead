@@ -8,12 +8,14 @@ from tests.utilities import get_script_directory
 class TestTleToSatelliteCu:
     def test_single_satellite(self):
         tle_file = Path(get_script_directory(__file__), 'international_space_station_tle.tle')
-        satellite = Satellite.from_tle_file(filepath=tle_file)
+        frequency_file = Path(get_script_directory(__file__), 'fake_ISS_frequency_file.csv')
+        satellite = Satellite.from_tle_file(frequencyfilepath=frequency_file, tlefilepath=tle_file)
         assert satellite == [self._expected_satellite_first]
 
     def test_multiple_satellites(self):
         tle_file = Path(get_script_directory(__file__), 'international_space_station_tle_multiple.tle')
-        satellite = Satellite.from_tle_file(filepath=tle_file)
+        frequency_file = Path(get_script_directory(__file__), 'fake_ISS_frequency_file_multiple.csv')
+        satellite = Satellite.from_tle_file(tlefilepath=tle_file, frequencyfilepath=frequency_file)
         assert satellite == [self._expected_satellite_first, self._expected_satellite_second]
 
     @property
@@ -21,6 +23,9 @@ class TestTleToSatelliteCu:
         satellite = self._expected_satellite_first
         satellite.name = 'FAKE ISS (ZARYA) 2'
         satellite.tle_information.international_designator.launch_piece = 'AB'
+        satellite.tle_information.satellite_number = 25545
+        satellite.frequency.frequency = 200
+        satellite.frequency.bandwidth = 10
         return satellite
 
     @property

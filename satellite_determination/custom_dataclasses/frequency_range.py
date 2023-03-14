@@ -17,13 +17,13 @@ class FrequencyRange:
     bandwidth: Optional[float]
 
     @classmethod
-    def from_csv(cls, filepath: Path, id: str) -> List['FrequencyRange']:
+    def from_csv(cls, filepath: Path, satcat_id: int) -> List['FrequencyRange']:
         frequencies = []
         with open(filepath, 'r') as file:
             frequency_file = csv.DictReader(file, fieldnames=['ID', 'Name', 'Frequency', 'Status', 'Description', 'Bandwidth'])
             data = list(frequency_file)
             for line in data:
-                if line["ID"] == id:
+                if line["ID"] == str(satcat_id):
                     if (line["Bandwidth"] == None) or (line["Bandwidth"] == ''):
                         frequency = line["Frequency"]
                         frequencies.append(FrequencyRange(float(frequency), bandwidth=None))
@@ -31,5 +31,4 @@ class FrequencyRange:
                         frequency = line["Frequency"]
                         bandwidth = line["Bandwidth"]
                         frequencies.append(FrequencyRange(frequency=float(frequency), bandwidth=float(bandwidth)))
-        print(frequencies)
         return frequencies

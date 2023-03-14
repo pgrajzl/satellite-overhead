@@ -11,7 +11,7 @@ class FrequencyFilter:
         frequency_filtered_satellite_list = []
         for sat in self._list_satellites:
             for frequency in sat.frequency:
-                if (frequency < (self._observation_frequency.frequency - (self._observation_frequency.bandwidth/2))):
+                if ((frequency < (self._observation_frequency.frequency + (self._observation_frequency.bandwidth/2))) and (frequency > (self._observation_frequency.frequency - (self._observation_frequency.bandwidth/2)))):
                     frequency_filtered_satellite_list.append(sat)
         return frequency_filtered_satellite_list
 
