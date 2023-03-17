@@ -10,7 +10,8 @@ class TestFromCsv:
         assert frequencies == [
             FrequencyRange(
                 frequency=136.65,
-                bandwidth=None
+                bandwidth=None,
+                status='active'
             )
         ]
 
@@ -20,11 +21,13 @@ class TestFromCsv:
         assert frequencies == [
             FrequencyRange(
                 frequency=136.65,
-                bandwidth=None
+                bandwidth=None,
+                status='active'
             ),
             FrequencyRange(
                 frequency=2,
-                bandwidth=None
+                bandwidth=None,
+                status='active'
             )
         ]
 
@@ -34,16 +37,69 @@ class TestFromCsv:
         assert frequencies == [
             FrequencyRange(
                 frequency=136.65,
-                bandwidth=None
+                bandwidth=None,
+                status='active'
             ),
             FrequencyRange(
                 frequency=2,
-                bandwidth=None
+                bandwidth=None,
+                status='active'
             ),
             FrequencyRange(
                 frequency=500,
-                bandwidth=200
+                bandwidth=200,
+                status='active'
             )
         ]
+
+class TestOverlaps:
+
+    def test_if_overlaps_lower_range(self):
+        reservation_frequency = FrequencyRange(
+            frequency=135,
+            bandwidth=10
+        )
+        satellite_frequency = FrequencyRange(
+            frequency=127,
+            bandwidth=10
+        )
+        overlaps = reservation_frequency.overlaps(satellite_frequency)
+        assert overlaps == 1
+
+    def test_if_overlaps_higher_range(self):
+        reservation_frequency = FrequencyRange(
+            frequency=135,
+            bandwidth=10
+        )
+        satellite_frequency = FrequencyRange(
+            frequency=144,
+            bandwidth=10
+        )
+        overlaps = reservation_frequency.overlaps(satellite_frequency)
+        assert overlaps == 1
+
+    def test_if_overlaps_all(self):
+        reservation_frequency = FrequencyRange(
+            frequency=135,
+            bandwidth=10
+        )
+        satellite_frequency = FrequencyRange(
+            frequency=135,
+            bandwidth=50
+        )
+        overlaps = reservation_frequency.overlaps(satellite_frequency)
+        assert overlaps == 1
+
+    def test_if_overlaps_within_res_frequency(self):
+        reservation_frequency = FrequencyRange(
+            frequency=135,
+            bandwidth=10
+        )
+        satellite_frequency = FrequencyRange(
+            frequency=137,
+            bandwidth=2
+        )
+        overlaps = reservation_frequency.overlaps(satellite_frequency)
+        assert overlaps == 1
 
 

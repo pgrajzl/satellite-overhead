@@ -31,7 +31,8 @@ def expected_international_space_station_tle_as_satellite_cu() -> Satellite:
         ),
         frequency=[FrequencyRange(
             frequency=136.65,
-            bandwidth=None
+            bandwidth=None,
+            status='active'
         )]
 
     )

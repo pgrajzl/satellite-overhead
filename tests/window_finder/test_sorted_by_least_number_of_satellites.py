@@ -12,7 +12,7 @@ from tests.window_finder.support.validator_satellites_are_overhead_at_specific_t
     ValidatorSatellitesAreOverheadAtSpecificTimes
 
 
-_ARBITRARY_FREQUENCY_RANGE = FrequencyRange(high_in_megahertz=2., low_in_megahertz=1.)
+_ARBITRARY_FREQUENCY_RANGE = FrequencyRange(frequency=2., bandwidth=1.)
 
 
 class TestSortedByLeastNumberOfSatellites:
@@ -52,7 +52,12 @@ class TestSortedByLeastNumberOfSatellites:
     def _ideal_reservation(self) -> Reservation:
         return Reservation(
             facility=ARBITRARY_FACILITY,
-            time=TimeWindow(begin=datetime(year=2022, month=11, day=20), end=datetime(year=2022, month=11, day=21)))
+            time=TimeWindow(begin=datetime(year=2022, month=11, day=20), end=datetime(year=2022, month=11, day=21)),
+            frequency=FrequencyRange(
+                frequency=None,
+                bandwidth=None
+            )
+        )
 
     @property
     def _two_overhead_windows_on_ideal_reservation(self) -> List[OverheadWindow]:

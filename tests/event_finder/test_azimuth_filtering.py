@@ -9,6 +9,7 @@ from satellite_determination.azimuth_filter.azimuth_filtering import AzimuthFilt
 from tests.utilities import get_script_directory
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
+from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
@@ -32,15 +33,21 @@ class TestAzimuthFilter:
                                              azimuth=30,
                                              name='name'),
                            time=TimeWindow(begin=datetime(year=2023, month=2, day=1, hour=1),
-                                           end=datetime(year=2023, month=2, day=1, hour=6)))
+                                           end=datetime(year=2023, month=2, day=1, hour=6)),
+                           frequency=FrequencyRange(
+                               frequency=None,
+                               bandwidth=None
+                           )
+                           )
     @property
     def _arbitrary_overhead_window(self) -> OverheadWindow:
         return OverheadWindow(satellite=self._arbitrary_satellite[0], overhead_time=TimeWindow(begin=self._arbitrary_date, end=self._arbitrary_date_two))
 
     @property
     def _arbitrary_satellite(self) -> EarthSatellite:
-        tle_file = Path(get_script_directory(__file__), 'TLEdata', 'single_TLE.txt')
-        arbitrary_satellite = Satellite.from_tle_file(tle_file)
+        tle_file = Path(get_script_directory(__file__), 'test_tle_data', 'single_TLE.txt')
+        frequency_file = Path(get_script_directory(__file__), 'fake_ISS_frequency_file_multiple.csv')
+        arbitrary_satellite = Satellite.from_tle_file(tlefilepath=tle_file, frequencyfilepath=frequency_file)
         return arbitrary_satellite
 
     @property
@@ -50,7 +57,4 @@ class TestAzimuthFilter:
     @property
     def _arbitrary_date_two(self) -> datetime:
         return datetime(year=2023, month=1, day=1, hour=3, tzinfo=pytz.utc)
-
-
-
 

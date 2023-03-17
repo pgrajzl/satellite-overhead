@@ -18,7 +18,7 @@ from skyfield.api import utc
 
 def get_reference_list():
     validator = TestValidatorRhodesMill()
-    list_of_satellites = SkyfieldSatelliteList.load_tle('TLEdata/test.txt')
+    list_of_satellites = SkyfieldSatelliteList.load_tle('test_tle_data/test.txt')
     reservation = Reservation(
             facility=Facility(
                 angle_of_visibility_cone=20.1,

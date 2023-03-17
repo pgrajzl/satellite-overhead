@@ -7,6 +7,7 @@ from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.validator import Validator
+from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
 
 
 @dataclass
@@ -32,7 +33,7 @@ class WindowFinder:
     def find(self) -> List[SuggestedReservation]:
         potential_time_windows = [TimeWindow(begin=start_time, end=start_time + self._ideal_reservation.time.duration)
                                   for start_time in self._potential_start_times]
-        potential_reservations = [Reservation(facility=self._ideal_reservation.facility, time=time) for time in potential_time_windows]
+        potential_reservations = [Reservation(facility=self._ideal_reservation.facility, time=time, frequency=FrequencyRange(frequency=None, bandwidth=None)) for time in potential_time_windows]
         overhead_satellites = [self._satellites_overhead(reservation=reservation) for reservation in potential_reservations]
         sort_indices = sorted(range(len(potential_reservations)), key=lambda index: len(overhead_satellites[index]))
         return [

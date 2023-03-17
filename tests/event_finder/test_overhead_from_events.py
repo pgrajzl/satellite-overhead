@@ -6,6 +6,7 @@ from satellite_determination.custom_dataclasses.overhead_window import OverheadW
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
+from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
 from satellite_determination.event_finder.event_finder_rhodesmill.support.overhead_window_from_events import \
     EventTypesRhodesmill, EventRhodesmill, OverheadWindowFromEvents
 
@@ -396,7 +397,12 @@ class TestOverheadWindowFromEvents:
         return Reservation(facility=Facility(angle_of_visibility_cone=0,
                                              point_coordinates=Coordinates(latitude=0, longitude=0),
                                              name='name', azimuth=30),
-                           time=TimeWindow(begin=datetime(year=2001, month=2, day=1, hour=1), end=datetime(year=2001, month=2, day=1, hour=6)))
+                           time=TimeWindow(begin=datetime(year=2001, month=2, day=1, hour=1), end=datetime(year=2001, month=2, day=1, hour=6)),
+                           frequency=FrequencyRange(
+                               frequency=None,
+                               bandwidth=None
+                           )
+                           )
 
 
 #TestOverheadWindowFromEvents.test_one_satellite_enters_and_leaves_twice(TestOverheadWindowFromEvents)

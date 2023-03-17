@@ -24,8 +24,8 @@ class TestTleToSatelliteCu:
         satellite.name = 'FAKE ISS (ZARYA) 2'
         satellite.tle_information.international_designator.launch_piece = 'AB'
         satellite.tle_information.satellite_number = 25545
-        satellite.frequency.frequency = 200
-        satellite.frequency.bandwidth = 10
+        satellite.frequency[0].frequency = 200
+        satellite.frequency[0].bandwidth = 10
         return satellite
 
     @property
