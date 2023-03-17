@@ -15,7 +15,7 @@ class TleInformation:
     eccentricity: float
     epoch_days: float
     inclination: float
-    international_designator: InternationalDesignator
+    #international_designator: InternationalDesignator
     mean_anomaly: float
     mean_motion: MeanMotion
     revolution_number: int
@@ -54,7 +54,7 @@ class TleInformation:
             eccentricity=satrec.ecco,
             epoch_days=satrec.jdsatepoch - 2433281.5 + satrec.jdsatepochF, #what is this number??
             inclination=satrec.inclo,
-            international_designator=InternationalDesignator.from_tle_string(satrec.intldesg),
+            #international_designator=InternationalDesignator.from_tle_string(satrec.intldesg),
             mean_anomaly=satrec.mo,
             mean_motion=MeanMotion(
                 first_derivative=satrec.ndot,

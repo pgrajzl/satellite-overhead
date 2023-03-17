@@ -13,7 +13,7 @@ class FrequencyRangeJsonKey(Enum):
 
 @dataclass
 class FrequencyRange:
-    frequency: float
+    frequency: Optional[float] = None
     bandwidth: Optional[float] = None
     status: Optional[str] = None
 
@@ -25,7 +25,10 @@ class FrequencyRange:
             data = list(frequency_file)
             for line in data:
                 if line["ID"] == str(satcat_id):
-                    if (line["Bandwidth"] == None) or (line["Bandwidth"] == ''):
+                    if (line["Frequency"] == None) or (line["Frequency"] == 'None'):
+                        status = line["Status"]
+                        frequencies.append(FrequencyRange(frequency=None, bandwidth=None, status=status))
+                    elif (line["Bandwidth"] == None) or (line["Bandwidth"] == ''):
                         frequency = line["Frequency"]
                         status = line["Status"]
                         frequencies.append(FrequencyRange(float(frequency), bandwidth=None, status=status))
@@ -34,6 +37,8 @@ class FrequencyRange:
                         bandwidth = line["Bandwidth"]
                         status = line["Status"]
                         frequencies.append(FrequencyRange(frequency=float(frequency), bandwidth=float(bandwidth), status=status))
+            if len(frequencies) == 0:
+                frequencies.append(FrequencyRange(frequency=None, bandwidth=None, status=None))
         return frequencies
 
     def overlaps(self, satellite_frequency: 'FrequencyRange'):

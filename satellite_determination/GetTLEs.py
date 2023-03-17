@@ -1,5 +1,4 @@
 import os
-import sys
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,7 +19,6 @@ fetchTLE()
 
 '''
 TODO
-add workaround for hardcoded credentials
 add check so that TLEs are only fetched if current file is out of date by certain time frame
 
 
