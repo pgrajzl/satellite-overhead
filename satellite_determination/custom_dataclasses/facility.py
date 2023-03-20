@@ -13,7 +13,7 @@ class FacilityJsonKey(Enum):
 
 @dataclass
 class Facility:
-    angle_of_visibility_cone: float
+    elevation: float
     point_coordinates: Coordinates
     azimuth: int
     name: str
@@ -21,7 +21,7 @@ class Facility:
     @classmethod
     def from_json(cls, info: dict) -> 'Facility':
         return cls(
-            angle_of_visibility_cone=info[FacilityJsonKey.angle_of_visibility.value],
+            elevation=info[FacilityJsonKey.angle_of_visibility.value],
             point_coordinates=Coordinates.from_json(info[FacilityJsonKey.point_coordinates.value]),
             name=info[FacilityJsonKey.name.value],
             azimuth=info[FacilityJsonKey.azimuth.value]

@@ -100,7 +100,7 @@ class TestOverheadWindowFromAzimuth:
 
     @property
     def _arbitrary_reservation_with_nonzero_timewindow(self) -> Reservation:
-        return Reservation(facility=Facility(angle_of_visibility_cone=0,
+        return Reservation(facility=Facility(elevation=0,
                                              point_coordinates=Coordinates(latitude=0, longitude=0),
                                              azimuth=30,
                                              name='name'),
