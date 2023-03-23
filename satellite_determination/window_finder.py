@@ -6,7 +6,7 @@ from satellite_determination.custom_dataclasses.overhead_window import OverheadW
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.event_finder.validator import Validator
+from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
 
 
@@ -21,14 +21,14 @@ class WindowFinder:
     def __init__(self,
                  ideal_reservation: Reservation,
                  satellites: List[Satellite],
-                 validator: Validator,
-                 search_window: timedelta = timedelta(weeks=1),
-                 start_time_increments: timedelta = timedelta(minutes=15)):
+                 event_finder: EventFinderRhodesMill,
+                 search_window: timedelta = timedelta(days=1),
+                 start_time_increments: timedelta = timedelta(minutes=120)):
         self._ideal_reservation = ideal_reservation
         self._satellites = satellites
         self._search_window = search_window
         self._start_time_increments = start_time_increments
-        self._validator = validator
+        self._event_finder = event_finder
 
     def find(self) -> List[SuggestedReservation]:
         potential_time_windows = [TimeWindow(begin=start_time, end=start_time + self._ideal_reservation.time.duration)
@@ -46,8 +46,7 @@ class WindowFinder:
         ]
 
     def _satellites_overhead(self, reservation: Reservation) -> List[OverheadWindow]:
-        return self._validator.overhead_list(list_of_satellites=self._satellites,
-                                             reservation=reservation)
+        return self._event_finder(list_of_satellites=self._satellites, reservation=reservation).get_overhead_windows()
 
     @property
     def _potential_start_times(self) -> List[datetime]:

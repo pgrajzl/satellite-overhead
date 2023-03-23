@@ -8,3 +8,7 @@ from satellite_determination.custom_dataclasses.time_window import TimeWindow
 class OverheadWindow:
     satellite: Satellite
     overhead_time: TimeWindow
+
+    def __int__(self, satellite: Satellite, overhead_time: TimeWindow):
+        super().__init__(satellite, overhead_time)
+        assert overhead_time.timezone == utc

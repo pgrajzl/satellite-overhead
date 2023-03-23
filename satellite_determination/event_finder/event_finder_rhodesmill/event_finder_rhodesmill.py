@@ -17,8 +17,10 @@ class EventFinderRhodesMill:
     def get_overhead_windows(self):
         ts = load.timescale() #provides time objects with the data tables they need to translate between different time scales: the schedule of UTC leap seconds, and the value of ∆T over time.
         overhead_windows = []
-        t0 = ts.from_datetime(convert_dt_to_utc(self._reservation.time.begin)) #changes the reservation datetime to Skyfield Time object
-        t1 = ts.from_datetime(convert_dt_to_utc(self._reservation.time.end))
+        #t0 = ts.from_datetime(convert_dt_to_utc(self._reservation.time.begin)) #changes the reservation datetime to Skyfield Time object
+        #t1 = ts.from_datetime(convert_dt_to_utc(self._reservation.time.end))
+        t0 = ts.from_datetime(self._reservation.time.begin)  # changes the reservation datetime to Skyfield Time object
+        t1 = ts.from_datetime(self._reservation.time.end)
         coordinates = wgs84.latlon(self._reservation.facility.point_coordinates.latitude, self._reservation.facility.point_coordinates.longitude)
         for sat in self._list_of_satellites:
             rhodesmill_earthsat = sat.to_rhodesmill() #convert from custom satellite class to Rhodesmill EarthSatellite

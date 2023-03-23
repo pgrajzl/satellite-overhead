@@ -1,12 +1,14 @@
 from datetime import datetime, timedelta
 from typing import List
-
+from pathlib import Path
+from tests.utilities import get_script_directory
 from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.window_finder import SuggestedReservation, WindowFinder
+from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from tests.window_finder.definitions import ARBITRARY_FACILITY
 from tests.window_finder.support.validator_satellites_are_overhead_at_specific_times import \
     ValidatorSatellitesAreOverheadAtSpecificTimes
@@ -19,9 +21,10 @@ class TestSortedByLeastNumberOfSatellites:
     def test(self):
         suggestions = WindowFinder(
             ideal_reservation=self._ideal_reservation,
-            satellites=[window.satellite for window in self._overhead_windows],
-            validator=ValidatorSatellitesAreOverheadAtSpecificTimes(
-                overhead_times=[window.overhead_time for window in self._overhead_windows]),
+            satellites=Satellite.from_tle_file(
+                tlefilepath=Path(get_script_directory(__file__), 'international_space_station_tle_multiple.tle'), \
+                frequencyfilepath=Path(get_script_directory(__file__), 'fake_ISS_frequency_file_multiple.csv')),
+            event_finder=EventFinderRhodesMill,
             start_time_increments=timedelta(days=1),
             search_window=timedelta(weeks=1)
         ).find()
