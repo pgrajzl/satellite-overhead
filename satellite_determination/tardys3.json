@@ -1,0 +1,100 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/ScheduledEvents",
+    "version": "1.0.0",
+    "definitions": {
+        "ScheduledEvents": {
+            "type": "object",
+            "title": "ScheduledEvents",
+            "additionalProperties": false,
+            "required": [
+                "checksum",
+                "dateTimePublished",
+                "dateTimeCreated",
+                "scheduledEvents",
+                "transactionId"
+            ],
+            "properties": {
+                "transactionId": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "dateTimePublished": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "dateTimeCreated": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "checksum": {
+                    "type": "string"
+                },
+                "scheduledEvents": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ScheduledEvent"
+                    }
+                }
+            }
+        },
+        "ScheduledEvent": {
+            "type": "object",
+            "title": "ScheduledEvent",
+            "additionalProperties": false,
+            "required": [
+                "channels",
+                "dateTimeEnd",
+                "dateTimeStart",
+                "dpaId",
+                "dpaName",
+                "eventId"
+            ],
+            "properties": {
+                "eventId": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "dpaId": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "dpaName": {
+                    "type": "string",
+                    "enum": [
+                        "AMERICAN SAMOA",
+                        "BARKING SANDS",
+                        "BATH",
+                        "CHINA LAKE",
+                        "DAHLGREN",
+                        "MCKINNEY",
+                        "MOORESTOWN",
+                        "NEWPORT NEWS",
+                        "PORTSMOUTH",
+                        "WALLOPS ISLAND",
+                        "WHITE SANDS MISSILE RANGE",
+                        "YUMA PROVING GROUNDS"
+                    ]
+                },
+                "channels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "dateTimeStart": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "dateTimeEnd": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "recurrence": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
