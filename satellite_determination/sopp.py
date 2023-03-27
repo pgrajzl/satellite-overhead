@@ -80,12 +80,36 @@ def run_sopp():
     index = int(reservation_choice) - 1
     chosen_reservation = suggested_reservation[index]
     chosen_reservation_end_time = chosen_reservation.suggested_start_time + reservation.time.duration
-    reservation_in_tardys3 = {
-        'dateTimeStart': chosen_reservation.suggested_start_time.strftime('%y-%m-%d %H:%M:%S'),
-        'dateTimeEnd': chosen_reservation_end_time.strftime('%y-%m-%d %H:%M:%S')
+    
+    # Open the tardys3 reservation format
+    with open('tardys3.json') as f:
+        tardys3 = json.load(f)
+
+    # Input data from variables into json file
+    tardys3['definitions']['ScheduledEvent']['properties']['dateTimeStart'] = {
+    "type": "string",
+    "format": "date-time",
+    "default": f"{chosen_reservation.suggested_start_time.strftime('%y-%m-%d %H:%M:%S')}"
     }
-    with open("tardys3_res.json", "w") as fp:
-        json.dump(reservation_in_tardys3, fp)
+
+    tardys3['definitions']['ScheduledEvent']['properties']['dateTimeEnd'] = {
+    "type": "string",
+    "format": "date-time",
+    "default": f"{chosen_reservation_end_time.strftime('%y-%m-%d %H:%M:%S')}"
+    }
+
+    # Print the tardys3 reservation file for debugging
+    print(tardys3)
+
+    reservation_in_tardys3 = json.dumps(tardys3)
+    print(reservation_in_tardys3)
+    
+    #reservation_in_tardys3 = {
+    #    'dateTimeStart': chosen_reservation.suggested_start_time.strftime('%y-%m-%d %H:%M:%S'),
+    #    'dateTimeEnd': chosen_reservation_end_time.strftime('%y-%m-%d %H:%M:%S')
+    #}
+    #with open("tardys3_res.json", "w") as fp:
+    #    json.dump(reservation_in_tardys3, fp)
 
 
 run_sopp()
