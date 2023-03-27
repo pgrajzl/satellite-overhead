@@ -1,6 +1,5 @@
 from datetime import datetime
 import json
-import pytz
 
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
@@ -13,15 +12,14 @@ from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_r
 from tests.utilities import get_script_directory
 from pathlib import Path
 from configparser import ConfigParser
-from satellite_determination.tle_fetcher import TleFetcher
 from satellite_determination.window_finder import WindowFinder
 
 def run_sopp():
     print('Launching Satellite Orbit Preprocessor')
     #routine to check date of last TLE pull
     print('Getting TLE file from space-track.org')
-    #TleFetcher().get_tles()
-    print('Loading config')
+    #TleFetcher().get_tles() #maybe make this a flag to specify path of tle
+    print('Loading config') #make flag to specify config file, default .config
     config_object = ConfigParser()
     config_object.read('.config')
     reservation_parameters = config_object["RESERVATION"]
@@ -42,7 +40,8 @@ def run_sopp():
             bandwidth=float(reservation_parameters["Bandwidth"])
         )
     )
-    tle_file = Path(get_script_directory(__file__), 'TLEData', 'arbitrary_TLE.txt')
+    print(reservation.facility.point_coordinates)
+    tle_file = Path(get_script_directory(__file__), 'TLEData', 'active_sats.txt')
     frequency_file = Path(get_script_directory(__file__), 'SatList (2).csv')
     satellite_list = Satellite.from_tle_file(tlefilepath=tle_file, frequencyfilepath=frequency_file)
     num_of_sats = len(satellite_list)
@@ -88,25 +87,5 @@ def run_sopp():
     with open("tardys3_res.json", "w") as fp:
         json.dump(reservation_in_tardys3, fp)
 
-'''
-def measure_filtering():
-    reservation = Reservation(facility=Facility(elevation=0,
-                                                point_coordinates=Coordinates(latitude=0, longitude=0),
-                                                name='name', azimuth=30),
-                           time=TimeWindow(begin=datetime(year=2001, month=2, day=1, hour=1), end=datetime(year=2001, month=2, day=2, hour=1)),
-                           frequency=FrequencyRange(
-                               frequency=135,
-                               bandwidth=20
-                           )
-                           )
-    tle_file = Path(get_script_directory(__file__), 'TLEData', 'test.txt')
-    frequency_file = Path(get_script_directory(__file__), 'SatList (2).csv')
-    satellite_list = Satellite.from_tle_file(tlefilepath=tle_file, frequencyfilepath=frequency_file)
-    for sat in satellite_list:
-        for frequency in sat.frequency:
-            print(frequency.frequency)
-    print(len(satellite_list))
-    frequency_filtered_sats = FrequencyFilter(satellites=satellite_list, observation_frequency=reservation.frequency).filter_frequencies()
-    print(len(frequency_filtered_sats))
-'''
+
 run_sopp()
