@@ -22,9 +22,10 @@ class TestReservationRetrieverJsonFile:
         return [
             Reservation(
                 facility=Facility(
-                    angle_of_visibility_cone=45.,
+                    elevation=45.,
                     point_coordinates=Coordinates(latitude=1., longitude=2.),
-                    name='ArbitraryFacilityName1'
+                    name='ArbitraryFacilityName1',
+                    azimuth=30
                 ),
                 time=TimeWindow(
                     begin=datetime(year=2022, month=3, day=30, hour=16),
@@ -33,9 +34,10 @@ class TestReservationRetrieverJsonFile:
             ),
             Reservation(
                 facility=Facility(
-                    angle_of_visibility_cone=20.1,
+                    elevation=20.1,
                     point_coordinates=Coordinates(latitude=4., longitude=5.),
-                    name='ArbitraryFacilityName2'
+                    name='ArbitraryFacilityName2',
+                    azimuth=0
                 ),
                 time=TimeWindow(
                     begin=datetime(year=1994, month=7, day=16, hour=3),

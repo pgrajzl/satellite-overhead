@@ -2,24 +2,26 @@
   "reservations": [
     {
       "facility": {
-        "angle_of_visibility_cone": 45.0,
+        "elevation": 45.0,
         "point_coordinates": {
           "latitude": 1.0,
           "longitude": 2.0
         },
-        "name": "ArbitraryFacilityName1"
+        "name": "ArbitraryFacilityName1",
+        "azimuth": 30
       },
       "time_start": "2022-03-30T16:00:00",
       "time_end": "2022-03-30T17:00:00"
     },
     {
       "facility": {
-        "angle_of_visibility_cone": 20.1,
+        "elevation": 20.1,
         "point_coordinates": {
           "latitude": 4.0,
           "longitude": 5.0
         },
-        "name": "ArbitraryFacilityName2"
+        "name": "ArbitraryFacilityName2",
+        "azimuth": 0
       },
       "time_start": "1994-07-16T03:00:00",
       "time_end": "1994-07-18T02:00:00"
