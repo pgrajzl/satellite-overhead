@@ -67,7 +67,7 @@ def run_sopp():
     print("=======================================================================================\n")
     print("                       Finding reservation suggestions\n")
     print("=======================================================================================\n")
-    suggested_reservation = WindowFinder(reservation, frequency_filtered_sats, EventFinderRhodesMill).find()
+    suggested_reservation = WindowFinder(reservation, frequency_filtered_sats, EventFinderRhodesMill).search()
     index = 0
     for res in suggested_reservation:
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")

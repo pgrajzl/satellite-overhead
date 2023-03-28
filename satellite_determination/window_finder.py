@@ -30,6 +30,32 @@ class WindowFinder:
         self._start_time_increments = start_time_increments
         self._event_finder = event_finder
 
+    def search(self) -> List[SuggestedReservation]:
+        suggested_reservations = []
+        search_start_time = self._ideal_reservation.time.begin - (self._search_window/2)
+        search_end_time = self._ideal_reservation.time.begin + (self._search_window/2)
+        search_window_res = Reservation(facility=self._ideal_reservation.facility, time=TimeWindow(begin=search_start_time, end=search_end_time), frequency=self._ideal_reservation.frequency)
+        overhead_satellites = self._satellites_overhead(search_window_res)
+        potential_time_windows = [TimeWindow(begin=start_time, end=start_time + self._ideal_reservation.time.duration)
+                                  for start_time in self._potential_start_times]
+        for reservation_window in potential_time_windows:
+            overhead_satellites_res = []
+            for interference_window in overhead_satellites:
+                if (reservation_window.begin <= interference_window.overhead_time.begin <= reservation_window.end) or \
+                        (reservation_window.begin <= interference_window.overhead_time.end <= reservation_window.end) or \
+                        (interference_window.overhead_time.begin <= reservation_window.begin and interference_window.overhead_time.end >= reservation_window.end):
+                    overhead_satellites_res.append(interference_window)
+            suggested_reservations.append(
+                SuggestedReservation(
+                    ideal_reservation=self._ideal_reservation,
+                    overhead_satellites=overhead_satellites_res,
+                    suggested_start_time=reservation_window.begin
+                )
+            )
+
+        return suggested_reservations
+
+
     def find(self) -> List[SuggestedReservation]:
         potential_time_windows = [TimeWindow(begin=start_time, end=start_time + self._ideal_reservation.time.duration)
                                   for start_time in self._potential_start_times]
@@ -47,6 +73,7 @@ class WindowFinder:
 
     def _satellites_overhead(self, reservation: Reservation) -> List[OverheadWindow]:
         return self._event_finder(list_of_satellites=self._satellites, reservation=reservation).get_overhead_windows()
+
 
     @property
     def _potential_start_times(self) -> List[datetime]:
