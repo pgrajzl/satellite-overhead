@@ -38,8 +38,4 @@ class AzimuthFilter:
             windows = OverheadWindowFromAzimuth(azimuth_time_pairs, self._reservation, window).get_window_from_azimuth()
             for new_window in windows:
                 azimuth_filtered_overhead_windows.append(new_window)
-        for new_window in azimuth_filtered_overhead_windows:
-            print(new_window.satellite)
-            print(new_window.overhead_time.begin.astimezone(pytz.utc))
-            print(new_window.overhead_time.end.astimezone(pytz.utc))
         return azimuth_filtered_overhead_windows
