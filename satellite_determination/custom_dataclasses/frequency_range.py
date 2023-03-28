@@ -15,7 +15,7 @@ class FrequencyRange:
     low_in_megahertz: float
 
     @classmethod
-    def from_csv(cls, info: dict) -> 'FrequencyList':
+    def from_json(cls, info: dict) -> 'FrequencyList':
         return cls(
             high_in_megahertz=info[FrequencyRangeJsonKey.high_in_megahertz.name],
             low_in_megahertz=info[FrequencyRangeJsonKey.low_in_megahertz.name]

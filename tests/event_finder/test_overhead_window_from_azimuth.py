@@ -93,13 +93,14 @@ class TestOverheadWindowFromAzimuth:
                                                      self._arbitrary_reservation_with_nonzero_timewindow,
                                                      self._arbitrary_overhead_window).get_window_from_azimuth()
         assert overhead_windows == []
+
     @property
     def _arbitrary_satellite(self) -> Satellite:
         return Satellite(name='name')
 
     @property
     def _arbitrary_reservation_with_nonzero_timewindow(self) -> Reservation:
-        return Reservation(facility=Facility(angle_of_visibility_cone=0,
+        return Reservation(facility=Facility(elevation=0,
                                              point_coordinates=Coordinates(latitude=0, longitude=0),
                                              azimuth=30,
                                              name='name'),
@@ -108,7 +109,7 @@ class TestOverheadWindowFromAzimuth:
 
     @property
     def _arbitrary_reservation_at(self) -> Reservation:
-        return Reservation(facility=Facility(angle_of_visibility_cone=0,
+        return Reservation(facility=Facility(elevation=0,
                                              point_coordinates=Coordinates(latitude=0, longitude=0),
                                              azimuth=30,
                                              name='name'),
