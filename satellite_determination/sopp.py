@@ -1,8 +1,4 @@
 from datetime import datetime
-import json
-
-import pytz
-
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
