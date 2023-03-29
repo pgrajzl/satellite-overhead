@@ -43,7 +43,7 @@ class WindowFinder:
             for interference_window in overhead_satellites:
                 if (reservation_window.begin <= interference_window.overhead_time.begin <= reservation_window.end) or \
                         (reservation_window.begin <= interference_window.overhead_time.end <= reservation_window.end) or \
-                        (interference_window.overhead_time.begin <= reservation_window.begin and interference_window.overhead_time.end >= reservation_window.end):
+                        (interference_window.overhead_time.begin <= reservation_window.begin) and (interference_window.overhead_time.end >= reservation_window.end):
                     overhead_satellites_res.append(interference_window)
             suggested_reservations.append(
                 SuggestedReservation(
@@ -52,7 +52,8 @@ class WindowFinder:
                     suggested_start_time=reservation_window.begin
                 )
             )
-
+        suggested_reservations.sort(key=lambda x: len(x.overhead_satellites))
+        #suggested_reservations.sort(key=lambda  x: x.overhead_satellites.duration)
         return suggested_reservations
 
 

@@ -1,6 +1,8 @@
 from datetime import datetime
 import json
 
+import pytz
+
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
@@ -9,6 +11,7 @@ from satellite_determination.custom_dataclasses.satellite.satellite import Satel
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
+from satellite_determination.generate_tardys3 import Tardys3Generator
 from tests.utilities import get_script_directory
 from pathlib import Path
 from configparser import ConfigParser
@@ -16,17 +19,14 @@ from satellite_determination.window_finder import WindowFinder
 
 def run_sopp():
     print('Launching Satellite Orbit Preprocessor')
-    #routine to check date of last TLE pull
-    print('Getting TLE file from space-track.org')
-    #TleFetcher().get_tles() #maybe make this a flag to specify path of tle
     print('Loading config') #make flag to specify config file, default .config
     config_object = ConfigParser()
     config_object.read('.config')
     reservation_parameters = config_object["RESERVATION"]
     start_datetime_str = reservation_parameters["StartTimeUTC"]
     end_datetime_str = reservation_parameters["EndTimeUTC"]
-    start_time = datetime.strptime(start_datetime_str, '%m/%d/%y %H:%M:%S %z') #.astimezone(pytz.UTC)
-    end_time = datetime.strptime(end_datetime_str, '%m/%d/%y %H:%M:%S %z') #.astimezone(pytz.UTC)
+    start_time = datetime.strptime(start_datetime_str, '%m/%d/%y %H:%M:%S %z')
+    end_time = datetime.strptime(end_datetime_str, '%m/%d/%y %H:%M:%S %z')
     reservation = Reservation(
         facility=Facility(
             elevation=float(reservation_parameters["Elevation"]),
@@ -80,36 +80,8 @@ def run_sopp():
     index = int(reservation_choice) - 1
     chosen_reservation = suggested_reservation[index]
     chosen_reservation_end_time = chosen_reservation.suggested_start_time + reservation.time.duration
-    
-    # Open the tardys3 reservation format
-    with open('tardys3.json') as f:
-        tardys3 = json.load(f)
+    Tardys3Generator(chosen_reservation, chosen_reservation_end_time).generate_tardys()
 
-    # Input data from variables into json file
-    tardys3['definitions']['ScheduledEvent']['properties']['dateTimeStart'] = {
-    "type": "string",
-    "format": "date-time",
-    "default": f"{chosen_reservation.suggested_start_time.strftime('%y-%m-%d %H:%M:%S')}"
-    }
-
-    tardys3['definitions']['ScheduledEvent']['properties']['dateTimeEnd'] = {
-    "type": "string",
-    "format": "date-time",
-    "default": f"{chosen_reservation_end_time.strftime('%y-%m-%d %H:%M:%S')}"
-    }
-
-    # Print the tardys3 reservation file for debugging
-    print(tardys3)
-
-    reservation_in_tardys3 = json.dumps(tardys3)
-    print(reservation_in_tardys3)
-    
-    #reservation_in_tardys3 = {
-    #    'dateTimeStart': chosen_reservation.suggested_start_time.strftime('%y-%m-%d %H:%M:%S'),
-    #    'dateTimeEnd': chosen_reservation_end_time.strftime('%y-%m-%d %H:%M:%S')
-    #}
-    #with open("tardys3_res.json", "w") as fp:
-    #    json.dump(reservation_in_tardys3, fp)
 
 
 run_sopp()

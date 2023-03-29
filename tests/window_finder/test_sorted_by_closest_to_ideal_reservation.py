@@ -1,6 +1,9 @@
 from datetime import datetime, timedelta
 from typing import List
 from pathlib import Path
+
+import pytz
+
 from tests.utilities import get_script_directory
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
@@ -20,7 +23,6 @@ class TestSortedByClosestToIdealReservation:
             satellites=Satellite.from_tle_file(tlefilepath=Path(get_script_directory(__file__), 'international_space_station_tle_multiple.tle'), \
                                                frequencyfilepath=Path(get_script_directory(__file__), 'fake_ISS_frequency_file_multiple.csv')),
             event_finder=EventFinderRhodesMill,
-            #event_finder=ValidatorSatellitesAreOverheadAtSpecificTimes(overhead_times=[]),
             start_time_increments=timedelta(days=1),
             search_window=timedelta(weeks=1)).find()
         assert suggestions == self._expected_suggestions
@@ -40,7 +42,7 @@ class TestSortedByClosestToIdealReservation:
     def _ideal_reservation(self) -> Reservation:
         return Reservation(
             facility=ARBITRARY_FACILITY,
-            time=TimeWindow(begin=datetime(year=2022, month=11, day=20), end=datetime(year=2022, month=11, day=21)),
+            time=TimeWindow(begin=datetime(year=2022, month=11, day=20, tzinfo=pytz.UTC), end=datetime(year=2022, month=11, day=21, tzinfo=pytz.UTC)),
             frequency=(FrequencyRange(frequency=None, bandwidth=None))
         )
 

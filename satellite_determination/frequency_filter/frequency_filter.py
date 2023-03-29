@@ -14,7 +14,7 @@ class FrequencyFilter:
         for sat in self._list_satellites:
             for sat_frequency in sat.frequency:
                 if sat_frequency.frequency is None or sat_frequency.frequency == '': #if we don't have a frequency for a satellite we default to assuming it could interfere
-                    frequency_filtered_satellite_list.append(sat)
+                    #frequency_filtered_satellite_list.append(sat)
                     break
                 if sat_frequency.status == 'active' or sat_frequency.status is None:
                     if self._observation_frequency.overlaps(sat_frequency):
