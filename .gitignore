@@ -5,5 +5,4 @@ __pycache__
 .pytest_cache
 .tmp
 cookies.txt
-TLEData
 venv
