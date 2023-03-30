@@ -24,7 +24,7 @@ class EventFinderRhodesMill:
         coordinates = wgs84.latlon(self._reservation.facility.point_coordinates.latitude, self._reservation.facility.point_coordinates.longitude)
         for sat in self._list_of_satellites:
             rhodesmill_earthsat = sat.to_rhodesmill() #convert from custom satellite class to Rhodesmill EarthSatellite
-            t, events = rhodesmill_earthsat.find_events(coordinates, t0, t1, altitude_degrees=self._reservation.facility.elevation)
+            t, events = rhodesmill_earthsat.find_events(coordinates, t0, t1, altitude_degrees=self._reservation.facility.altitude)
             if events.size == 0:
                 continue
             else:

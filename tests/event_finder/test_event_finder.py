@@ -21,7 +21,7 @@ class TestWindowListFinder:
         tle_file = Path(get_script_directory(__file__), 'test_tle_data', 'arbitrary_TLE.txt')
         frequency_file = Path(get_script_directory(__file__), 'fake_ISS_frequency_file_multiple.csv')
         list_of_satellites = Satellite.from_tle_file(tlefilepath=tle_file, frequencyfilepath=frequency_file) #load satellites from arbitrary TLE file
-        reservation = Reservation(facility=Facility(elevation=0, point_coordinates=Coordinates(latitude=40.8178049, longitude=-121.4695413), name='name', azimuth=30),
+        reservation = Reservation(facility=Facility(altitude=0, point_coordinates=Coordinates(latitude=40.8178049, longitude=-121.4695413), name='name', azimuth=30),
                                   time=TimeWindow(begin=datetime(year=2023, month=2, day=22, hour=1, tzinfo=pytz.utc), end=datetime(year=2023, month=2, day=22, hour=2, tzinfo=pytz.utc)),
                                   frequency=FrequencyRange(
                                       frequency=None,

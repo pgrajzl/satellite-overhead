@@ -17,13 +17,13 @@ class TestFacilityRetrieverJsonFile:
     def _expected_facilities(self) -> List[Facility]:
         return [
             Facility(
-                elevation=45.,
+                altitude=45.,
                 point_coordinates=Coordinates(latitude=1., longitude=2.),
                 name='ArbitraryFacilityName1',
                 azimuth=30
             ),
             Facility(
-                elevation=20.1,
+                altitude=20.1,
                 point_coordinates=Coordinates(latitude=4., longitude=5.),
                 name='ArbitraryFacilityName2',
                 azimuth=0
