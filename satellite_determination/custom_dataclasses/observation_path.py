@@ -1,7 +1,14 @@
-from typing import List
+from astropy.coordinates import Angle
+from dataclasses import dataclass
 from datetime import datetime
 
+@dataclass
 class ObservationPath:
-    altitude: float
-    azimuth: float
+    altitude: Angle
+    azimuth: Angle
     time: datetime
+
+    @classmethod
+    def astropy_ang_to_float(cls, angle: Angle):
+        return float(angle)
+

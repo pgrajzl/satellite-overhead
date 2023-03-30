@@ -28,7 +28,7 @@ def run_sopp():
             right_ascension=float(reservation_parameters["RightAscension"]),
             point_coordinates=Coordinates(latitude=float(reservation_parameters["Latitude"]), longitude=float(reservation_parameters["Longitude"])),
             name=reservation_parameters["Name"],
-            declination=float(reservation_parameters["Declination"])
+            declination=float(reservation_parameters["Declination"]),
         ),
         time=TimeWindow(begin=start_time, end=end_time),
         frequency=FrequencyRange(
