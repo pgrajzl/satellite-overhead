@@ -35,7 +35,7 @@ class AzimuthFilter:
                 satellite_time_values.append(window.overhead_time.begin)
                 window.overhead_time.begin += time_delta
             azimuth_time_pairs = zip(satellite_azimuth_values, satellite_time_values)
-            windows = OverheadWindowFromAzimuth(azimuth_time_pairs, self._reservation, window).get_window_from_azimuth()
+            windows = OverheadWindowFromAzimuth(azimuth_time_pairs, self._reservation, window, self._observation_point).get_window_from_azimuth()
             for new_window in windows:
                 azimuth_filtered_overhead_windows.append(new_window)
         return azimuth_filtered_overhead_windows

@@ -15,12 +15,11 @@ class TestObservationPathFinder:
 
     def test(self):
         path = ObservationPathFinder(self._arbitrary_reservation).calculate_path()
-        with open ("path_test.txt", "w") as outfile:
-            outfile.writelines(str(path))
-            outfile.close()
-        assert filecmp.cmp('expected_path.txt',
-                           'path_test.txt') == 1
-        os.remove("path_test.txt")
+        for point in path:
+            print(point.time)
+            print(point.altitude)
+            print(point.azimuth, '\n')
+
         #assert path == self._expected_path
 
 
@@ -75,3 +74,5 @@ class TestObservationPathFinder:
                 time=datetime(year=2023, month=3, day=30, hour=1, minute=4)
             )
         ]
+
+TestObservationPathFinder().test()

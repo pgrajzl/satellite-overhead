@@ -9,4 +9,5 @@ class Facility:
     name: str
     right_ascension: str
     declination: str
+    beamwidth: Optional[float] = 3
     height: Optional[float] = 100 #TODO what is a good default?

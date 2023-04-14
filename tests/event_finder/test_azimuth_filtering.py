@@ -18,7 +18,7 @@ from satellite_determination.custom_dataclasses.time_window import TimeWindow
 
 class TestAzimuthFilter:
     def test_single_sat(self):
-        windows = AzimuthFilter(overhead_windows=[self._arbitrary_overhead_window], reservation=self._arbitrary_reservation).filter_azimuth()
+        windows = AzimuthFilter(overhead_windows=[self._arbitrary_overhead_window], reservation=self._arbitrary_reservation).filter_azimuth_stationary()
         with open ("azimuth_filtered_windows.txt", "w") as outfile:
             outfile.writelines(str(windows))
             outfile.close()

@@ -1,6 +1,10 @@
+from dataclasses import replace
 from datetime import datetime
+import pytz
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
-from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
+from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
+    GetFrequencyDataFromCsv
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.frequency_filter.frequency_filter import FrequencyFilter
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
@@ -8,12 +12,14 @@ from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from satellite_determination.generate_tardys3 import Tardys3Generator
+from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
 from tests.utilities import get_script_directory
 from pathlib import Path
 from configparser import ConfigParser
 from satellite_determination.window_finder import WindowFinder
 
-def run_sopp():
+
+if __name__ == '__main__':
     print('Launching Satellite Orbit Preprocessor')
     print('Loading config') #make flag to specify config file, default .config
     config_object = ConfigParser()
@@ -21,14 +27,16 @@ def run_sopp():
     reservation_parameters = config_object["RESERVATION"]
     start_datetime_str = reservation_parameters["StartTimeUTC"]
     end_datetime_str = reservation_parameters["EndTimeUTC"]
-    start_time = datetime.strptime(start_datetime_str, '%m/%d/%y %H:%M:%S %z')
-    end_time = datetime.strptime(end_datetime_str, '%m/%d/%y %H:%M:%S %z')
+    #start_time = datetime.strptime(start_datetime_str, '%m/%d/%y %H:%M:%S %z')
+    #end_time = datetime.strptime(end_datetime_str, '%m/%d/%y %H:%M:%S %z')
+    start_time = datetime.strptime(start_datetime_str, '%Y-%m-%dT%H:%M:%S.%f')
+    end_time = datetime.strptime(end_datetime_str, '%Y-%m-%dT%H:%M:%S.%f')
     reservation = Reservation(
         facility=Facility(
-            right_ascension=float(reservation_parameters["RightAscension"]),
+            right_ascension=reservation_parameters["RightAscension"],
             point_coordinates=Coordinates(latitude=float(reservation_parameters["Latitude"]), longitude=float(reservation_parameters["Longitude"])),
             name=reservation_parameters["Name"],
-            declination=float(reservation_parameters["Declination"]),
+            declination=reservation_parameters["Declination"],
         ),
         time=TimeWindow(begin=start_time, end=end_time),
         frequency=FrequencyRange(
@@ -39,15 +47,21 @@ def run_sopp():
     print(reservation.facility.point_coordinates)
     tle_file = Path(get_script_directory(__file__), 'TLEData', 'active_sats.txt')
     frequency_file = Path(get_script_directory(__file__), 'SatList (2).csv')
-    satellite_list = Satellite.from_tle_file(tlefilepath=tle_file, frequencyfilepath=frequency_file)
-    num_of_sats = len(satellite_list)
+    satellite_list = Satellite.from_tle_file(tlefilepath=tle_file)
+    frequency_list = GetFrequencyDataFromCsv(filepath=frequency_file).get()
+    satellite_list_with_frequencies = [replace(satellite, frequency=frequency_list.get(satellite.tle_information.satellite_number, []))
+                                       for satellite in satellite_list]
+
+    num_of_sats = len(satellite_list_with_frequencies)
     print('loaded ', num_of_sats, ' satellites. Starting frequency filter.')
     frequency_filtered_sats = FrequencyFilter(satellites=satellite_list,
                                               observation_frequency=reservation.frequency).filter_frequencies()
     print(len(frequency_filtered_sats), ' satellites remaining')
     print('Finding interference windows.')
-    interference_windows = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation).get_overhead_windows()
-
+    #test
+    altitude_azimuth_pairs = ObservationPathFinder(reservation, start_datetime_str, end_datetime_str).calculate_path()
+    interference_windows = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation, azimuth_altitude_path=altitude_azimuth_pairs).get_overhead_windows_slew()
+    # test
     print("=======================================================================================\n")
     print('                     Found ', len(interference_windows), ' interference events in specified reservation')
     print("                               Interference events: \n")
@@ -77,7 +91,3 @@ def run_sopp():
     chosen_reservation = suggested_reservation[index]
     chosen_reservation_end_time = chosen_reservation.suggested_start_time + reservation.time.duration
     Tardys3Generator(chosen_reservation, chosen_reservation_end_time).generate_tardys()
-
-
-
-run_sopp()

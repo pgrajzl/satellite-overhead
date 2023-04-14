@@ -3,8 +3,8 @@ from datetime import datetime
 from enum import Enum
 
 from satellite_determination.custom_dataclasses.facility import Facility
+from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
 
 
 class ReservationJsonKey(Enum):

@@ -17,11 +17,11 @@ class OverheadWindowFromAzimuth:
         exit_events = []
         sat_in_view_flag = 0
         for azimuth, t in self._azimuth_time_pairs:
-            if (azimuth <= (self._reservation.facility.azimuth + 1.5)) and (azimuth >= (self._reservation.facility.azimuth - 1.5)):
+            if (azimuth <= (self._reservation.facility.azimuth + self._reservation.facility.beamwidth)) and (azimuth >= (self._reservation.facility.azimuth - self._reservation.facility.beamwidth)):
                 if sat_in_view_flag == 0:
                     enter_events.append(t)
                     sat_in_view_flag = 1
-            elif (azimuth > (self._reservation.facility.azimuth + 1.5)) or (azimuth < (self._reservation.facility.azimuth - 1.5)):
+            elif (azimuth > (self._reservation.facility.azimuth + self._reservation.facility.beamwidth)) or (azimuth < (self._reservation.facility.azimuth - self._reservation.facility.beamwidth)):
                 if sat_in_view_flag == 1:
                     exit_events.append(t)
                     sat_in_view_flag = 0
