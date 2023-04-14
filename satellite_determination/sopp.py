@@ -45,6 +45,7 @@ if __name__ == '__main__':
         )
     )
     print(reservation.facility.point_coordinates)
+
     tle_file = Path(get_script_directory(__file__), 'TLEData', 'active_sats.txt')
     frequency_file = Path(get_script_directory(__file__), 'SatList (2).csv')
     satellite_list = Satellite.from_tle_file(tlefilepath=tle_file)
@@ -54,7 +55,7 @@ if __name__ == '__main__':
 
     num_of_sats = len(satellite_list_with_frequencies)
     print('loaded ', num_of_sats, ' satellites. Starting frequency filter.')
-    frequency_filtered_sats = FrequencyFilter(satellites=satellite_list,
+    frequency_filtered_sats = FrequencyFilter(satellites=satellite_list_with_frequencies,
                                               observation_frequency=reservation.frequency).filter_frequencies()
     print(len(frequency_filtered_sats), ' satellites remaining')
     print('Finding interference windows.')

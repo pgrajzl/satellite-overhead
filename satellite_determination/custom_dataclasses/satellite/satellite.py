@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from os.path import realpath
 from pathlib import Path
 from typing import List, Optional
@@ -17,7 +17,7 @@ NUMBER_OF_LINES_PER_TLE_OBJECT = 3
 class Satellite:
     name: str
     tle_information: Optional[TleInformation] = None
-    frequency: Optional[List[FrequencyRange]] = None
+    frequency: List[FrequencyRange] = field(default_factory=list)
 
     def to_rhodesmill(self) -> EarthSatellite:
         with temporary_file() as f:
