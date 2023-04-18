@@ -3,7 +3,6 @@ from enum import Enum
 from typing import List, Optional
 from pathlib import Path
 import csv
-#from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 
 
 class FrequencyRangeJsonKey(Enum):
