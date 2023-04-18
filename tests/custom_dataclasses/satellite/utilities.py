@@ -1,6 +1,7 @@
 from satellite_determination.custom_dataclasses.satellite.international_designator import InternationalDesignator
 from satellite_determination.custom_dataclasses.satellite.mean_motion import MeanMotion
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
+from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
 
 
@@ -27,5 +28,11 @@ def expected_international_space_station_tle_as_satellite_cu() -> Satellite:
             revolution_number=20248,
             right_ascension_of_ascending_node=3.686137125541276,
             satellite_number=25544
-        )
+        ),
+        frequency=[FrequencyRange(
+            frequency=136.65,
+            bandwidth=None,
+            status='active'
+        )]
+
     )

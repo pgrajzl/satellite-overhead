@@ -1,6 +1,5 @@
 from skyfield.api import EarthSatellite, load
 from dataclasses import dataclass
-from enum import Enum
 from typing import List
 
 

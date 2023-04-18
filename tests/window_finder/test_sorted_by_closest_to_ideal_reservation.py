@@ -5,6 +5,7 @@ from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.window_finder import SuggestedReservation, WindowFinder
 from tests.window_finder.definitions import ARBITRARY_FACILITY
+from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
 from tests.window_finder.support.validator_satellites_are_overhead_at_specific_times import \
     ValidatorSatellitesAreOverheadAtSpecificTimes
 
@@ -35,7 +36,9 @@ class TestSortedByClosestToIdealReservation:
     def _ideal_reservation(self) -> Reservation:
         return Reservation(
             facility=ARBITRARY_FACILITY,
-            time=TimeWindow(begin=datetime(year=2022, month=11, day=20), end=datetime(year=2022, month=11, day=21)))
+            time=TimeWindow(begin=datetime(year=2022, month=11, day=20), end=datetime(year=2022, month=11, day=21)),
+            frequency=(FrequencyRange(frequency=None, bandwidth=None))
+        )
 
     @property
     def _expected_suggestion_start_times(self) -> List[datetime]:

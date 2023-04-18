@@ -7,6 +7,7 @@ from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
+from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
 
 
 class TestOverheadWindowFromAzimuth:
@@ -105,16 +106,9 @@ class TestOverheadWindowFromAzimuth:
                                              azimuth=30,
                                              name='name'),
                            time=TimeWindow(begin=datetime(year=2001, month=2, day=1, hour=1),
-                                           end=datetime(year=2001, month=2, day=1, hour=6)))
-
-    @property
-    def _arbitrary_reservation_at(self) -> Reservation:
-        return Reservation(facility=Facility(elevation=0,
-                                             point_coordinates=Coordinates(latitude=0, longitude=0),
-                                             azimuth=30,
-                                             name='name'),
-                           time=TimeWindow(begin=datetime(year=2001, month=2, day=1, hour=1),
-                                           end=datetime(year=2001, month=2, day=1, hour=6)))
+                                           end=datetime(year=2001, month=2, day=1, hour=6)),
+                           frequency=FrequencyRange(frequency=None, bandwidth=None)
+                           )
 
     @property
     def _arbitrary_date(self) -> datetime:

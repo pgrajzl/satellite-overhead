@@ -1,31 +1,37 @@
+from typing import List
+
 import pytz
 import datetime
-import os
 from pathlib import Path
 from datetime import datetime
-import filecmp
-from typing import List
 
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
+from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
+from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
+from satellite_determination.custom_dataclasses.satellite.international_designator import InternationalDesignator
+from satellite_determination.custom_dataclasses.satellite.mean_motion import MeanMotion
+from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
 from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
-from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
-from satellite_determination.custom_dataclasses.satellite.mean_motion import MeanMotion
-from satellite_determination.custom_dataclasses.satellite.international_designator import InternationalDesignator
 from tests.utilities import get_script_directory
 
 
 class TestWindowListFinder:
 
     def test_get_window_list(self):
-        tle_file = Path(get_script_directory(__file__), 'TestTLEdata', 'arbitrary_TLE.txt')
-        list_of_satellites = Satellite.from_tle_file(tle_file) #load satellites from arbitrary TLE file
+        tle_file = Path(get_script_directory(__file__), 'test_tle_data', 'arbitrary_TLE.txt')
+        frequency_file = Path(get_script_directory(__file__), 'fake_ISS_frequency_file_multiple.csv')
+        list_of_satellites = Satellite.from_tle_file(tlefilepath=tle_file, frequencyfilepath=frequency_file) #load satellites from arbitrary TLE file
         reservation = Reservation(facility=Facility(elevation=0, point_coordinates=Coordinates(latitude=40.8178049, longitude=-121.4695413),name='name', azimuth=30),
-                                  time=TimeWindow(begin=datetime(year=2023, month=2, day=22, hour=1, tzinfo=pytz.utc), end=datetime(year=2023, month=2, day=22, hour=2, tzinfo=pytz.utc)))
+                                  time=TimeWindow(begin=datetime(year=2023, month=2, day=22, hour=1, tzinfo=pytz.utc), end=datetime(year=2023, month=2, day=22, hour=2, tzinfo=pytz.utc)),
+                                  frequency=FrequencyRange(
+                                      frequency=None,
+                                      bandwidth=None
+                                  )
+                                  )
         overhead_windows = EventFinderRhodesMill(list_of_satellites=list_of_satellites, reservation=reservation).get_overhead_windows()
         assert overhead_windows == self._expected_windows
 
@@ -55,7 +61,7 @@ class TestWindowListFinder:
                     satellite_number=28275,
                     classification='U'
                 ),
-                frequency=None
+                frequency=[FrequencyRange(frequency=None, bandwidth=None, status=None)]
             )
 
     @property
@@ -84,7 +90,7 @@ class TestWindowListFinder:
                     satellite_number=28254,
                     classification='U'
                 ),
-                frequency=None
+                frequency=[FrequencyRange(frequency=None, bandwidth=None, status=None)]
             )
 
     @property

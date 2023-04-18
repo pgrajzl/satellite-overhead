@@ -1,0 +1,4 @@
+﻿ID,Name,Frequency [MHz],Status,Description,Bandwidth
+2023,ARBITRARY SAT,136.65,active,Upper side band (drifting)
+2023,ARBITRARY SAT,2,active,Upper side band (drifting)
+200,ARBITRARY SAT II,132,active,Upper side band (drifting)

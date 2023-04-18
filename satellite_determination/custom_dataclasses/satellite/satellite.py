@@ -17,7 +17,7 @@ NUMBER_OF_LINES_PER_TLE_OBJECT = 3
 class Satellite:
     name: str
     tle_information: Optional[TleInformation] = None
-    frequency: Optional[FrequencyRange] = None
+    frequency: Optional[List[FrequencyRange]] = None
 
     def to_rhodesmill(self) -> EarthSatellite:
         with temporary_file() as f:
@@ -27,12 +27,31 @@ class Satellite:
             return load.tle_file(url=realpath(f.name))[0]
 
     @classmethod
-    def from_tle_file(cls, filepath: Path) -> List['Satellite']:
-        with open(filepath, 'r') as f:
+    def from_tle_file(cls, tlefilepath: Path, frequencyfilepath: Path) -> List['Satellite']:
+        sats = []
+        with open(tlefilepath, 'r') as f:
             lines = f.readlines()
         name_line_indices = range(0, len(lines), NUMBER_OF_LINES_PER_TLE_OBJECT)
+        for name_line_index in name_line_indices:
+            #name = lines[name_line_index].strip(),
+            tle_information = TleInformation.from_tle_lines(line1=lines[name_line_index + 1],
+                                                            line2=lines[name_line_index + 2])
+            frequency = FrequencyRange.from_csv(frequencyfilepath, tle_information.satellite_number)
+            sats.append(Satellite(
+                #name=name
+                name=lines[name_line_index].strip(),
+                tle_information=tle_information,
+                frequency=frequency
+            ))
+        return sats
+
+'''
         return [Satellite(
             name=lines[name_line_index].strip(),
             tle_information=TleInformation.from_tle_lines(line1=lines[name_line_index + 1],
-                                                          line2=lines[name_line_index + 2])
+                                                          line2=lines[name_line_index + 2]),
+            frequency=FrequencyRange.from_csv(tle_information.international_designator)
         ) for name_line_index in name_line_indices]
+
+
+'''
