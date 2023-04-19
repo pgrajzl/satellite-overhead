@@ -12,4 +12,4 @@ class Facility:
     beamwidth: Optional[float] = 3
     height: Optional[float] = 100 #TODO what is a good default?
     azimuth: Optional[float] = None #the azimuth and altitude parameters are only necessary if searching for satellites w/ stationary observation
-    altitude: Optional[float] = 0 #default altitude to zero to find all sats above the horizon
+    elevation: Optional[float] = 0 #default altitude to zero to find all sats above the horizon

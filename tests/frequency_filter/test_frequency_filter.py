@@ -1,5 +1,5 @@
 from datetime import datetime
-from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
+from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.facility import Facility, Coordinates

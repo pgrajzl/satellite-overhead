@@ -1,4 +1,6 @@
-from typing import List
+import math
+from datetime import datetime
+from typing import List, Tuple
 
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
@@ -7,7 +9,7 @@ from satellite_determination.custom_dataclasses.time_window import TimeWindow
 
 class OverheadWindowFromAzimuth:
 
-    def __init__(self, azimuth_time_pairs: [List], reservation: Reservation, window: OverheadWindow):
+    def __init__(self, azimuth_time_pairs: List[Tuple[float, datetime]], reservation: Reservation, window: OverheadWindow):
         self._azimuth_time_pairs = azimuth_time_pairs
         self._reservation = reservation
         self._window = window
@@ -17,11 +19,12 @@ class OverheadWindowFromAzimuth:
         exit_events = []
         sat_in_view_flag = 0
         for azimuth, t in self._azimuth_time_pairs:
-            if (azimuth <= (self._reservation.facility.azimuth + self._reservation.facility.beamwidth)) and (azimuth >= (self._reservation.facility.azimuth - self._reservation.facility.beamwidth)):
+            half_beamwidth = self._reservation.facility.beamwidth / 2
+            if math.isclose(azimuth, self._reservation.facility.azimuth, abs_tol=half_beamwidth):
                 if sat_in_view_flag == 0:
                     enter_events.append(t)
                     sat_in_view_flag = 1
-            elif (azimuth > (self._reservation.facility.azimuth + self._reservation.facility.beamwidth)) or (azimuth < (self._reservation.facility.azimuth - self._reservation.facility.beamwidth)):
+            else:
                 if sat_in_view_flag == 1:
                     exit_events.append(t)
                     sat_in_view_flag = 0
