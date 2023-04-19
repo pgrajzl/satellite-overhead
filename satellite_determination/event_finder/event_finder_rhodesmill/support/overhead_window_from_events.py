@@ -30,7 +30,6 @@ class OverheadWindowFromEvents:
         self._reservation = reservation
 
     def get(self) -> List[OverheadWindow]:
-        ts = load.timescale()
         enter_events, culminate_events, exit_events = ([event for event in self._events if event.event_type == event_type]
                                      for event_type in EventTypesRhodesmill)
 

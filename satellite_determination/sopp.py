@@ -20,8 +20,13 @@ from satellite_determination.window_finder import WindowFinder
 
 
 if __name__ == '__main__':
-    print('Launching Satellite Orbit Preprocessor')
-    print('Loading config') #make flag to specify config file, default .config
+    print('----------------------------------------------------------------------')
+    print('|                                                                    |')
+    print('|             Launching Satellite Orbit Preprocessor                 |')
+    print('|                                                                    |')
+    print('----------------------------------------------------------------------')
+    #print('Launching Satellite Orbit Preprocessor')
+    print('Loading reservation parameters from config file...\n') #make flag to specify config file, default .config
     config_object = ConfigParser()
     config_object.read('.config')
     reservation_parameters = config_object["RESERVATION"]
@@ -44,7 +49,13 @@ if __name__ == '__main__':
             bandwidth=float(reservation_parameters["Bandwidth"])
         )
     )
-    print(reservation.facility.point_coordinates)
+
+    print('Finding satellite interference events for:\n')
+    print('Facility: ', reservation.facility.name, ' at ', reservation.facility.point_coordinates)
+    print('Reservation start time: ', reservation.time.begin)
+    print('Reservation end time: ', reservation.time.end)
+    print('Observation frequency: ', reservation.frequency.frequency, ' MHz')
+    print('\n----------------------------------------------------------------------')
 
     tle_file = Path(get_script_directory(__file__), 'TLEData', 'active_sats.txt')
     frequency_file = Path(get_script_directory(__file__), 'SatList (2).csv')
@@ -54,18 +65,20 @@ if __name__ == '__main__':
                                        for satellite in satellite_list]
 
     num_of_sats = len(satellite_list_with_frequencies)
-    print('loaded ', num_of_sats, ' satellites. Starting frequency filter.')
+    print('Loaded ', num_of_sats, ' satellites from TLE file.\nStarting frequency filter.')
     frequency_filtered_sats = FrequencyFilter(satellites=satellite_list_with_frequencies,
                                               observation_frequency=reservation.frequency).filter_frequencies()
-    print(len(frequency_filtered_sats), ' satellites remaining')
+    print(len(frequency_filtered_sats), ' satellites remaining of ', num_of_sats, '\n')
     print('Finding interference windows.')
     #test
     altitude_azimuth_pairs = ObservationPathFinder(reservation, start_datetime_str, end_datetime_str).calculate_path()
+    satellites_above_horizon = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation, azimuth_altitude_path=altitude_azimuth_pairs).get_overhead_windows()
     interference_windows = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation, azimuth_altitude_path=altitude_azimuth_pairs).get_overhead_windows_slew()
     # test
     print("=======================================================================================\n")
-    print('                     Found ', len(interference_windows), ' interference events in specified reservation')
-    print("                               Interference events: \n")
+    print('       Found ', len(interference_windows), ' instances of satellites crossing the main beam.')
+    print('    There are ', len(satellites_above_horizon), ' satellites above the horizon during the reservation')
+    print("                      Main Beam Interference events: \n")
     print("=======================================================================================\n")
     i = 1
     for window in interference_windows:
@@ -75,6 +88,9 @@ if __name__ == '__main__':
         print('Satellite leaves view: ', window.overhead_time.end)
         print('__________________________________________________\n')
         i+=1
+
+
+'''
     print("=======================================================================================\n")
     print("                       Finding reservation suggestions\n")
     print("=======================================================================================\n")
@@ -91,4 +107,4 @@ if __name__ == '__main__':
     index = int(reservation_choice) - 1
     chosen_reservation = suggested_reservation[index]
     chosen_reservation_end_time = chosen_reservation.suggested_start_time + reservation.time.duration
-    Tardys3Generator(chosen_reservation, chosen_reservation_end_time).generate_tardys()
+    Tardys3Generator(chosen_reservation, chosen_reservation_end_time).generate_tardys()'''

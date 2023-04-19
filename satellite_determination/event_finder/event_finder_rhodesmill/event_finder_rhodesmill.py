@@ -1,9 +1,14 @@
-from datetime import timedelta
+import csv
+from datetime import timedelta, datetime
+from pathlib import Path
 from typing import List
 
 import pytz
 from skyfield.api import load, wgs84, Time
 from satellite_determination.azimuth_filter.azimuth_filtering import AzimuthFilter
+from satellite_determination.custom_dataclasses.coordinates import Coordinates
+from satellite_determination.custom_dataclasses.facility import Facility
+from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
@@ -11,6 +16,8 @@ from satellite_determination.event_finder.event_finder_rhodesmill.support.overhe
     EventRhodesmill, EventTypesRhodesmill, OverheadWindowFromEvents
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.observation_path import ObservationPath
+from tests.utilities import get_script_directory
+
 
 class EventFinderRhodesMill:
 
@@ -21,13 +28,13 @@ class EventFinderRhodesMill:
 
     def get_overhead_windows(self):
         ts = load.timescale() #provides time objects with the data tables they need to translate between different time scales: the schedule of UTC leap seconds, and the value of ∆T over time.
-        overhead_windows = []
+        overhead_windows: list[OverheadWindow] = []
         t0 = ts.from_datetime(self._reservation.time.begin.replace(tzinfo=pytz.UTC))  # changes the reservation datetime to Skyfield Time object
         t1 = ts.from_datetime(self._reservation.time.end.replace(tzinfo=pytz.UTC))
         coordinates = wgs84.latlon(self._reservation.facility.point_coordinates.latitude, self._reservation.facility.point_coordinates.longitude)
         for sat in self._list_of_satellites:
             rhodesmill_earthsat = sat.to_rhodesmill() #convert from custom satellite class to Rhodesmill EarthSatellite
-            t, events = rhodesmill_earthsat.find_events(coordinates, t0, t1, altitude_degrees=self._reservation.facility.altitude)
+            t, events = rhodesmill_earthsat.find_events(coordinates, t0, t1, altitude_degrees=30)#altitude_degrees=self._reservation.facility.altitude)
             if events.size == 0:
                 continue
             else:
@@ -43,8 +50,56 @@ class EventFinderRhodesMill:
                 sat_windows = OverheadWindowFromEvents(events=rhodesmill_event_list, reservation=self._reservation).get() #passes as custom dataclass Satellite
                 for window in sat_windows:
                     overhead_windows.append(window)
-        azimuth_filtered_windows = AzimuthFilter(overhead_windows=overhead_windows, reservation=self._reservation).filter_azimuth()
-        return azimuth_filtered_windows
+        if self._reservation.facility.azimuth is not None:
+            azimuth_filtered_windows = AzimuthFilter(overhead_windows=overhead_windows, reservation=self._reservation).filter_azimuth()
+            return azimuth_filtered_windows
+        else:
+            return overhead_windows
+
+    def track_satellite(self):
+        ts = load.timescale() #provides time objects with the data tables they need to translate between different time scales: the schedule of UTC leap seconds, and the value of ∆T over time.
+        overhead_windows = []
+        t0 = ts.from_datetime(self._reservation.time.begin.replace(tzinfo=pytz.UTC))  # changes the reservation datetime to Skyfield Time object
+        t1 = ts.from_datetime(self._reservation.time.end.replace(tzinfo=pytz.UTC))
+        coordinates = wgs84.latlon(self._reservation.facility.point_coordinates.latitude, self._reservation.facility.point_coordinates.longitude)
+        for sat in self._list_of_satellites:
+            rhodesmill_earthsat = sat.to_rhodesmill() #convert from custom satellite class to Rhodesmill EarthSatellite
+            t, events = rhodesmill_earthsat.find_events(coordinates, t0, t1, altitude_degrees=30)#altitude_degrees=self._reservation.facility.altitude)
+            if events.size == 0:
+                continue
+            else:
+                rhodesmill_event_list = []
+                for ti, event in zip(t, events):
+                    if event == 0:
+                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=sat, timestamp=ti.utc_datetime())
+                    elif event == 1:
+                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.CULMINATES, satellite=sat, timestamp=ti.utc_datetime())
+                    elif event == 2:
+                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=sat, timestamp=ti.utc_datetime())
+                    rhodesmill_event_list.append(translated_event)
+                sat_windows = OverheadWindowFromEvents(events=rhodesmill_event_list, reservation=self._reservation).get() #passes as custom dataclass Satellite
+                for window in sat_windows:
+                    overhead_windows.append(window)
+        i = 1
+        header = ['Satellite', 'Enters View (UTC)', 'Exits View (UTC)', 'Altitude (at start of window)',
+                  'Azimuth (at start of window)']
+        with open(Path(get_script_directory(__file__), 'satellite_observation_opportunities.csv'), 'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(header)
+            for window in overhead_windows:
+                print("================================ Window #", i, "======================================")
+                print(window.satellite.name, window.satellite.tle_information.satellite_number)
+                print('Visible starting at: ', window.overhead_time.begin)
+                print('Visible ending at: ', window.overhead_time.end)
+                difference = window.satellite.to_rhodesmill() - coordinates
+                topocentric = difference.at(ts.from_datetime(window.overhead_time.begin))
+                alt, az, distance = topocentric.altaz()
+                print('visible at altitude: ', alt.degrees, ' and azimuth: ', az.degrees, 'at start of window\n\n')
+                i += 1
+                data = [window.satellite.name, window.overhead_time.begin.astimezone(pytz.timezone('US/Pacific')), window.overhead_time.end.astimezone(pytz.timezone('US/Pacific')), alt.degrees, az.degrees]
+                writer.writerow(data)
+            f.close()
+        return 0
 
     def get_overhead_windows_slew(self):
         ts = load.timescale()
@@ -73,13 +128,13 @@ class EventFinderRhodesMill:
                             elif (satellite_azimuth > (point.azimuth.degree + half_beamwidth)) or (satellite_azimuth < (point.azimuth.degree - half_beamwidth)):
                                 if sat_in_view_flag == 1:
                                     exit_events.append(point.time)
-                    point.time+=time_delta
+                    starting_interval+=time_delta
             if enter_events != exit_events:
                 exit_events.append(self._reservation.time.end)
             enter_and_exit_pairs = zip(enter_events, exit_events)
             time_windows = [TimeWindow(begin=begin_event, end=exit_event) for begin_event, exit_event in enter_and_exit_pairs]
             overhead_windows = [OverheadWindow(satellite=sat, overhead_time=time_window) for
                                 time_window in time_windows]
-            azimuth_filtered_overhead_windows.append(overhead_windows)
+            for window in overhead_windows:
+                azimuth_filtered_overhead_windows.append(window)
         return azimuth_filtered_overhead_windows
-

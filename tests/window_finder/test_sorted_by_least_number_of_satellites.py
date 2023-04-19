@@ -3,7 +3,7 @@ from typing import List
 from pathlib import Path
 import pytz
 from tests.utilities import get_script_directory
-from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
+from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite

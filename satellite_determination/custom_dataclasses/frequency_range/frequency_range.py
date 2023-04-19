@@ -9,7 +9,6 @@ class FrequencyRange:
     status: Optional[str] = None
 
     def overlaps(self, satellite_frequency: 'FrequencyRange'):
-        half_bandwidth_sat = satellite_frequency.bandwidth/2
         half_bandwidth_res = self.bandwidth/2
         default_bandwidth = 10
         if satellite_frequency.bandwidth is None:
@@ -18,6 +17,7 @@ class FrequencyRange:
             low_in_mghz_res = self.frequency - half_bandwidth_res
             high_in_mghz_res = self.frequency + half_bandwidth_res
         else:
+            half_bandwidth_sat = satellite_frequency.bandwidth / 2
             low_in_mghz_res = self.frequency - half_bandwidth_res
             high_in_mghz_res = self.frequency + half_bandwidth_res
             low_in_mghz_sat = satellite_frequency.frequency - half_bandwidth_sat
