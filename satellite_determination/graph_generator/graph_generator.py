@@ -24,7 +24,6 @@ class GraphGenerator:
         while start_interval < self._search_window_end:
             search_intervals.append(start_interval)
             start_interval+=timedelta(hours=1)
-        print(search_intervals)
         x_axis = []
         for interval in search_intervals:
             x_axis.append(str(interval.hour))
@@ -42,7 +41,6 @@ class GraphGenerator:
                     sats_beam.append(window)
             num_sats_above_horizon.append(len(sats_horizon))
             num_sats_beam.append(len(sats_beam))
-        print(num_sats_above_horizon)
         size_x_axis = np.arange(len(x_axis))
         plt.bar(size_x_axis - 0.2, num_sats_above_horizon, 0.4, label='Sats above horizon')
         plt.bar(size_x_axis + 0.2, num_sats_beam, 0.4, label='Sats in beam')
