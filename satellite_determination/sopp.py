@@ -1,6 +1,8 @@
 from dataclasses import replace
 from datetime import datetime
-import pytz
+
+import pytz as pytz
+
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
@@ -11,12 +13,11 @@ from satellite_determination.custom_dataclasses.satellite.satellite import Satel
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
-from satellite_determination.generate_tardys3 import Tardys3Generator
 from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
 from tests.utilities import get_script_directory
 from pathlib import Path
 from configparser import ConfigParser
-from satellite_determination.window_finder import WindowFinder
+from satellite_determination.graph_generator.graph_generator import GraphGenerator
 
 
 if __name__ == '__main__':
@@ -25,17 +26,18 @@ if __name__ == '__main__':
     print('|             Launching Satellite Orbit Preprocessor                 |')
     print('|                                                                    |')
     print('----------------------------------------------------------------------')
-    #print('Launching Satellite Orbit Preprocessor')
     print('Loading reservation parameters from config file...\n') #make flag to specify config file, default .config
     config_object = ConfigParser()
     config_object.read('.config')
     reservation_parameters = config_object["RESERVATION"]
     start_datetime_str = reservation_parameters["StartTimeUTC"]
     end_datetime_str = reservation_parameters["EndTimeUTC"]
-    #start_time = datetime.strptime(start_datetime_str, '%m/%d/%y %H:%M:%S %z')
-    #end_time = datetime.strptime(end_datetime_str, '%m/%d/%y %H:%M:%S %z')
+    search_window_start_str = reservation_parameters["SearchWindowStart"]
+    search_window_end_str = reservation_parameters["SearchWindowEnd"]
     start_time = datetime.strptime(start_datetime_str, '%Y-%m-%dT%H:%M:%S.%f')
     end_time = datetime.strptime(end_datetime_str, '%Y-%m-%dT%H:%M:%S.%f')
+    search_window_start = datetime.strptime(search_window_start_str, '%Y-%m-%dT%H:%M:%S.%f').replace(tzinfo=pytz.UTC)
+    search_window_end = datetime.strptime(search_window_end_str, '%Y-%m-%dT%H:%M:%S.%f').replace(tzinfo=pytz.UTC)
     reservation = Reservation(
         facility=Facility(
             right_ascension=reservation_parameters["RightAscension"],
@@ -72,8 +74,8 @@ if __name__ == '__main__':
     print('Finding interference windows.')
     #test
     altitude_azimuth_pairs = ObservationPathFinder(reservation, start_datetime_str, end_datetime_str).calculate_path()
-    satellites_above_horizon = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation, azimuth_altitude_path=altitude_azimuth_pairs).get_overhead_windows()
-    interference_windows = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation, azimuth_altitude_path=altitude_azimuth_pairs).get_overhead_windows_slew()
+    satellites_above_horizon = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation, azimuth_altitude_path=altitude_azimuth_pairs, search_time_start=search_window_start, search_time_end=search_window_end).get_overhead_windows()
+    interference_windows = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation, azimuth_altitude_path=altitude_azimuth_pairs, search_time_start=search_window_start, search_time_end=search_window_end).get_overhead_windows_slew()
     # test
     print("=======================================================================================\n")
     print('       Found ', len(interference_windows), ' instances of satellites crossing the main beam.')
@@ -88,23 +90,7 @@ if __name__ == '__main__':
         print('Satellite leaves view: ', window.overhead_time.end)
         print('__________________________________________________\n')
         i+=1
+    GraphGenerator(search_window_start=search_window_start, search_window_end=search_window_end, satellites_above_horizon=satellites_above_horizon, interference_windows=interference_windows).generate_graph()
 
 
-'''
-    print("=======================================================================================\n")
-    print("                       Finding reservation suggestions\n")
-    print("=======================================================================================\n")
-    suggested_reservation = WindowFinder(reservation, frequency_filtered_sats, EventFinderRhodesMill).search()
-    index = 0
-    for res in suggested_reservation:
-        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print("Reservation suggestion #", index+1)
-        print("Suggested start time: ", res.suggested_start_time)
-        print("Number of satellites overhead: ", len(res.overhead_satellites))
-        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-        index+=1
-    reservation_choice = input("Choose desired reservation number: ")
-    index = int(reservation_choice) - 1
-    chosen_reservation = suggested_reservation[index]
-    chosen_reservation_end_time = chosen_reservation.suggested_start_time + reservation.time.duration
-    Tardys3Generator(chosen_reservation, chosen_reservation_end_time).generate_tardys()'''
+

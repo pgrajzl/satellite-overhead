@@ -1,5 +1,5 @@
 import csv
-from datetime import timedelta
+from datetime import timedelta, datetime
 from pathlib import Path
 from typing import List
 
@@ -18,16 +18,18 @@ from tests.utilities import get_script_directory
 
 class EventFinderRhodesMill:
 
-    def __init__(self, list_of_satellites: List[Satellite], reservation: Reservation, azimuth_altitude_path: List[ObservationPath]):
+    def __init__(self, list_of_satellites: List[Satellite], reservation: Reservation, azimuth_altitude_path: List[ObservationPath], search_time_start: datetime, search_time_end: datetime):
         self._list_of_satellites = list_of_satellites
         self._reservation = reservation
         self._path = azimuth_altitude_path
+        self._search_time_start = search_time_start
+        self._search_time_end = search_time_end
 
     def get_overhead_windows(self):
         ts = load.timescale() #provides time objects with the data tables they need to translate between different time scales: the schedule of UTC leap seconds, and the value of ∆T over time.
         overhead_windows: list[OverheadWindow] = []
-        time_start = ts.from_datetime(self._reservation.time.begin.replace(tzinfo=pytz.UTC))  # changes the reservation datetime to Skyfield Time object
-        time_end = ts.from_datetime(self._reservation.time.end.replace(tzinfo=pytz.UTC))
+        time_start = ts.from_datetime(self._search_time_start.replace(tzinfo=pytz.UTC))  # changes the reservation datetime to Skyfield Time object
+        time_end = ts.from_datetime(self._search_time_end.replace(tzinfo=pytz.UTC))
         coordinates = wgs84.latlon(self._reservation.facility.point_coordinates.latitude, self._reservation.facility.point_coordinates.longitude)
         for sat in self._list_of_satellites:
             rhodesmill_earthsat = sat.to_rhodesmill() #convert from custom satellite class to Rhodesmill EarthSatellite
@@ -56,12 +58,12 @@ class EventFinderRhodesMill:
     def track_satellite(self):
         ts = load.timescale() #provides time objects with the data tables they need to translate between different time scales: the schedule of UTC leap seconds, and the value of ∆T over time.
         overhead_windows = []
-        t0 = ts.from_datetime(self._reservation.time.begin.replace(tzinfo=pytz.UTC))  # changes the reservation datetime to Skyfield Time object
-        t1 = ts.from_datetime(self._reservation.time.end.replace(tzinfo=pytz.UTC))
+        time_start = ts.from_datetime(self._reservation.time.begin.replace(tzinfo=pytz.UTC))  # changes the reservation datetime to Skyfield Time object
+        time_end = ts.from_datetime(self._reservation.time.end.replace(tzinfo=pytz.UTC))
         coordinates = wgs84.latlon(self._reservation.facility.point_coordinates.latitude, self._reservation.facility.point_coordinates.longitude)
         for sat in self._list_of_satellites:
             rhodesmill_earthsat = sat.to_rhodesmill() #convert from custom satellite class to Rhodesmill EarthSatellite
-            t, events = rhodesmill_earthsat.find_events(coordinates, t0, t1, altitude_degrees=30)#altitude_degrees=self._reservation.facility.altitude)
+            t, events = rhodesmill_earthsat.find_events(coordinates, time_start, time_end, altitude_degrees=30)#altitude_degrees=self._reservation.facility.altitude)
             if events.size == 0:
                 continue
             else:
@@ -121,15 +123,15 @@ class EventFinderRhodesMill:
                     satellite_azimuth = min(az.degrees, 360 - az.degrees)
                     if (point.altitude.degree - half_beamwidth) <= satellite_altitude <= (point.altitude.degree + half_beamwidth):
                             if (point.azimuth.degree - half_beamwidth) <= satellite_azimuth <= (point.azimuth.degree + half_beamwidth) and sat_in_view_flag == 0:
-                                enter_events.append(point.time)
+                                enter_events.append(point.time.replace(tzinfo=pytz.UTC))
                             elif (satellite_azimuth > (point.azimuth.degree + half_beamwidth)) or (satellite_azimuth < (point.azimuth.degree - half_beamwidth)):
                                 if sat_in_view_flag == 1:
-                                    exit_events.append(point.time)
+                                    exit_events.append(point.time.replace(tzinfo=pytz.UTC))
                     starting_interval+=time_delta
             if enter_events != exit_events:
                 exit_events.append(self._reservation.time.end)
             enter_and_exit_pairs = zip(enter_events, exit_events)
-            time_windows = [TimeWindow(begin=begin_event, end=exit_event) for begin_event, exit_event in enter_and_exit_pairs]
+            time_windows = [TimeWindow(begin=begin_event.replace(tzinfo=pytz.UTC), end=exit_event.replace(tzinfo=pytz.UTC)) for begin_event, exit_event in enter_and_exit_pairs]
             overhead_windows = [OverheadWindow(satellite=sat, overhead_time=time_window) for
                                 time_window in time_windows]
             for window in overhead_windows:
