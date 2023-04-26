@@ -32,6 +32,7 @@ class GetFrequencyDataFromCsv:
             id_int = int(id_string)
             if id_int not in frequencies:
                 frequencies[id_int] = []
+                #frequencies[id_int] = [FrequencyRange(frequency=None, bandwidth=None, status=None)]
             frequencies[id_int].append(frequency_range)
         return frequencies
 

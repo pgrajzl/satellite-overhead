@@ -53,7 +53,6 @@ class WindowFinder:
                 )
             )
         suggested_reservations.sort(key=lambda x: len(x.overhead_satellites))
-        #suggested_reservations.sort(key=lambda  x: x.overhead_satellites.duration)
         return suggested_reservations
 
 
@@ -73,7 +72,7 @@ class WindowFinder:
         ]
 
     def _satellites_overhead(self, reservation: Reservation) -> List[OverheadWindow]:
-        return self._event_finder(list_of_satellites=self._satellites, reservation=reservation).get_overhead_windows()
+        return self._event_finder(list_of_satellites=self._satellites, reservation=reservation, azimuth_altitude_path=None).get_overhead_windows()
 
 
     @property

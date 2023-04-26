@@ -1,9 +1,12 @@
+from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
 import pytz
 from typing import List
 
 from satellite_determination.azimuth_filter.azimuth_filtering import AzimuthFilter
+from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
+    GetFrequencyDataFromCsv
 from tests.utilities import get_script_directory
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
@@ -44,8 +47,12 @@ class TestAzimuthFilter:
     def _arbitrary_satellites(self) -> List[Satellite]:
         tle_file = Path(get_script_directory(__file__), 'test_tle_data', 'single_TLE.txt')
         frequency_file = Path(get_script_directory(__file__), 'fake_ISS_frequency_file_multiple.csv')
-        arbitrary_satellite = Satellite.from_tle_file(tlefilepath=tle_file, frequencyfilepath=frequency_file)
-        return arbitrary_satellite
+        arbitrary_satellite = Satellite.from_tle_file(tlefilepath=tle_file)
+        frequency_list = GetFrequencyDataFromCsv(filepath=frequency_file).get()
+        arbitrary_satellite_with_frequency = [
+            replace(satellite, frequency=frequency_list.get(satellite.tle_information.satellite_number, []))
+            for satellite in arbitrary_satellite]
+        return arbitrary_satellite_with_frequency
 
     @property
     def _arbitrary_date(self) -> datetime:
@@ -81,11 +88,7 @@ class TestAzimuthFilter:
                     satellite_number=28275,
                     classification='U'
                 ),
-                frequency=[FrequencyRange(
-                    frequency=None,
-                    bandwidth=None,
-                    status=None
-                )]
+                frequency=[]
             )
 
     @property
