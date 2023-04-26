@@ -1,6 +1,5 @@
 from dataclasses import replace
 from datetime import datetime
-import pytz
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
@@ -11,12 +10,10 @@ from satellite_determination.custom_dataclasses.satellite.satellite import Satel
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
-from satellite_determination.generate_tardys3 import Tardys3Generator
 from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
 from tests.utilities import get_script_directory
 from pathlib import Path
 from configparser import ConfigParser
-from satellite_determination.window_finder import WindowFinder
 
 
 if __name__ == '__main__':

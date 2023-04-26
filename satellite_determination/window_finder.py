@@ -53,7 +53,6 @@ class WindowFinder:
                 )
             )
         suggested_reservations.sort(key=lambda x: len(x.overhead_satellites))
-        #suggested_reservations.sort(key=lambda  x: x.overhead_satellites.duration)
         return suggested_reservations
 
 

@@ -20,7 +20,6 @@ from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_r
 from tests.window_finder.definitions import ARBITRARY_FACILITY
 
 
-
 _ARBITRARY_FREQUENCY_RANGE = FrequencyRange(frequency=2., bandwidth=1.)
 
 
