@@ -4,7 +4,7 @@ import pytz
 from typing import List
 
 from satellite_determination.azimuth_filter.azimuth_filtering import AzimuthFilter
-from tests.utilities import get_script_directory
+from satellite_determination.utilities import get_script_directory
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange

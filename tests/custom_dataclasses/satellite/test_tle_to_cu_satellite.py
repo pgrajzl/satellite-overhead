@@ -2,7 +2,7 @@ from pathlib import Path
 
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from tests.custom_dataclasses.satellite.utilities import expected_international_space_station_tle_as_satellite_cu
-from tests.utilities import get_script_directory
+from satellite_determination.utilities import get_script_directory
 
 
 class TestTleToSatelliteCu:

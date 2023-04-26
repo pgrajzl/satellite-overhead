@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Type
 
 from satellite_determination.retrievers.retriever_json_file import RetrieverJsonFile
-from tests.utilities import get_script_directory
+from satellite_determination.utilities import get_script_directory
 
 
 class RetrieverJsonFileTester:

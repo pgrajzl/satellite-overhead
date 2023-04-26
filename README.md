@@ -13,6 +13,6 @@ docker build . -t sopp
 
 ```bash
 docker run 
-  -v "<PATH_TO_LOCAL_TLE_DATA_DIRECTORY>:/cu_pass/tle_data" \
+  -v "<PATH_TO_LOCAL_TLE_DATA_DIRECTORY>:/cu_pass/TLEData" \
   sopp
 ```

@@ -9,8 +9,10 @@ ARG APP_DIRECTORY=$CU_PASS_ROOT_DIRECTORY/satellite_orbit_prediction
 WORKDIR $APP_DIRECTORY
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
+COPY . .
+ENV PYTHONPATH "${PYTHONPATH}:$APP_DIRECTORY"
 
-ARG TLE_DATA_DIRECTORY=$CU_PASS_ROOT_DIRECTORY/tle_data
+ARG TLE_DATA_DIRECTORY=$APP_DIRECTORY/TLEData
 VOLUME ["$TLE_DATA_DIRECTORY"]
 
-ENTRYPOINT ["python3", "sopp.py"]
+ENTRYPOINT ["python3", "satellite_determination/sopp.py"]
