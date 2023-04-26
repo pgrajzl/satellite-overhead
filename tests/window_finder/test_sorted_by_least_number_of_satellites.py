@@ -16,7 +16,6 @@ from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_r
 from tests.window_finder.definitions import ARBITRARY_FACILITY
 
 
-
 _ARBITRARY_FREQUENCY_RANGE = FrequencyRange(frequency=2., bandwidth=1.)
 
 
@@ -32,12 +31,7 @@ class TestSortedByLeastNumberOfSatellites:
             start_time_increments=timedelta(hours=4),
             search_window=timedelta(days=1)
         ).search()
-        #assert suggestions == self._expected_suggestions_search
-        for sug in suggestions:
-            print(sug.suggested_start_time)
-            print(len(sug.overhead_satellites))
-            for sat in sug.overhead_satellites:
-                print(sat.satellite.name)
+        assert suggestions == self._expected_suggestions_search
 
     @property
     def _overhead_windows(self) -> List[OverheadWindow]:

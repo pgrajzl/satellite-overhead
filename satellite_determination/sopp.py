@@ -13,7 +13,7 @@ from pathlib import Path
 from configparser import ConfigParser
 from satellite_determination.window_finder import WindowFinder
 
-def run_sopp():
+if __name__ == '__main__':
     print('Launching Satellite Orbit Preprocessor')
     print('Loading config') #make flag to specify config file, default .config
     config_object = ConfigParser()
@@ -77,7 +77,3 @@ def run_sopp():
     chosen_reservation = suggested_reservation[index]
     chosen_reservation_end_time = chosen_reservation.suggested_start_time + reservation.time.duration
     Tardys3Generator(chosen_reservation, chosen_reservation_end_time).generate_tardys()
-
-
-
-run_sopp()
