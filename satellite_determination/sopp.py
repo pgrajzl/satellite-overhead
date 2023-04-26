@@ -32,8 +32,6 @@ if __name__ == '__main__':
     reservation_parameters = config_object["RESERVATION"]
     start_datetime_str = reservation_parameters["StartTimeUTC"]
     end_datetime_str = reservation_parameters["EndTimeUTC"]
-    #start_time = datetime.strptime(start_datetime_str, '%m/%d/%y %H:%M:%S %z')
-    #end_time = datetime.strptime(end_datetime_str, '%m/%d/%y %H:%M:%S %z')
     start_time = datetime.strptime(start_datetime_str, '%Y-%m-%dT%H:%M:%S.%f')
     end_time = datetime.strptime(end_datetime_str, '%Y-%m-%dT%H:%M:%S.%f')
     reservation = Reservation(
