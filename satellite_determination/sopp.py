@@ -83,23 +83,3 @@ if __name__ == '__main__':
         print('Satellite leaves view: ', window.overhead_time.end)
         print('__________________________________________________\n')
         i+=1
-
-
-'''
-    print("=======================================================================================\n")
-    print("                       Finding reservation suggestions\n")
-    print("=======================================================================================\n")
-    suggested_reservation = WindowFinder(reservation, frequency_filtered_sats, EventFinderRhodesMill).search()
-    index = 0
-    for res in suggested_reservation:
-        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print("Reservation suggestion #", index+1)
-        print("Suggested start time: ", res.suggested_start_time)
-        print("Number of satellites overhead: ", len(res.overhead_satellites))
-        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-        index+=1
-    reservation_choice = input("Choose desired reservation number: ")
-    index = int(reservation_choice) - 1
-    chosen_reservation = suggested_reservation[index]
-    chosen_reservation_end_time = chosen_reservation.suggested_start_time + reservation.time.duration
-    Tardys3Generator(chosen_reservation, chosen_reservation_end_time).generate_tardys()'''
