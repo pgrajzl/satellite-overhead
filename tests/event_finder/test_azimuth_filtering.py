@@ -1,9 +1,6 @@
 from datetime import datetime
 from pathlib import Path
 import pytz
-import os
-import filecmp
-from skyfield.api import EarthSatellite, Time
 from typing import List
 
 from satellite_determination.azimuth_filter.azimuth_filtering import AzimuthFilter
@@ -109,6 +106,3 @@ class TestAzimuthFilter:
                 )
             )
         ]
-
-
-

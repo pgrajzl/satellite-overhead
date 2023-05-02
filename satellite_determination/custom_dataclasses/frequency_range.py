@@ -3,7 +3,6 @@ from enum import Enum
 from typing import List, Optional
 from pathlib import Path
 import csv
-#from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 
 
 class FrequencyRangeJsonKey(Enum):
@@ -25,10 +24,10 @@ class FrequencyRange:
             data = list(frequency_file)
             for line in data:
                 if line["ID"] == str(satcat_id):
-                    if (line["Frequency"] == None) or (line["Frequency"] == 'None'):
+                    if (line["Frequency"] is None) or (line["Frequency"] == 'None'):
                         status = line["Status"]
                         frequencies.append(FrequencyRange(frequency=None, bandwidth=None, status=status))
-                    elif (line["Bandwidth"] == None) or (line["Bandwidth"] == ''):
+                    elif (line["Bandwidth"] is None) or (line["Bandwidth"] == ''):
                         frequency = line["Frequency"]
                         status = line["Status"]
                         frequencies.append(FrequencyRange(float(frequency), bandwidth=None, status=status))

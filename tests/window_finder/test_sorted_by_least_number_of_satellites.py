@@ -1,35 +1,155 @@
 from datetime import datetime, timedelta
 from typing import List
-
+from pathlib import Path
+import pytz
+from tests.utilities import get_script_directory
 from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
+from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
+from satellite_determination.custom_dataclasses.satellite.international_designator import InternationalDesignator
+from satellite_determination.custom_dataclasses.satellite.mean_motion import MeanMotion
 from satellite_determination.window_finder import SuggestedReservation, WindowFinder
+from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from tests.window_finder.definitions import ARBITRARY_FACILITY
-from tests.window_finder.support.validator_satellites_are_overhead_at_specific_times import \
-    ValidatorSatellitesAreOverheadAtSpecificTimes
 
 
 _ARBITRARY_FREQUENCY_RANGE = FrequencyRange(frequency=2., bandwidth=1.)
 
 
 class TestSortedByLeastNumberOfSatellites:
-    def test(self):
+
+    def test_search(self):
         suggestions = WindowFinder(
             ideal_reservation=self._ideal_reservation,
-            satellites=[window.satellite for window in self._overhead_windows],
-            validator=ValidatorSatellitesAreOverheadAtSpecificTimes(
-                overhead_times=[window.overhead_time for window in self._overhead_windows]),
-            start_time_increments=timedelta(days=1),
-            search_window=timedelta(weeks=1)
-        ).find()
-        assert suggestions == self._expected_suggestions
+            satellites=Satellite.from_tle_file(
+                tlefilepath=Path(get_script_directory(__file__), 'international_space_station_tle.tle'), \
+                frequencyfilepath=Path(get_script_directory(__file__), 'fake_ISS_frequency_file.csv')),
+            event_finder=EventFinderRhodesMill,
+            start_time_increments=timedelta(hours=4),
+            search_window=timedelta(days=1)
+        ).search()
+        assert suggestions == self._expected_suggestions_search
 
     @property
     def _overhead_windows(self) -> List[OverheadWindow]:
         return self._two_overhead_windows_on_ideal_reservation + self._one_overhead_window_on_second_closest_reservation
+
+    @property
+    def _expected_suggestions_search(self) -> List[SuggestedReservation]:
+        return [
+            SuggestedReservation(
+                suggested_start_time=datetime(year=2022, month=11, day=20, hour=1, tzinfo=pytz.UTC),
+                ideal_reservation=self._ideal_reservation,
+                overhead_satellites=[]
+            ),
+
+            SuggestedReservation(
+                suggested_start_time=datetime(year=2022, month=11, day=20, hour=5, tzinfo=pytz.UTC),
+                ideal_reservation=self._ideal_reservation,
+                overhead_satellites=[]
+            ),
+
+            SuggestedReservation(
+                suggested_start_time=datetime(year=2022, month=11, day=19, hour=17, tzinfo=pytz.UTC),
+                ideal_reservation=self._ideal_reservation,
+                overhead_satellites=[]
+            ),
+
+            SuggestedReservation(
+                suggested_start_time=datetime(year=2022, month=11, day=20, hour=13, tzinfo=pytz.UTC),
+                ideal_reservation=self._ideal_reservation,
+                overhead_satellites=[]
+            ),
+
+            SuggestedReservation(
+                suggested_start_time=datetime(year=2022, month=11, day=19, hour=21, tzinfo=pytz.UTC),
+                ideal_reservation=self._ideal_reservation,
+                overhead_satellites=[OverheadWindow(
+                    satellite=Satellite(
+                        name='FAKE ISS (ZARYA)',
+                        tle_information=TleInformation(
+                            argument_of_perigee=0.3083420829620822,
+                            drag_coefficient=3.8792e-05,
+                            eccentricity=0.0007417,
+                            epoch_days=25545.69339541,
+                            inclination=0.9013560935706996,
+                            international_designator=InternationalDesignator(
+                                year=98,
+                                launch_number=67,
+                                launch_piece='A'
+                            ),
+                            mean_anomaly=1.4946964807494398,
+                            mean_motion=MeanMotion(
+                                first_derivative=5.3450708342326346e-11,
+                                second_derivative=0.0,
+                                value=0.06763602333248933
+                            ),
+                            revolution_number=20248,
+                            right_ascension_of_ascending_node=3.686137125541276,
+                            satellite_number=25544
+                        ),
+                        frequency=[FrequencyRange(
+                            frequency=136.65,
+                            bandwidth=None,
+                            status='active'
+                        )]
+
+                    ),
+                    overhead_time=TimeWindow(
+                        begin=datetime(year=2022, month=11, day=19, hour=23, minute=45, second=7, microsecond=540745, tzinfo=pytz.UTC),
+                        end=datetime(year=2022, month=11, day=19, hour=23, minute=45, second=21, microsecond=540745, tzinfo=pytz.UTC)
+                    )
+
+            )]
+            ),
+
+            SuggestedReservation(
+                suggested_start_time=datetime(year=2022, month=11, day=20, hour=9, tzinfo=pytz.UTC),
+                ideal_reservation=self._ideal_reservation,
+                overhead_satellites=[OverheadWindow(
+                    satellite=Satellite(
+                        name='FAKE ISS (ZARYA)',
+                        tle_information=TleInformation(
+                            argument_of_perigee=0.3083420829620822,
+                            drag_coefficient=3.8792e-05,
+                            eccentricity=0.0007417,
+                            epoch_days=25545.69339541,
+                            inclination=0.9013560935706996,
+                            international_designator=InternationalDesignator(
+                                year=98,
+                                launch_number=67,
+                                launch_piece='A'
+                            ),
+                            mean_anomaly=1.4946964807494398,
+                            mean_motion=MeanMotion(
+                                first_derivative=5.3450708342326346e-11,
+                                second_derivative=0.0,
+                                value=0.06763602333248933
+                            ),
+                            revolution_number=20248,
+                            right_ascension_of_ascending_node=3.686137125541276,
+                            satellite_number=25544
+                        ),
+                        frequency=[FrequencyRange(
+                            frequency=136.65,
+                            bandwidth=None,
+                            status='active'
+                        )]
+
+                    ),
+                    overhead_time=TimeWindow(
+                        begin=datetime(year=2022, month=11, day=20, hour=12, minute=57, second=59, microsecond=107439, tzinfo=pytz.UTC),
+                        end=datetime(year=2022, month=11, day=20, hour=12, minute=58, second=47, microsecond=107439, tzinfo=pytz.UTC)
+
+                    )
+
+                )]
+            )
+
+        ]
 
     @property
     def _expected_suggestions(self) -> List[SuggestedReservation]:
@@ -52,7 +172,7 @@ class TestSortedByLeastNumberOfSatellites:
     def _ideal_reservation(self) -> Reservation:
         return Reservation(
             facility=ARBITRARY_FACILITY,
-            time=TimeWindow(begin=datetime(year=2022, month=11, day=20), end=datetime(year=2022, month=11, day=21)),
+            time=TimeWindow(begin=datetime(year=2022, month=11, day=20, hour=1, tzinfo=pytz.UTC), end=datetime(year=2022, month=11, day=20, hour=5, tzinfo=pytz.UTC)),
             frequency=FrequencyRange(
                 frequency=None,
                 bandwidth=None
@@ -92,3 +212,4 @@ class TestSortedByLeastNumberOfSatellites:
             datetime(year=2022, month=11, day=21),
             datetime(year=2022, month=11, day=20)
         ]
+

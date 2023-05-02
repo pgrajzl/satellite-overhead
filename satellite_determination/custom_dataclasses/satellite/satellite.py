@@ -33,12 +33,10 @@ class Satellite:
             lines = f.readlines()
         name_line_indices = range(0, len(lines), NUMBER_OF_LINES_PER_TLE_OBJECT)
         for name_line_index in name_line_indices:
-            #name = lines[name_line_index].strip(),
             tle_information = TleInformation.from_tle_lines(line1=lines[name_line_index + 1],
                                                             line2=lines[name_line_index + 2])
             frequency = FrequencyRange.from_csv(frequencyfilepath, tle_information.satellite_number)
             sats.append(Satellite(
-                #name=name
                 name=lines[name_line_index].strip(),
                 tle_information=tle_information,
                 frequency=frequency

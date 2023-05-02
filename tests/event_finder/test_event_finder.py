@@ -1,5 +1,4 @@
 from typing import List
-
 import pytz
 import datetime
 from pathlib import Path
@@ -119,4 +118,3 @@ class TestWindowListFinder:
                 )
             )
         ]
-
