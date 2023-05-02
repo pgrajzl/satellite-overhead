@@ -1,5 +1,6 @@
 from dataclasses import replace
 from datetime import datetime
+
 import pytz
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
@@ -17,6 +18,8 @@ from pathlib import Path
 from configparser import ConfigParser
 from satellite_determination.graph_generator.graph_generator import GraphGenerator
 
+SUPPLEMENTS_DIRECTORY = Path(get_script_directory(__file__), 'supplements')
+
 
 if __name__ == '__main__':
     print('----------------------------------------------------------------------')
@@ -26,7 +29,7 @@ if __name__ == '__main__':
     print('----------------------------------------------------------------------')
     print('Loading reservation parameters from config file...\n') #make flag to specify config file, default .config
     config_object = ConfigParser()
-    config_object.read('.config')
+    config_object.read(Path(SUPPLEMENTS_DIRECTORY, '.config'))
     reservation_parameters = config_object["RESERVATION"]
     start_datetime_str = reservation_parameters["StartTimeUTC"]
     end_datetime_str = reservation_parameters["EndTimeUTC"]
@@ -57,8 +60,8 @@ if __name__ == '__main__':
     print('Observation frequency: ', reservation.frequency.frequency, ' MHz')
     print('\n----------------------------------------------------------------------')
 
-    tle_file = Path(get_script_directory(__file__), 'TLEData', 'active_sats.txt')
-    frequency_file = Path(get_script_directory(__file__), 'SatList (2).csv')
+    tle_file = Path(SUPPLEMENTS_DIRECTORY, 'active_sats.tle')
+    frequency_file = Path(get_script_directory(__file__), 'satellite_determination/SatList (2).csv')
     satellite_list = Satellite.from_tle_file(tlefilepath=tle_file)
     frequency_list = GetFrequencyDataFromCsv(filepath=frequency_file).get()
     satellite_list_with_frequencies = [replace(satellite, frequency=frequency_list.get(satellite.tle_information.satellite_number, []))
