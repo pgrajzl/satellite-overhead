@@ -2,13 +2,9 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from typing import List
-
 import pytz
-from skyfield.api import load
-
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
-
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 
@@ -39,7 +35,7 @@ class OverheadWindowFromEvents:
                                      for event_type in EventTypesRhodesmill)
 
         if (len(self._events) == 1) and (self._events[0].event_type == EventTypesRhodesmill.CULMINATES): #handles sat that is in view for entire reservation
-            time_window = TimeWindow(begin=self._reservation.time.begin, end=self._reservation.time.end.replace(tzinfo=pytz.UTC))
+            time_window = TimeWindow(begin=self._reservation.time.begin.replace(tzinfo=pytz.UTC), end=self._reservation.time.end.replace(tzinfo=pytz.UTC))
             overhead_windows = [OverheadWindow(satellite=self._events[0].satellite, overhead_time=time_window)]
         else:
             if len(enter_events) != len(exit_events): #Handle case where a satellite starts xor ends in observation area

@@ -1,8 +1,6 @@
 from dataclasses import replace
 from datetime import datetime
-
-import pytz as pytz
-
+import pytz
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
@@ -91,6 +89,3 @@ if __name__ == '__main__':
         print('__________________________________________________\n')
         i+=1
     GraphGenerator(search_window_start=search_window_start, search_window_end=search_window_end, satellites_above_horizon=satellites_above_horizon, interference_windows=interference_windows).generate_graph()
-
-
-

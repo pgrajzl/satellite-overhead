@@ -1,3 +1,4 @@
+from dataclasses import replace
 from typing import List
 import pytz
 import datetime
@@ -7,6 +8,8 @@ from datetime import datetime
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
+    GetFrequencyDataFromCsv
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.international_designator import InternationalDesignator
@@ -23,7 +26,11 @@ class TestWindowListFinder:
     def test_get_window_list(self):
         tle_file = Path(get_script_directory(__file__), 'test_tle_data', 'arbitrary_TLE.txt')
         frequency_file = Path(get_script_directory(__file__), 'fake_ISS_frequency_file_multiple.csv')
-        list_of_satellites = Satellite.from_tle_file(tlefilepath=tle_file, frequencyfilepath=frequency_file) #load satellites from arbitrary TLE file
+        list_of_satellites = Satellite.from_tle_file(tlefilepath=tle_file) #load satellites from arbitrary TLE file
+        frequency_list = GetFrequencyDataFromCsv(filepath=frequency_file).get()
+        list_of_satellites_with_frequency = [
+            replace(satellite, frequency=frequency_list.get(satellite.tle_information.satellite_number, []))
+            for satellite in list_of_satellites]
         reservation = Reservation(facility=Facility(elevation=0, point_coordinates=Coordinates(latitude=40.8178049, longitude=-121.4695413),name='name', azimuth=30),
                                   time=TimeWindow(begin=datetime(year=2023, month=2, day=22, hour=1, tzinfo=pytz.utc), end=datetime(year=2023, month=2, day=22, hour=2, tzinfo=pytz.utc)),
                                   frequency=FrequencyRange(
@@ -31,7 +38,7 @@ class TestWindowListFinder:
                                       bandwidth=None
                                   )
                                   )
-        overhead_windows = EventFinderRhodesMill(list_of_satellites=list_of_satellites, reservation=reservation).get_overhead_windows()
+        overhead_windows = EventFinderRhodesMill(list_of_satellites=list_of_satellites_with_frequency, reservation=reservation, azimuth_altitude_path=None, search_time_start=reservation.time.begin, search_time_end=reservation.time.end).get_overhead_windows()
         assert overhead_windows == self._expected_windows
 
     @property
@@ -60,7 +67,7 @@ class TestWindowListFinder:
                     satellite_number=28275,
                     classification='U'
                 ),
-                frequency=[FrequencyRange(frequency=None, bandwidth=None, status=None)]
+                frequency=[]
             )
 
     @property
@@ -89,7 +96,7 @@ class TestWindowListFinder:
                     satellite_number=28254,
                     classification='U'
                 ),
-                frequency=[FrequencyRange(frequency=None, bandwidth=None, status=None)]
+                frequency=[]
             )
 
     @property
