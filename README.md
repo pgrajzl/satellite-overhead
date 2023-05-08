@@ -6,7 +6,7 @@
 
 #### Active Satellites TLE File
 There should be a [TLE](https://en.wikipedia.org/wiki/Two-line_element_set) file, containing the satellites that you 
-want to search through, at `supplements/active_sats.tle` under the root directory.
+want to search through, at `supplements/active_satellites.tle` under the root directory.
 
 #### Config file
 There should be a file at `supplements/.config` under the root directory to set default values for a reservation. 
@@ -44,7 +44,7 @@ docker build . -t sopp
 In the following command
    - `<PATH_TO_LOCAL_SUPPLEMENTAL_DIRECTORY>` should be replaced by the path to a local directory that
      contains two files with the following names:
-      - `active_sats.tle`: contents described in section #active-satellites-tle-file.
+      - `active_satellites.tle`: contents described in section #active-satellites-tle-file.
       - `.config`: contents described in section #config-file section.
 
 ```bash

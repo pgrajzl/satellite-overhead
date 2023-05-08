@@ -60,7 +60,7 @@ if __name__ == '__main__':
     print('Observation frequency: ', reservation.frequency.frequency, ' MHz')
     print('\n----------------------------------------------------------------------')
 
-    tle_file = Path(SUPPLEMENTS_DIRECTORY, 'active_sats.tle')
+    tle_file = Path(SUPPLEMENTS_DIRECTORY, 'active_satellites.tle')
     frequency_file = Path(get_script_directory(__file__), 'satellite_determination/SatList (2).csv')
     satellite_list = Satellite.from_tle_file(tlefilepath=tle_file)
     frequency_list = GetFrequencyDataFromCsv(filepath=frequency_file).get()
