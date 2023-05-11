@@ -9,10 +9,10 @@ from satellite_determination.custom_dataclasses.frequency_range.frequency_range 
 class FrequencyCsvKeys(Enum):
     ID = 'ID'
     NAME = 'Name'
-    FREQUENCY = 'Frequency'
+    FREQUENCY = 'Frequency [MHz]'
     STATUS = 'Status'
     DESCRIPTION = 'Description'
-    BANDWIDTH = 'Bandwidth'
+    BANDWIDTH = 'Bandwidth [kHz]/Baud'
 
 
 class GetFrequencyDataFromCsv:

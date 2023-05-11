@@ -23,6 +23,8 @@ The following is an example of a config file:
     EndTimeUTC = 2023-03-30T15:00:00.000000
     Frequency = 135
     Bandwidth = 10
+    SearchWindowStart = 2023-03-30T10:00:00.000000
+    SearchWindowEnd = 2023-03-30T15:00:00.000000
 
 ### Run command
 In the root directory, run the following command:

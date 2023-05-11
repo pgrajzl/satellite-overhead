@@ -1,10 +1,10 @@
 import csv
-from datetime import timedelta, datetime
+from datetime import timedelta
 from pathlib import Path
 from typing import List
 
 import pytz as pytz
-from skyfield.api import load, wgs84, Time
+from skyfield.api import load, wgs84
 from satellite_determination.azimuth_filter.azimuth_filtering import AzimuthFilter
 from satellite_determination.custom_dataclasses.observation_path import ObservationPath
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
@@ -13,7 +13,7 @@ from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.support.overhead_window_from_events import \
     EventRhodesmill, EventTypesRhodesmill, OverheadWindowFromEvents
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from satellite_determination.utilities import get_script_directory
+from utilities import get_script_directory
 
 
 class EventFinderRhodesMill:

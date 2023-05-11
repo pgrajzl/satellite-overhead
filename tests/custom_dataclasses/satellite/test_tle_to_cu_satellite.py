@@ -5,7 +5,7 @@ from satellite_determination.custom_dataclasses.frequency_range.support.get_freq
     GetFrequencyDataFromCsv
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from tests.custom_dataclasses.satellite.utilities import expected_international_space_station_tle_as_satellite_cu
-from satellite_determination.utilities import get_script_directory
+from utilities import get_script_directory
 
 
 class TestTleToSatelliteCu:
