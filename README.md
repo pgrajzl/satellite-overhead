@@ -2,6 +2,8 @@
 
 SOPP is an open-source tool for calculating satellite interference to radio astronomy observations.
 
+![alt text]
+
 ## Running SOPP
 
 ### Install the requirements:
