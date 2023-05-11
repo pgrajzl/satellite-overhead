@@ -4,12 +4,6 @@ from typing import List, Optional
 from pathlib import Path
 import csv
 
-
-class FrequencyRangeJsonKey(Enum):
-    high_in_megahertz = 'high_in_megahertz'
-    low_in_megahertz = 'low_in_megahertz'
-
-
 @dataclass
 class FrequencyRange:
     frequency: Optional[float] = None

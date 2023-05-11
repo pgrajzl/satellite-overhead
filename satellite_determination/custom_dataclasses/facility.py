@@ -6,7 +6,7 @@ from typing import Optional
 @dataclass
 class Facility:
     point_coordinates: Coordinates
-    name: str
+    name: Optional[str] = 'Unnamed Facility'
     right_ascension: Optional[str] = None
     declination: Optional[str] = None
     beamwidth: Optional[float] = 3
