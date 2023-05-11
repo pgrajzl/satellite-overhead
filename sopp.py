@@ -41,6 +41,7 @@ if __name__ == '__main__':
     end_time = datetime.strptime(end_datetime_str, '%Y-%m-%dT%H:%M:%S.%f')
     search_window_start = datetime.strptime(search_window_start_str, '%Y-%m-%dT%H:%M:%S.%f').replace(tzinfo=pytz.UTC)
     search_window_end = datetime.strptime(search_window_end_str, '%Y-%m-%dT%H:%M:%S.%f').replace(tzinfo=pytz.UTC)
+    search_window = TimeWindow(begin=search_window_start, end=search_window_end)
     reservation = Reservation(
         facility=Facility(
             right_ascension=reservation_parameters["RightAscension"],
@@ -77,8 +78,8 @@ if __name__ == '__main__':
     print('Finding interference windows.')
     #test
     altitude_azimuth_pairs = ObservationPathFinder(reservation, start_datetime_str, end_datetime_str).calculate_path()
-    satellites_above_horizon = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation, azimuth_altitude_path=altitude_azimuth_pairs, search_time_start=search_window_start, search_time_end=search_window_end).get_overhead_windows()
-    interference_windows = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation, azimuth_altitude_path=altitude_azimuth_pairs, search_time_start=search_window_start, search_time_end=search_window_end).get_overhead_windows_slew()
+    satellites_above_horizon = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation, azimuth_altitude_path=altitude_azimuth_pairs, search_window=search_window).get_overhead_windows()
+    interference_windows = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation, azimuth_altitude_path=altitude_azimuth_pairs, search_window=search_window).get_overhead_windows_slew()
     # test
     print("=======================================================================================\n")
     print('       Found ', len(interference_windows), ' instances of satellites crossing the main beam.')

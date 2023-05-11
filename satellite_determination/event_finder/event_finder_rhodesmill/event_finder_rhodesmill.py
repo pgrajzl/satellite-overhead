@@ -18,18 +18,17 @@ from satellite_determination.utilities import get_script_directory
 
 class EventFinderRhodesMill:
 
-    def __init__(self, list_of_satellites: List[Satellite], reservation: Reservation, azimuth_altitude_path: List[ObservationPath], search_time_start: datetime, search_time_end: datetime):
+    def __init__(self, list_of_satellites: List[Satellite], reservation: Reservation, azimuth_altitude_path: List[ObservationPath], search_window: TimeWindow):
         self._list_of_satellites = list_of_satellites
         self._reservation = reservation
         self._path = azimuth_altitude_path
-        self._search_time_start = search_time_start
-        self._search_time_end = search_time_end
+        self._search_window = search_window
 
     def get_overhead_windows(self):
         ts = load.timescale() #provides time objects with the data tables they need to translate between different time scales: the schedule of UTC leap seconds, and the value of ∆T over time.
         overhead_windows: list[OverheadWindow] = []
-        time_start = ts.from_datetime(self._search_time_start.replace(tzinfo=pytz.UTC))  # changes the reservation datetime to Skyfield Time object
-        time_end = ts.from_datetime(self._search_time_end.replace(tzinfo=pytz.UTC))
+        time_start = ts.from_datetime(self._search_window.begin.replace(tzinfo=pytz.UTC))  # changes the reservation datetime to Skyfield Time object
+        time_end = ts.from_datetime(self._search_window.end.replace(tzinfo=pytz.UTC))
         coordinates = wgs84.latlon(self._reservation.facility.point_coordinates.latitude, self._reservation.facility.point_coordinates.longitude)
         for sat in self._list_of_satellites:
             rhodesmill_earthsat = sat.to_rhodesmill() #convert from custom satellite class to Rhodesmill EarthSatellite
