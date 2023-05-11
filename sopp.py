@@ -1,6 +1,9 @@
 from dataclasses import replace
 from datetime import datetime
+
 import pytz
+
+from satellite_determination.TLE_fetcher.tle_fetcher import TleFetcher
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
@@ -12,10 +15,12 @@ from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
-from tests.utilities import get_script_directory
+from satellite_determination.utilities import get_script_directory
 from pathlib import Path
 from configparser import ConfigParser
 from satellite_determination.graph_generator.graph_generator import GraphGenerator
+
+SUPPLEMENTS_DIRECTORY = Path(get_script_directory(__file__), 'supplements')
 
 
 if __name__ == '__main__':
@@ -26,7 +31,7 @@ if __name__ == '__main__':
     print('----------------------------------------------------------------------')
     print('Loading reservation parameters from config file...\n') #make flag to specify config file, default .config
     config_object = ConfigParser()
-    config_object.read('.config')
+    config_object.read(Path(SUPPLEMENTS_DIRECTORY, '.config'))
     reservation_parameters = config_object["RESERVATION"]
     start_datetime_str = reservation_parameters["StartTimeUTC"]
     end_datetime_str = reservation_parameters["EndTimeUTC"]
@@ -56,8 +61,8 @@ if __name__ == '__main__':
     print('Reservation end time: ', reservation.time.end)
     print('Observation frequency: ', reservation.frequency.frequency, ' MHz')
     print('\n----------------------------------------------------------------------')
-
-    tle_file = Path(get_script_directory(__file__), 'TLEData', 'active_sats.txt')
+    TleFetcher.get_tles()
+    tle_file = Path(get_script_directory(__file__), 'supplements', 'satellites.txt')
     frequency_file = Path(get_script_directory(__file__), 'SatList (2).csv')
     satellite_list = Satellite.from_tle_file(tlefilepath=tle_file)
     frequency_list = GetFrequencyDataFromCsv(filepath=frequency_file).get()

@@ -6,7 +6,7 @@ from pathlib import Path
 from skyfield.api import load
 
 from tests.custom_dataclasses.satellite.utilities import expected_international_space_station_tle_as_satellite_cu
-from tests.utilities import get_script_directory
+from satellite_determination.utilities import get_script_directory
 
 
 class TestSatelliteToRhodesMill:

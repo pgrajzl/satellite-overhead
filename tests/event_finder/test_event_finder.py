@@ -18,7 +18,7 @@ from satellite_determination.custom_dataclasses.satellite.tle_information import
 from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from tests.utilities import get_script_directory
+from satellite_determination.utilities import get_script_directory
 
 
 class TestWindowListFinder:
