@@ -1,9 +1,11 @@
+.dockerignore
 .DS_Store
+.env
+.git
+.gitignore
 .idea
 .pytest_cache
-.git
 
+supplements
+test
 venv
-.env
-
-tests

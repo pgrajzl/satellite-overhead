@@ -1,8 +1,7 @@
 from dataclasses import replace
 from datetime import datetime
-import pytz
 
-from satellite_determination.TLE_fetcher.tle_fetcher import TleFetcher
+import pytz
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
@@ -19,6 +18,8 @@ from pathlib import Path
 from configparser import ConfigParser
 from satellite_determination.graph_generator.graph_generator import GraphGenerator
 
+SUPPLEMENTS_DIRECTORY = Path(get_script_directory(__file__), 'supplements')
+
 
 if __name__ == '__main__':
     print('----------------------------------------------------------------------')
@@ -28,7 +29,7 @@ if __name__ == '__main__':
     print('----------------------------------------------------------------------')
     print('Loading reservation parameters from config file...\n') #make flag to specify config file, default .config
     config_object = ConfigParser()
-    config_object.read('.config')
+    config_object.read(Path(SUPPLEMENTS_DIRECTORY, '.config'))
     reservation_parameters = config_object["RESERVATION"]
     start_datetime_str = reservation_parameters["StartTimeUTC"]
     end_datetime_str = reservation_parameters["EndTimeUTC"]
