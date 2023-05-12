@@ -39,11 +39,11 @@ class EventFinderRhodesMill:
                 rhodesmill_event_list = []
                 for event_time, event in zip(event_times, events):
                     if event == 0:
-                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=sat, timestamp=event_time.utc_datetime().replace(tzinfo=pytz.UTC))
+                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=sat, timestamp=event_time.utc_datetime())
                     elif event == 1:
-                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.CULMINATES, satellite=sat, timestamp=event_time.utc_datetime().replace(tzinfo=pytz.UTC))
+                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.CULMINATES, satellite=sat, timestamp=event_time.utc_datetime())
                     elif event == 2:
-                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=sat, timestamp=event_time.utc_datetime().replace(tzinfo=pytz.UTC))
+                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=sat, timestamp=event_time.utc_datetime())
                     rhodesmill_event_list.append(translated_event)
                 sat_windows = OverheadWindowFromEvents(events=rhodesmill_event_list, reservation=self._reservation).get() #passes as custom dataclass Satellite
                 for window in sat_windows:
