@@ -13,6 +13,7 @@ from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.support.overhead_window_from_events import \
     EventRhodesmill, EventTypesRhodesmill, OverheadWindowFromEvents
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
+from satellite_determination.utilities import convert_datetime_to_utc
 from tests.utilities import get_script_directory
 
 
@@ -26,8 +27,8 @@ class EventFinderRhodesMill:
     def get_overhead_windows(self):
         ts = load.timescale() #provides time objects with the data tables they need to translate between different time scales: the schedule of UTC leap seconds, and the value of ∆T over time.
         overhead_windows: list[OverheadWindow] = []
-        time_start = ts.from_datetime(self._reservation.time.begin.replace(tzinfo=pytz.UTC))  # changes the reservation datetime to Skyfield Time object
-        time_end = ts.from_datetime(self._reservation.time.end.replace(tzinfo=pytz.UTC))
+        time_start = ts.from_datetime(convert_datetime_to_utc(self._reservation.time.begin))  # changes the reservation datetime to Skyfield Time object
+        time_end = ts.from_datetime(convert_datetime_to_utc(self._reservation.time.end))
         coordinates = wgs84.latlon(self._reservation.facility.point_coordinates.latitude, self._reservation.facility.point_coordinates.longitude)
         for sat in self._list_of_satellites:
             rhodesmill_earthsat = sat.to_rhodesmill() #convert from custom satellite class to Rhodesmill EarthSatellite
