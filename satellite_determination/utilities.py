@@ -1,4 +1,5 @@
 import json
+import os
 from contextlib import contextmanager
 from datetime import datetime
 from io import TextIOWrapper
@@ -30,3 +31,6 @@ def convert_datetime_to_utc(localtime: datetime) -> datetime:
     else:
         dt_utc = localtime.astimezone(pytz.UTC)
         return dt_utc
+
+def get_script_directory(module) -> Path:
+    return Path(os.path.dirname(os.path.realpath(module)))
