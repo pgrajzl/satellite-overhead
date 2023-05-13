@@ -1,6 +1,6 @@
 from typing import List
 
-from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
+from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 
 

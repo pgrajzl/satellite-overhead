@@ -1,6 +1,6 @@
 import math
-from typing import List, Tuple
 from datetime import datetime
+from typing import List, Tuple
 
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
@@ -21,7 +21,6 @@ class OverheadWindowFromAzimuth:
         for azimuth, t in self._azimuth_time_pairs:
             half_beamwidth = self._reservation.facility.beamwidth / 2
             if math.isclose(azimuth, self._reservation.facility.azimuth, abs_tol=half_beamwidth):
-            #if (azimuth <= (self._reservation.facility.azimuth + 1.5)) and (azimuth >= (self._reservation.facility.azimuth - 1.5)):
                 if sat_in_view_flag == 0:
                     enter_events.append(t)
                     sat_in_view_flag = 1

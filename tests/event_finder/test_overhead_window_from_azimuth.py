@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from satellite_determination.azimuth_filter.overhead_window_from_azimuth import OverheadWindowFromAzimuth
-from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
+from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow

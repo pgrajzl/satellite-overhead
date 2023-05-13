@@ -1,9 +1,11 @@
-__pycache__
-.env
+.dockerignore
 .DS_Store
+.env
+.git
+.gitignore
 .idea
 .pytest_cache
-.tmp
+
 supplements
-cookies.txt
+test
 venv

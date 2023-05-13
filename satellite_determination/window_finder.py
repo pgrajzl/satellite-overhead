@@ -2,12 +2,12 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import List
 
+from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
-from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
 
 
 @dataclass
@@ -72,7 +72,8 @@ class WindowFinder:
         ]
 
     def _satellites_overhead(self, reservation: Reservation) -> List[OverheadWindow]:
-        return self._event_finder(list_of_satellites=self._satellites, reservation=reservation).get_overhead_windows()
+        search_window = TimeWindow(begin=reservation.time.begin, end=reservation.time.end)
+        return self._event_finder(list_of_satellites=self._satellites, reservation=reservation, azimuth_altitude_path=None, search_window=search_window).get_overhead_windows()
 
 
     @property

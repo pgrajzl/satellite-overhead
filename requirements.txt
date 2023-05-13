@@ -1,4 +1,6 @@
+matplotlib~=3.7.1
 python-dotenv~=0.21.0
 pytz~=2022.7
 sgp4~=2.21
 skyfield~=1.45
+astropy~=5.2.2

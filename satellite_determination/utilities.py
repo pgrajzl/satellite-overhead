@@ -1,4 +1,5 @@
 import json
+import os
 from contextlib import contextmanager
 from datetime import datetime
 from io import TextIOWrapper
@@ -21,14 +22,15 @@ def temporary_file(filepath: Optional[Path] = None) -> ContextManager[TextIOWrap
         yield f
     filepath.unlink(missing_ok=True)
 
-
-def convert_timezone_to_utc(localtime: str) -> datetime:
-    format = "%m/%d/%Y %H:%M:%S"
-    local_dt = datetime.strptime(localtime, format)
-    dt_utc = local_dt.astimezone(pytz.UTC)
-    return dt_utc
-
-
 def convert_datetime_to_utc(localtime: datetime) -> datetime:
-    dt_utc = localtime.astimezone(pytz.UTC)
-    return dt_utc
+    if localtime.tzinfo == pytz.UTC:
+        return localtime
+    elif localtime.tzinfo is None:
+        dt_utc = localtime.replace(tzinfo=pytz.UTC)
+        return dt_utc
+    else:
+        dt_utc = localtime.astimezone(pytz.UTC)
+        return dt_utc
+
+def get_script_directory(module) -> Path:
+    return Path(os.path.dirname(os.path.realpath(module)))

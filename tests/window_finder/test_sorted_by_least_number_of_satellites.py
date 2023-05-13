@@ -1,9 +1,12 @@
+from dataclasses import replace
 from datetime import datetime, timedelta
 from typing import List
 from pathlib import Path
 import pytz
-from tests.utilities import get_script_directory
-from satellite_determination.custom_dataclasses.frequency_range import FrequencyRange
+from satellite_determination.utilities import get_script_directory
+from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
+    GetFrequencyDataFromCsv
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
@@ -22,11 +25,15 @@ _ARBITRARY_FREQUENCY_RANGE = FrequencyRange(frequency=2., bandwidth=1.)
 class TestSortedByLeastNumberOfSatellites:
 
     def test_search(self):
+        satellites = Satellite.from_tle_file(tlefilepath=Path(get_script_directory(__file__), 'international_space_station_tle.tle'))
+        frequency_file_path = Path(get_script_directory(__file__), 'fake_ISS_frequency_file.csv')
+        frequency_list = GetFrequencyDataFromCsv(filepath=frequency_file_path).get()
+        satellite_list_with_frequency = [
+            replace(satellite, frequency=frequency_list.get(satellite.tle_information.satellite_number, []))
+            for satellite in satellites]
         suggestions = WindowFinder(
             ideal_reservation=self._ideal_reservation,
-            satellites=Satellite.from_tle_file(
-                tlefilepath=Path(get_script_directory(__file__), 'international_space_station_tle.tle'), \
-                frequencyfilepath=Path(get_script_directory(__file__), 'fake_ISS_frequency_file.csv')),
+            satellites=satellite_list_with_frequency,
             event_finder=EventFinderRhodesMill,
             start_time_increments=timedelta(hours=4),
             search_window=timedelta(days=1)

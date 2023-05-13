@@ -1,10 +1,7 @@
 from datetime import timedelta
 from typing import List
-
-import pytz
 from skyfield.toposlib import wgs84
 from skyfield.api import load
-
 from satellite_determination.azimuth_filter.overhead_window_from_azimuth import OverheadWindowFromAzimuth
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
