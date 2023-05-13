@@ -1,30 +1,15 @@
 from dataclasses import dataclass
-from enum import Enum
-from typing import Optional
-
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
-
-
-class FacilityJsonKey(Enum):
-    elevation = 'elevation'
-    name = 'name'
-    point_coordinates = 'point_coordinates'
-    azimuth = 'azimuth'
+from typing import Optional
 
 
 @dataclass
 class Facility:
-    elevation: float
     point_coordinates: Coordinates
-    azimuth: float
     name: str
+    right_ascension: Optional[str] = None
+    declination: Optional[str] = None
     beamwidth: Optional[float] = 3
-
-    @classmethod
-    def from_json(cls, info: dict) -> 'Facility':
-        return cls(
-            elevation=info[FacilityJsonKey.elevation.value],
-            point_coordinates=Coordinates.from_json(info[FacilityJsonKey.point_coordinates.value]),
-            name=info[FacilityJsonKey.name.value],
-            azimuth=info[FacilityJsonKey.azimuth.value]
-        )
+    height: Optional[float] = 100 #TODO what is a good default?
+    azimuth: Optional[float] = None #the azimuth and altitude parameters are only necessary if searching for satellites w/ stationary observation
+    elevation: Optional[float] = 0 #default altitude to zero to find all sats above the horizon

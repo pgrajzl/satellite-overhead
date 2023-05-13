@@ -33,7 +33,6 @@ class OverheadWindowFromEvents:
         self._reservation = reservation
 
     def get(self) -> List[OverheadWindow]:
-        ts = load.timescale()
         enter_events, culminate_events, exit_events = ([event for event in self._events if event.event_type == event_type]
                                      for event_type in EventTypesRhodesmill)
 
@@ -54,6 +53,6 @@ class OverheadWindowFromEvents:
                 end_reservation_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=self._events[0].satellite, timestamp=self._reservation.time.end)
                 exit_events.append(end_reservation_event)
             enter_and_exit_pairs = zip(enter_events, exit_events)
-            time_windows = [TimeWindow(begin=(begin_event.timestamp), end=exit_event.timestamp) for begin_event, exit_event in enter_and_exit_pairs]
+            time_windows = [TimeWindow(begin=begin_event.timestamp, end=exit_event.timestamp) for begin_event, exit_event in enter_and_exit_pairs]
             overhead_windows = [OverheadWindow(satellite=self._events[0].satellite, overhead_time=time_window) for time_window in time_windows]
         return overhead_windows

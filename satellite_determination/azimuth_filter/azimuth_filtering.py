@@ -27,7 +27,7 @@ class AzimuthFilter:
             satellite_time_values = []
             rhodesmill_sat = window.satellite.to_rhodesmill()
             difference = rhodesmill_sat - coordinates # get vector sat relative to telescope location
-            while window.overhead_time.begin < window.overhead_time.end:
+            while window.overhead_time.begin < window.overhead_time.end:  # timestamp for events needs to be changed since when the sat enters cone is not necessarily event timestamp
                 topocentric = difference.at(ts.from_datetime(window.overhead_time.begin))
                 alt, az, distance = topocentric.altaz()
                 satellite_azimuth = min(az.degrees, 360 - az.degrees)
