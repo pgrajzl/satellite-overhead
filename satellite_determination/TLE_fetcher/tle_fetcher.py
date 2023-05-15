@@ -1,7 +1,7 @@
 import os
 
 import requests
-from satellite_determination.utilities import get_root_directory
+from satellite_determination.utilities import get_supplements_directory
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,9 +17,9 @@ class TleFetcher():
         print('Pulling active satellite TLEs from Celestrak...')
         active_sats_url = 'https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle'
         tles = requests.get(active_sats_url, allow_redirects=True)
-        tle_file_path = str(get_root_directory(__file__)) + '/supplements/' + 'satellites.tle'
-        f = open(tle_file_path, 'wb')
-        f.write(tles.content)
-        f.close()
+        tle_file_path = str(get_supplements_directory()) + '/satellites.tle'
+        with open(tle_file_path, 'wb') as f:
+            f.write(tles.content)
+            f.close()
 
 
