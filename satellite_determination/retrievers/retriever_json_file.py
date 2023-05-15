@@ -2,7 +2,7 @@ from abc import ABC
 from pathlib import Path
 
 from satellite_determination.retrievers.retriever import Retriever
-from utilities import read_json_file
+from satellite_determination.utilities import read_json_file
 
 
 class RetrieverJsonFile(Retriever, ABC):

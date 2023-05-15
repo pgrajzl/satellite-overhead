@@ -8,7 +8,7 @@ from skyfield.sgp4lib import EarthSatellite
 
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
-from utilities import temporary_file
+from satellite_determination.utilities import temporary_file
 
 NUMBER_OF_LINES_PER_TLE_OBJECT = 3
 

@@ -15,7 +15,7 @@ from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
-from utilities import get_script_directory
+from satellite_determination.utilities import get_script_directory
 from pathlib import Path
 from configparser import ConfigParser
 from satellite_determination.graph_generator.graph_generator import GraphGenerator

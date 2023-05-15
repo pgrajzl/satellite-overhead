@@ -1,6 +1,6 @@
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import GetFrequencyDataFromCsv
-from utilities import get_script_directory
+from satellite_determination.utilities import get_script_directory
 from pathlib import Path
 
 class TestFromCsv:

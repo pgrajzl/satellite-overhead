@@ -1,7 +1,7 @@
 import os
 
 import requests
-from utilities import get_root_directory
+from satellite_determination.utilities import get_root_directory
 from dotenv import load_dotenv
 
 load_dotenv()

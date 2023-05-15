@@ -13,7 +13,7 @@ from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.support.overhead_window_from_events import \
     EventRhodesmill, EventTypesRhodesmill, OverheadWindowFromEvents
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from utilities import get_script_directory
+from satellite_determination.utilities import get_script_directory
 
 
 class EventFinderRhodesMill:
