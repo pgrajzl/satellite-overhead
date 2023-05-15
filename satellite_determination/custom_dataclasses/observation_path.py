@@ -16,3 +16,4 @@ class ObservationPath:
     altitude: Angle
     azimuth: Angle
     time: datetime
+

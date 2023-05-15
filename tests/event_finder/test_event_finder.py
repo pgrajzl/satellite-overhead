@@ -38,7 +38,8 @@ class TestWindowListFinder:
                                       bandwidth=None
                                   )
                                   )
-        overhead_windows = EventFinderRhodesMill(list_of_satellites=list_of_satellites_with_frequency, reservation=reservation, azimuth_altitude_path=None, search_time_start=reservation.time.begin, search_time_end=reservation.time.end).get_overhead_windows()
+        search_window = TimeWindow(begin=reservation.time.begin, end=reservation.time.end)
+        overhead_windows = EventFinderRhodesMill(list_of_satellites=list_of_satellites_with_frequency, reservation=reservation, azimuth_altitude_path=None, search_window=search_window).get_overhead_windows()
         assert overhead_windows == self._expected_windows
 
     @property

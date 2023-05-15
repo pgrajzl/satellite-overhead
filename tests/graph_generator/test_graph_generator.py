@@ -38,4 +38,3 @@ class TestGraphGenerator:
     def _arbitrary_search_window_end(self) -> datetime:
         return datetime(year=2023, month=4, day=19, hour=7)
 
-TestGraphGenerator().test_generate_graph()

@@ -72,9 +72,8 @@ class WindowFinder:
         ]
 
     def _satellites_overhead(self, reservation: Reservation) -> List[OverheadWindow]:
-        search_start_time = reservation.time.begin
-        search_end_time = reservation.time.end
-        return self._event_finder(list_of_satellites=self._satellites, reservation=reservation, azimuth_altitude_path=None, search_time_start=search_start_time, search_time_end=search_end_time).get_overhead_windows()
+        search_window = TimeWindow(begin=reservation.time.begin, end=reservation.time.end)
+        return self._event_finder(list_of_satellites=self._satellites, reservation=reservation, azimuth_altitude_path=None, search_window=search_window).get_overhead_windows()
 
 
     @property
