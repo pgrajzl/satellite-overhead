@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
+'''
+The TimeWindow class is used to store the beginning and end time of events. The duration function returns a time delta for the 
+duration of the event and the overlaps function determines if the TimeWindow overlaps with another TimeWindow
+'''
 
 @dataclass
 class TimeWindow:

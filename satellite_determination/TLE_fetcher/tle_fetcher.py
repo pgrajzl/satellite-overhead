@@ -4,6 +4,11 @@ import requests
 from satellite_determination.utilities import get_supplements_directory
 from dotenv import load_dotenv
 
+'''
+TleFetcher will pull tles from either Space-Track or Celestrak. User credentials are required to pull from Space-Track;
+see the README for how to set up these credentials in your environment.
+'''
+
 load_dotenv()
 IDENTITY = os.getenv("IDENTITY")
 PASSWORD = os.getenv("PASSWORD")
