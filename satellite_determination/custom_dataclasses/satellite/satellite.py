@@ -10,6 +10,21 @@ from satellite_determination.custom_dataclasses.frequency_range.frequency_range 
 from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
 from satellite_determination.utilities import temporary_file
 
+'''
+The Satellite data class stores all of the TLE information for each satellite, which is loaded from a TLE file using the class method from_tle_file()
+and can be converted to a Skyfield API object EarthSatellite using the to_rhodesmill() method. It also stores all the frequency information
+for each satellite.
+
+  + name:               name of satellite. string.
+  + tle_information:    stores TLE information. TleInformation is another custom object to store TLE data and can be found in
+                        ROOT/satellite_determination/custom_dataclasses/satellite/tle_information.py
+  + frequency:          list of type FrequencyRange. FrequencyRange is a custom dataclass that stores a center frequency and bandwidth.
+  
+
+  + to_rhodesmill():    class method to convert a Satellite object into a Rhodemill-Skyfield EarthSatellite object for use with the Skyfield API
+  + from_tle_file():    class method to load Satellite from provided TLE file. Returns a list of type Satellite.
+'''
+
 NUMBER_OF_LINES_PER_TLE_OBJECT = 3
 
 

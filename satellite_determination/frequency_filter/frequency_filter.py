@@ -3,7 +3,13 @@ from typing import List
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 
+'''
+The FrequencyFilter determines if a satellite's downlink transmission frequency overlaps with the desired observation frequency
+and returns a list of Satellite objects that contains only the satellites that will potentially interfere with the observation.
+If there is no information on the satellite frequency, it will include the satellite in the list to err on the side of caution
+for potential interference.
 
+'''
 class FrequencyFilter:
 
     def __init__(self, satellites: List[Satellite], observation_frequency: FrequencyRange):
