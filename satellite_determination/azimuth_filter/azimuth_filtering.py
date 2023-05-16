@@ -6,6 +6,11 @@ from satellite_determination.azimuth_filter.overhead_window_from_azimuth import 
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
 
+'''
+The AzimuthFilter filters satellites based on whether their azimuth in relation to the facility intersects with the
+telescope's azimuth. Only used if finding events for a stationary telescope.
+
+'''
 
 class AzimuthFilter:
 
