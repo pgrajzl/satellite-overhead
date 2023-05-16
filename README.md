@@ -2,7 +2,7 @@
 
 SOPP is an open-source tool for calculating satellite interference to radio astronomy observations.
 
-![alt text](https://github.com/NSF-Swift/satellite-overhead/blob/documentation/FBD.png?raw=true)
+![alt text](https://github.com/NSF-Swift/satellite-overhead/blob/main/FBD.png)
 
 ## Running SOPP
 
