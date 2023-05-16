@@ -7,6 +7,13 @@ from satellite_determination.custom_dataclasses.observation_path import Observat
 from satellite_determination.custom_dataclasses.reservation import Reservation
 import pytz
 
+'''
+The PathFinder determines the path the telescope will need to follow to track its target and returns
+a list of altitude, azimuth, and timestamp to represent the telescope's movement. It uses the observation
+target's right ascension and declination to determine this path.
+
+'''
+
 class ObservationPathFinder:
 
     def __init__(self, reservation: Reservation, start_str: str, end_str: str) -> List[ObservationPath]:

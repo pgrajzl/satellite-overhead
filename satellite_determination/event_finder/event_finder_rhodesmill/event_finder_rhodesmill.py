@@ -1,9 +1,9 @@
 import csv
+import pytz as pytz
+from datetime import timedelta, datetime
 from datetime import timedelta
 from pathlib import Path
 from typing import List
-
-import pytz as pytz
 from skyfield.api import load, wgs84, Time
 from satellite_determination.azimuth_filter.azimuth_filtering import AzimuthFilter
 from satellite_determination.custom_dataclasses.observation_path import ObservationPath
@@ -15,6 +15,21 @@ from satellite_determination.event_finder.event_finder_rhodesmill.support.overhe
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.utilities import convert_datetime_to_utc
 from satellite_determination.utilities import get_script_directory
+
+'''
+The EventFinderRhodesMill is the module that determines if a satellite interferes with an RA observation. It has three functions:
+
+  + get_overhead_windows_slew():    determines if a satellite crosses the telescope's main beam as the telescope moves across the sky 
+                                    by looking for intersections of azimuth and altitude and returning a list of OverheadWindows for 
+                                    events where this occurs
+  + get_overhead_windows():         Determines the satellites visible above the horizon during the search window and returns a list of
+                                    OverheadWindows for each event. This can be used to find all satellite visible over the horizon or
+                                    to determine events for a stationary observation if an azimuth and altitude is provided
+  + track_satellite():              tracks a specific satellite, or list of satellites, and returns the times when its visible from the
+                                    facility and the azimuth and altitude at which to observe it from
+
+'''
+
 
 class EventFinderRhodesMill:
 

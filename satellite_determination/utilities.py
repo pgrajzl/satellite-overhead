@@ -34,3 +34,6 @@ def convert_datetime_to_utc(localtime: datetime) -> datetime:
 
 def get_script_directory(module) -> Path:
     return Path(os.path.dirname(os.path.realpath(module)))
+
+def get_supplements_directory() -> Path:
+    return Path(os.path.dirname(os.path.realpath('supplements')), 'supplements')
