@@ -62,6 +62,7 @@ if __name__ == '__main__':
     print('Reservation end time: ', reservation.time.end)
     print('Observation frequency: ', reservation.frequency.frequency, ' MHz')
     print('\n----------------------------------------------------------------------')
+    TleFetcher().get_tles_celestrak()
     tle_file = Path(get_script_directory(__file__), 'supplements', 'satellites.tle')
     frequency_file = Path(get_script_directory(__file__), 'supplements', 'satellite_frequencies.csv')
     satellite_list = Satellite.from_tle_file(tlefilepath=tle_file)

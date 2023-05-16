@@ -4,3 +4,4 @@ pytz~=2022.7
 sgp4~=2.21
 skyfield~=1.45
 astropy~=5.2.2
+requests~=2.30.0
