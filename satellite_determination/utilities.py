@@ -22,18 +22,35 @@ def temporary_file(filepath: Optional[Path] = None) -> ContextManager[TextIOWrap
         yield f
     filepath.unlink(missing_ok=True)
 
+
 def convert_datetime_to_utc(localtime: datetime) -> datetime:
     if localtime.tzinfo == pytz.UTC:
         return localtime
     elif localtime.tzinfo is None:
-        dt_utc = localtime.replace(tzinfo=pytz.UTC)
-        return dt_utc
+        return localtime.replace(tzinfo=pytz.UTC)
     else:
-        dt_utc = localtime.astimezone(pytz.UTC)
-        return dt_utc
+        return localtime.astimezone(pytz.UTC)
+
 
 def get_script_directory(module) -> Path:
     return Path(os.path.dirname(os.path.realpath(module)))
 
+
+SUPPLEMENTS_DIRECTORY_NAME = 'supplements'
 def get_supplements_directory() -> Path:
-    return Path(os.path.dirname(os.path.realpath('supplements')), 'supplements')
+    return Path(get_script_directory(__file__), '..', SUPPLEMENTS_DIRECTORY_NAME)
+
+
+SATELLITES_FILENAME = 'satellites.tle'
+def get_satellites_filepath() -> Path:
+    return Path(get_supplements_directory(), SATELLITES_FILENAME)
+
+
+FREQUENCIES_FILENAME = 'satellite_frequencies.csv'
+def get_frequencies_filepath() -> Path:
+    return Path(get_supplements_directory(), FREQUENCIES_FILENAME)
+
+
+CONFIG_FILE_FILENAME = '.config'
+def get_default_config_file_filepath() -> Path:
+    return Path(get_supplements_directory(), CONFIG_FILE_FILENAME)

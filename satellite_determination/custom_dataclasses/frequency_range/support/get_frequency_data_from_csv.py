@@ -5,17 +5,6 @@ from typing import Dict, List
 
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 
-'''
-Reads frequency data from a supplied CSV. The CSV should be placed in the supplements folder under the name satellite_frequencies.csv and should be
-formatted with the following columns:
- __________________________________________________________________________________
-|   ID   |   Name   |   Frequency   |   Bandwidth   |   Status   |   Description   |
-
-With all values in the frequency column of the same order of magnitude (typically MHz). The same goes for bandwidth. These columns should have the
-integer value alone.
-
-
-'''
 
 class FrequencyCsvKeys(Enum):
     ID = 'ID'
@@ -27,6 +16,17 @@ class FrequencyCsvKeys(Enum):
 
 
 class GetFrequencyDataFromCsv:
+    '''
+    Reads frequency data from a supplied CSV. The CSV should be placed in the `supplements` folder under the name `satellite_frequencies.csv` and should be
+    formatted with the following columns:
+     __________________________________________________________________________________
+    |   ID   |   Name   |   Frequency   |   Bandwidth   |   Status   |   Description   |
+
+    With all values in the frequency column of the same order of magnitude (typically MHz). The same goes for bandwidth. These columns should have the
+    integer value alone.
+
+
+    '''
     def __init__(self, filepath: Path):
         self._filepath = filepath
 
