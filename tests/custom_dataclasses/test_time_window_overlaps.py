@@ -3,7 +3,7 @@ from datetime import datetime
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 
 
-class TestTimeWindow:
+class TestTimeWindowOverlaps:
     def test_second_time_begins_as_first_ends(self):
         time_window1 = TimeWindow(begin=datetime(year=2022, month=11, day=20),
                                   end=datetime(year=2022, month=11, day=21))

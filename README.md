@@ -13,12 +13,12 @@ SOPP is an open-source tool for calculating satellite interference to radio astr
 
 ### Setting up the supplemental files
 
-The TLE and frequency data is stored in the supplements directory.
+The TLE and frequency data is stored in the `supplements` directory.
 
 #### Active Satellites TLE File
 There should be a [TLE](https://en.wikipedia.org/wiki/Two-line_element_set) file, containing the satellites that you 
 want to search through, at `supplements/satellites.tle` under the root directory. In the SOPP program itself, a list of active satellites are pulled from
-Celestrak. If you want to provide it your own TLE file, you can comment out this line and place your own TLE file in the supplements directory.
+Celestrak. If you want to provide it your own TLE file, you can comment out this line and place your own TLE file in the `supplements` directory.
 
 ##### Instructions for pulling files from Space-Track
 If you want to pull TLE files from Space-Track.org, there are a few extra steps you need to take since the site requires user credentials:
@@ -55,31 +55,36 @@ There should be a file at `supplements/.config` under the root directory to set 
 The following is an example of a config file:
 
     [RESERVATION]
-    Latitude = 40.8178049
-    Longitude = -121.4695413
-    RightAscension = 4h42m
-    Declination = -38d6m50.8s
-    Beamwidth = 3
-    Name = HCRO
-    StartTimeUTC = 2023-03-30T10:00:00.000000
-    EndTimeUTC = 2023-03-30T15:00:00.000000
-    Frequency = 135
-    Bandwidth = 10
-    SearchWindowStart = 2023-03-30T10:00:00.000000
-    SearchWindowEnd = 2023-03-30T15:00:00.000000
+    Latitude=40.8178049
+    Longitude=-121.4695413
+    RightAscension=4h42m
+    Declination=-38d6m50.8s
+    Beamwidth=3
+    Name=HCRO
+    StartTimeUTC=2023-03-30T10:00:00.000000
+    EndTimeUTC=2023-03-30T15:00:00.000000
+    Frequency=135
+    Bandwidth=10
+    SearchWindowStart=2023-03-30T10:00:00.000000
+    SearchWindowEnd=2023-03-30T15:00:00.000000
 
 Below is a description of each of these values:
 + Latitude is the latitude of the RA facility
 + Longitude is the longitude of the RA facility
 + RightAscension is the right ascension value of the celestial target the RA telescope is trying to observe
+  + More information can be found in [Astropy's Astronomical Coordinate System](https://docs.astropy.org/en/stable/coordinates/index.html)
 + Declination is the declination value of the celestial target the RA telescope is trying to observe
+  + More information can be found in [Astropy's Astronomical Coordinate System](https://docs.astropy.org/en/stable/coordinates/index.html)
 + Beamwidth is the beamwidth of the RA telescope
 + Name is the name of the RA facility
 + StartTimeUTC is the desired start time of the observation in UTC
 + EndTimeUTC is the desired end time of the observation in UTC
 + Frequency is the center frequency of the observation
 + Bandwidth is the bandwidth of the desired observation
-+ SearchWindowStart and SearchWindowEnd are the start and end times for SOPP to conduct its search for potential interference. For instance, the target may be visible in the sky for eight hours but only an hour observation is needed. By providing SOPP the entire eight hour period that the target is visible, it will search through this entire window to find the hours with the least interference.
++ SearchWindowStart and SearchWindowEnd are the start and end times, in UTC, for SOPP to conduct its search for potential
+  interference. For instance, the target may be visible in the sky for eight hours but only an hour observation is 
+  needed. By providing SOPP the entire eight hour period that the target is visible, it will search through this entire 
+  window to find the hours with the least interference.
 
 ### Run command
 In the root directory, run the following command:
