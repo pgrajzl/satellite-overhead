@@ -12,13 +12,13 @@ from satellite_determination.utilities import get_frequencies_filepath, get_sate
 from satellite_determination.graph_generator.graph_generator import GraphGenerator
 
 
-if __name__ == '__main__':
+def main():
     print('----------------------------------------------------------------------')
     print('|                                                                    |')
     print('|             Launching Satellite Orbit Preprocessor                 |')
     print('|                                                                    |')
     print('----------------------------------------------------------------------')
-    print('Loading reservation parameters from config file...\n') #make flag to specify config file, default .config
+    print('Loading reservation parameters from config file...\n')  # make flag to specify config file, default .config
     config_file = ConfigFile()
     reservation = config_file.reservation
     search_window = config_file.search_window
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     print('Reservation end time: ', reservation.time.end)
     print('Observation frequency: ', reservation.frequency.frequency, ' MHz')
     print('\n----------------------------------------------------------------------')
-    TleFetcher().get_tles_celestrak()
+
     tle_file = get_satellites_filepath()
     frequency_file = get_frequencies_filepath()
     satellite_list = Satellite.from_tle_file(tlefilepath=tle_file)
@@ -60,5 +60,20 @@ if __name__ == '__main__':
         print('Satellite enters view: ', window.overhead_time.begin)
         print('Satellite leaves view: ', window.overhead_time.end)
         print('__________________________________________________\n')
-        i+=1
-    GraphGenerator(search_window_start=search_window.begin, search_window_end=search_window.end, satellites_above_horizon=satellites_above_horizon, interference_windows=interference_windows).generate_graph()
+        i += 1
+    GraphGenerator(search_window_start=search_window.begin,
+                   search_window_end=search_window.end,
+                   satellites_above_horizon=satellites_above_horizon,
+                   interference_windows=interference_windows).generate_graph()
+
+
+if __name__ == '__main__':
+    frequencies_filepath = get_satellites_filepath()
+    if frequencies_filepath.exists():
+        main()
+    else:
+        TleFetcher().get_tles_celestrak()
+        try:
+            main()
+        finally:
+            frequencies_filepath.unlink(missing_ok=True)
