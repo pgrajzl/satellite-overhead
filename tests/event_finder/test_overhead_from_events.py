@@ -9,7 +9,7 @@ from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
-from satellite_determination.event_finder.event_finder_rhodesmill.support.overhead_window_from_events import \
+from satellite_determination.event_finder.support.overhead_window_from_events import \
     EventTypesRhodesmill, EventRhodesmill, OverheadWindowFromEvents
 
 
