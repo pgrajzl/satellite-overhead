@@ -7,6 +7,7 @@ from satellite_determination.custom_dataclasses.frequency_range.support.get_freq
 from satellite_determination.frequency_filter.frequency_filter import FrequencyFilter
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
+from satellite_determination.main import Main
 from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
 from satellite_determination.utilities import get_frequencies_filepath, get_satellites_filepath
 from satellite_determination.graph_generator.graph_generator import GraphGenerator
@@ -37,24 +38,15 @@ def main():
     satellite_list_with_frequencies = [replace(satellite, frequency=frequency_list.get(satellite.tle_information.satellite_number, []))
                                        for satellite in satellite_list]
 
-    num_of_sats = len(satellite_list_with_frequencies)
-    print('Loaded ', num_of_sats, ' satellites from TLE file.\nStarting frequency filter.')
-    frequency_filtered_sats = FrequencyFilter(satellites=satellite_list_with_frequencies,
-                                              observation_frequency=reservation.frequency).filter_frequencies()
-    print(len(frequency_filtered_sats), ' satellites remaining of ', num_of_sats, '\n')
-    print('Finding interference windows.')
-    #test
-    altitude_azimuth_pairs = ObservationPathFinder(reservation, reservation.time.begin.strftime(TIME_FORMAT), reservation.time.end.strftime(TIME_FORMAT)).calculate_path()
-    satellites_above_horizon = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation, azimuth_altitude_path=altitude_azimuth_pairs, search_window=search_window).get_overhead_windows()
-    interference_windows = EventFinderRhodesMill(list_of_satellites=frequency_filtered_sats, reservation=reservation, azimuth_altitude_path=altitude_azimuth_pairs, search_window=search_window).get_overhead_windows_slew()
-    # test
+    results = Main(reservation=reservation, search_window=search_window, satellites=satellite_list_with_frequencies).run()
+
     print("=======================================================================================\n")
-    print('       Found ', len(interference_windows), ' instances of satellites crossing the main beam.')
-    print('    There are ', len(satellites_above_horizon), ' satellites above the horizon during the reservation')
+    print('       Found ', len(results.interference_windows), ' instances of satellites crossing the main beam.')
+    print('    There are ', len(results.satellites_above_horizon), ' satellites above the horizon during the reservation')
     print("                      Main Beam Interference events: \n")
     print("=======================================================================================\n")
     i = 1
-    for window in interference_windows:
+    for window in results.interference_windows:
         print('Interference event #', i, ':')
         print('Satellite:', window.satellite.name)
         print('Satellite enters view: ', window.overhead_time.begin)
@@ -63,8 +55,8 @@ def main():
         i += 1
     GraphGenerator(search_window_start=search_window.begin,
                    search_window_end=search_window.end,
-                   satellites_above_horizon=satellites_above_horizon,
-                   interference_windows=interference_windows).generate_graph()
+                   satellites_above_horizon=results.satellites_above_horizon,
+                   interference_windows=results.interference_windows).generate_graph()
 
 
 if __name__ == '__main__':
