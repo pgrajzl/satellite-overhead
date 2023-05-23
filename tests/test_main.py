@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from typing import List
 
 import pytz
 
@@ -12,7 +13,17 @@ from satellite_determination.custom_dataclasses.satellite.mean_motion import Mea
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
+from satellite_determination.event_finder.event_finder import EventFinder
 from satellite_determination.main import Main, MainResults
+
+
+class EventFinderForTestingMain(EventFinder):
+
+    def get_overhead_windows(self) -> List[OverheadWindow]:
+        pass
+
+    def get_overhead_windows_slew(self) -> List[OverheadWindow]:
+        pass
 
 
 class TestMain:
@@ -22,21 +33,18 @@ class TestMain:
                       satellites=self._satellites).run()
         assert result == MainResults(
             satellites_above_horizon=[OverheadWindow(satellite=self._satellite_in_mainbeam,
-                                                     overhead_time=TimeWindow(begin=datetime(2023, 3, 30, 10, 55, 59, 342391, tzinfo=timezone.utc),
-                                                                              end=datetime(2023, 3, 30, 11, 10, 2, 51600, tzinfo=timezone.utc))),
-                                      OverheadWindow(satellite=self._satellite_in_mainbeam,
-                                                     overhead_time=TimeWindow(begin=datetime(2023, 3, 30, 12, 34, 12, 873410, tzinfo=timezone.utc),
-                                                                              end=datetime(2023, 3, 30, 12, 46, 56, 944904, tzinfo=timezone.utc))),
+                                                     overhead_time=TimeWindow(begin=datetime.datetime(2023, 3, 30, 14, 38, tzinfo=timezone.utc),
+                                                     end=datetime.datetime(2023, 3, 30, 14, 40, tzinfo=timezone.utc))),
                                       OverheadWindow(
                                           satellite=self._satellite_inside_frequency_range_and_above_horizon_and_outside_mainbeam,
                                           overhead_time=TimeWindow(
                                               begin=datetime(2023, 3, 30, 14, 39, 34, 791130, tzinfo=timezone.utc),
-                                              end=datetime(2023, 3, 30, 14, 52, 36, 783348, tzinfo=timezone.utc))),
+                                              end=datetime(2023, 3, 30, 14, 38, 0, 0, tzinfo=timezone.utc))),
 
                                       ],
             interference_windows=[OverheadWindow(satellite=self._satellite_in_mainbeam,
-                                                 overhead_time=TimeWindow(begin=datetime(2023, 3, 30, 13, 33, tzinfo=timezone.utc),
-                                                                          end=datetime(2023, 3, 30, 15, 0, tzinfo=timezone.utc)))])
+                                                 overhead_time=TimeWindow(begin=datetime(2023, 3, 30, 14, 38, tzinfo=timezone.utc),
+                                                                          end=datetime(2023, 3, 30, 14, 40, tzinfo=timezone.utc)))])
 
 
     @property
@@ -49,8 +57,7 @@ class TestMain:
                 name='ARBITRARY_1',
                 declination='-38d6m50.8s',
             ),
-            time=TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=10, tzinfo=pytz.UTC),
-                            end=datetime(year=2023, month=3, day=30, hour=15, tzinfo=pytz.UTC)),
+            time=self._arbitrary_search_window,
             frequency=FrequencyRange(
                 frequency=135,
                 bandwidth=10
@@ -59,8 +66,8 @@ class TestMain:
 
     @property
     def _arbitrary_search_window(self) -> TimeWindow:
-        return TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=10, tzinfo=pytz.UTC),
-                          end=datetime(year=2023, month=3, day=30, hour=15, tzinfo=pytz.UTC))
+        return TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=14, minute=38, tzinfo=pytz.UTC),
+                          end=datetime(year=2023, month=3, day=30, hour=14, minute=40, tzinfo=pytz.UTC))
 
     @property
     def _satellites(self):
@@ -73,23 +80,23 @@ class TestMain:
     
     @property
     def _satellite_in_mainbeam(self) -> Satellite:
-        return Satellite(name='SAUDISAT 2', 
-                         tle_information=TleInformation(argument_of_perigee=2.6581678667138995, 
-                                                        drag_coefficient=8.4378e-05, 
+        return Satellite(name='SAUDISAT 2',
+                         tle_information=TleInformation(argument_of_perigee=2.6581678667138995,
+                                                        drag_coefficient=8.4378e-05,
                                                         eccentricity=0.0025973,
-                                                        epoch_days=26801.46955532, 
-                                                        inclination=1.7179345640550268, 
-                                                        international_designator=InternationalDesignator(year=4, 
-                                                                                                         launch_number=25, 
-                                                                                                         launch_piece='F'), 
-                                                        mean_anomaly=3.6295308619113436, 
-                                                        mean_motion=MeanMotion(first_derivative=9.605371056982682e-12, 
-                                                                               second_derivative=0.0, 
-                                                                               value=0.06348248105551128), 
-                                                        revolution_number=200, 
-                                                        right_ascension_of_ascending_node=1.7778098293739442, 
-                                                        satellite_number=28371, 
-                                                        classification='U'), 
+                                                        epoch_days=26801.46955532,
+                                                        inclination=1.7179345640550268,
+                                                        international_designator=InternationalDesignator(year=4,
+                                                                                                         launch_number=25,
+                                                                                                         launch_piece='F'),
+                                                        mean_anomaly=3.6295308619113436,
+                                                        mean_motion=MeanMotion(first_derivative=9.605371056982682e-12,
+                                                                               second_derivative=0.0,
+                                                                               value=0.06348248105551128),
+                                                        revolution_number=200,
+                                                        right_ascension_of_ascending_node=1.7778098293739442,
+                                                        satellite_number=28371,
+                                                        classification='U'),
                          frequency=[FrequencyRange(frequency=137.513, bandwidth=None, status='active')])
 
     @property

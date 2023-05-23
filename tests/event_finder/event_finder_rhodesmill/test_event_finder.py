@@ -15,7 +15,7 @@ from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.international_designator import InternationalDesignator
 from satellite_determination.custom_dataclasses.satellite.mean_motion import MeanMotion
 from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
-from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
+from satellite_determination.event_finder.event_finder_rhodesmill import EventFinderRhodesMill
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.utilities import get_script_directory
@@ -24,9 +24,9 @@ from satellite_determination.utilities import get_script_directory
 class TestWindowListFinder:
 
     def test_get_window_list(self):
-        tle_file = Path(get_script_directory(__file__), 'test_tle_data', 'arbitrary_TLE.txt')
-        frequency_file = Path(get_script_directory(__file__), 'fake_ISS_frequency_file_multiple.csv')
-        list_of_satellites = Satellite.from_tle_file(tlefilepath=tle_file) #load satellites from arbitrary TLE file
+        tle_file = Path(get_script_directory(__file__), '../test_tle_data', 'arbitrary_TLE.txt')
+        frequency_file = Path(get_script_directory(__file__), '../fake_ISS_frequency_file_multiple.csv')
+        list_of_satellites = Satellite.from_tle_file(tlefilepath=tle_file)
         frequency_list = GetFrequencyDataFromCsv(filepath=frequency_file).get()
         list_of_satellites_with_frequency = [
             replace(satellite, frequency=frequency_list.get(satellite.tle_information.satellite_number, []))

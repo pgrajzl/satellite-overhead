@@ -1,14 +1,11 @@
 from dataclasses import replace
 
 from satellite_determination.TLE_fetcher.tle_fetcher import TleFetcher
-from satellite_determination.config_file import ConfigFile, TIME_FORMAT
+from satellite_determination.config_file import ConfigFile
 from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
-from satellite_determination.frequency_filter.frequency_filter import FrequencyFilter
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from satellite_determination.main import Main
-from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
 from satellite_determination.utilities import get_frequencies_filepath, get_satellites_filepath
 from satellite_determination.graph_generator.graph_generator import GraphGenerator
 

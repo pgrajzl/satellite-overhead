@@ -2,43 +2,30 @@ from datetime import timedelta
 from typing import List
 from skyfield.api import load, wgs84
 from satellite_determination.azimuth_filter.azimuth_filtering import AzimuthFilter
-from satellite_determination.custom_dataclasses.observation_path import ObservationPath
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
-from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder import EventFinder
 from satellite_determination.event_finder.support.overhead_window_from_events import \
     EventRhodesmill, EventTypesRhodesmill, OverheadWindowFromEvents
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.utilities import convert_datetime_to_utc
-
-'''
-The EventFinderRhodesMill is the module that determines if a satellite interferes with an RA observation. It has three functions:
-
-  + get_overhead_windows_slew():    determines if a satellite crosses the telescope's main beam as the telescope moves across the sky 
-                                    by looking for intersections of azimuth and altitude and returning a list of OverheadWindows for 
-                                    events where this occurs
-  + get_overhead_windows():         Determines the satellites visible above the horizon during the search window and returns a list of
-                                    OverheadWindows for each event. This can be used to find all satellite visible over the horizon or
-                                    to determine events for a stationary observation if an azimuth and altitude is provided
-  + track_satellite():              tracks a specific satellite, or list of satellites, and returns the times when its visible from the
-                                    facility and the azimuth and altitude at which to observe it from
-
-'''
 
 
 class EventFinderRhodesMill(EventFinder):
+    '''
+    The EventFinderRhodesMill is the module that determines if a satellite interferes with an RA observation. It has three functions:
 
-    def __init__(self, list_of_satellites: List[Satellite], reservation: Reservation, azimuth_altitude_path: List[ObservationPath], search_window: TimeWindow):
-        self._list_of_satellites = list_of_satellites
-        self._reservation = reservation
-        self._path = azimuth_altitude_path
-        self._search_window = search_window
+      + get_overhead_windows_slew():    determines if a satellite crosses the telescope's main beam as the telescope moves across the sky
+                                        by looking for intersections of azimuth and altitude and returning a list of OverheadWindows for
+                                        events where this occurs
+      + get_overhead_windows():         Determines the satellites visible above the horizon during the search window and returns a list of
+                                        OverheadWindows for each event. This can be used to find all satellite visible over the horizon or
+                                        to determine events for a stationary observation if an azimuth and altitude is provided
 
+    '''
     def get_overhead_windows(self):
         ts = load.timescale() #provides time objects with the data tables they need to translate between different time scales: the schedule of UTC leap seconds, and the value of ∆T over time.
         overhead_windows: List[OverheadWindow] = []
-        time_start = ts.from_datetime(convert_datetime_to_utc(self._reservation.time.begin))  # changes the reservation datetime to Skyfield Time object
+        time_start = ts.from_datetime(convert_datetime_to_utc(self._reservation.time.begin))
         time_end = ts.from_datetime(convert_datetime_to_utc(self._reservation.time.end))
         coordinates = wgs84.latlon(self._reservation.facility.point_coordinates.latitude, self._reservation.facility.point_coordinates.longitude)
         for satellite in self._list_of_satellites:
