@@ -13,7 +13,7 @@ class Facility:
     -beamwidth:         beamwidth of the telescope. float. Defaults to 3
     -height:            height of the telescope. float. Defaults to 100
     -name:              name of the facility. String. Defaults to 'Unnamed Facility'
-    -elevation:         elevation (altitude) of the telescope. float. Defaults to 0 to find all sats above the horizon
+    -elevation:         elevation (altitude) of the telescope in meters. float. Defaults to 0 to find all sats above the horizon
     -right_ascension:   (optional) the right ascension of the observation target. String.
     -declination:       (optional) the declination of the observation target. String.
     -azimuth:           (optional) azimuth of the telescope. float.
