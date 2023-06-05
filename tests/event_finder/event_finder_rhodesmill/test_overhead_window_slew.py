@@ -2,7 +2,7 @@ from dataclasses import replace
 from datetime import datetime, timedelta
 
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.event_finder.event_finder_rhodesmill.overhead_window_slew import OverheadWindowSlew, \
+from satellite_determination.event_finder.event_finder_rhodesmill.support.overhead_window_slew import OverheadWindowSlew, \
     AntennaPosition
 from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY
 
