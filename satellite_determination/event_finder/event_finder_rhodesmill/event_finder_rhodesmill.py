@@ -136,10 +136,9 @@ class EventFinderRhodesMill:
         antenna_positions = [
             AntennaPosition(
                 satellite_positions=self._get_satellite_positions(
-                    timestamps=PseudoContinuousTimestampsCalculator(
-                        time_window=TimeWindow(begin=antenna_direction.time,
-                                               end=self._antenna_direction_path[index + 1].time)).run(),
-                    satellite_rhodesmill_with_respect_to_facility=satellite_rhodesmill_with_respect_to_facility),
+                    satellite_rhodesmill_with_respect_to_facility=satellite_rhodesmill_with_respect_to_facility,
+                    time_window=TimeWindow(begin=antenna_direction.time,
+                                           end=self._antenna_direction_path[index + 1].time)),
                 antenna_direction=antenna_direction
             )
             for index, antenna_direction in enumerate(self._antenna_direction_path[:-1])
@@ -155,14 +154,15 @@ class EventFinderRhodesMill:
         return wgs84.latlon(self._reservation.facility.point_coordinates.latitude,
                             self._reservation.facility.point_coordinates.longitude)
 
-    def _get_satellite_positions(self, timestamps: List[datetime], satellite_rhodesmill_with_respect_to_facility: EarthSatellite) -> List[PositionTime]:
-        timestamps_rhodesmill = [self._rhodesmill_timescale.from_datetime(timestamp) for timestamp in timestamps]
+    def _get_satellite_positions(self, satellite_rhodesmill_with_respect_to_facility: EarthSatellite, time_window: TimeWindow) -> List[PositionTime]:
+        pseudo_continuous_timestamps = PseudoContinuousTimestampsCalculator(time_window=time_window).run()
+        timestamps_rhodesmill = self._rhodesmill_timescale.from_datetimes(pseudo_continuous_timestamps)
         topocentrics = satellite_rhodesmill_with_respect_to_facility.at(timestamps_rhodesmill)
         return [PositionTime(
             altitude=altitude.degrees,
             azimuth=azimuth.degrees,
             time=timestamp
-        ) for (altitude, azimuth), timestamp in zip(topocentrics.altaz(), timestamps)]
+        ) for (altitude, azimuth), timestamp in zip(topocentrics.altaz(), pseudo_continuous_timestamps)]
 
     @cached_property
     def _rhodesmill_timescale(self) -> Timescale:
