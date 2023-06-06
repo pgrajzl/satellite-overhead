@@ -55,7 +55,8 @@ class OverheadWindowSlew:
                     exit_events.append(timestamp)
                     self._previously_in_view = False
         exit_events.append(self._cutoff_time)
-        return [TimeWindow(begin=begin_event, end=exit_event) for begin_event, exit_event in zip(enter_events, exit_events)]
+        return [TimeWindow(begin=convert_datetime_to_utc(begin_event),
+                           end=convert_datetime_to_utc(exit_event)) for begin_event, exit_event in zip(enter_events, exit_events)]
 
     @cached_property
     def _antenna_positions_by_time(self) -> List[AntennaPosition]:

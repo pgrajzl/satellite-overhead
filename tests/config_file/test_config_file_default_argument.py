@@ -43,8 +43,8 @@ class TestConfigFileDefaultArgument:
         assert config_file.reservation == Reservation(
             facility=Facility(
                 right_ascension='4h42m',
-                point_coordinates=Coordinates(latitude=40.8178049,
-                                              longitude=-121.4695413),
+                coordinates=Coordinates(latitude=40.8178049,
+                                        longitude=-121.4695413),
                 name='ARBITRARY_2',
                 declination='-38d6m50.8s',
             ),

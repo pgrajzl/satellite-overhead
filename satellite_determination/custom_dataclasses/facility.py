@@ -9,7 +9,7 @@ class Facility:
     The Facility data class contains the observation parameters of the facility and the object it is tracking, including coordinates
     of the RA telescope and its beamwidth, as well as the right ascension and declination values for its observation target:
 
-    -point_coordinates: location of RA facility. Coordinates.
+    -coordinates:       location of RA facility. Coordinates.
     -beamwidth:         beamwidth of the telescope. float. Defaults to 3
     -height:            height of the telescope. float. Defaults to 100
     -name:              name of the facility. String. Defaults to 'Unnamed Facility'
@@ -22,7 +22,7 @@ class Facility:
     the target is necessary but not the azimuth and elevation. The opposite is true for stationary observations.
 
     '''
-    point_coordinates: Coordinates
+    coordinates: Coordinates
     beamwidth: float = 3
     height: float = 100
     name: Optional[str] = 'Unnamed Facility'

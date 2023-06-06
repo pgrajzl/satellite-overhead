@@ -29,7 +29,7 @@ class TestAzimuthFilter:
     @property
     def _arbitrary_reservation(self) -> Reservation:
         return Reservation(facility=Facility(elevation=0,
-                                             point_coordinates=Coordinates(latitude=40.8178049, longitude=-121.4695413),
+                                             coordinates=Coordinates(latitude=40.8178049, longitude=-121.4695413),
                                              azimuth=30,
                                              name='name'),
                            time=TimeWindow(begin=datetime(year=2023, month=2, day=1, hour=1),

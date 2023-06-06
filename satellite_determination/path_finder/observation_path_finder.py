@@ -21,7 +21,7 @@ class ObservationPathFinder:
 
     def calculate_path(self) -> List[PositionTime]:
         observation_path = []
-        observing_location = EarthLocation(lat=str(self._reservation.facility.point_coordinates.latitude), lon=str(self._reservation.facility.point_coordinates.longitude), height=self._reservation.facility.height * u.m)
+        observing_location = EarthLocation(lat=str(self._reservation.facility.coordinates.latitude), lon=str(self._reservation.facility.coordinates.longitude), height=self._reservation.facility.height * u.m)
         target_coordinates = SkyCoord(self._reservation.facility.right_ascension, self._reservation.facility.declination)
         start_time = Time(self._start_time_str, scale='utc')
         end_time = Time(self._end_time_str, scale='utc')
