@@ -19,7 +19,7 @@ class SatellitePositionWithRespectToFacilityRetrieverRhodesmill(SatellitePositio
 
         timestamps_rhodesmill = self._rhodesmill_timescale.from_datetime(self._timestamp)
         topocentric = satellite_rhodesmill_with_respect_to_facility.at(timestamps_rhodesmill)
-        altitude, azimuth = topocentric.altaz()
+        altitude, azimuth, _ = topocentric.altaz()
         return PositionTime(
             altitude=altitude.degrees,
             azimuth=azimuth.degrees,
