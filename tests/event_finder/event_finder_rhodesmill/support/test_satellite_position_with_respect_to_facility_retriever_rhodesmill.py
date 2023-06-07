@@ -1,4 +1,6 @@
+from dataclasses import replace
 from datetime import datetime
+from math import isclose
 
 import pytz
 from skyfield.api import load
@@ -18,10 +20,7 @@ class TestSatellitePositionWithRespectToFacilityRetrieverRhodesmill:
     def test_altitude_can_be_negative(self):
         timestamp = datetime(year=2023, month=6, day=7, tzinfo=pytz.UTC)
         facility = Facility(Coordinates(latitude=0, longitude=0))
-        retriever = SatellitePositionWithRespectToFacilityRetrieverRhodesmill(satellite=self._arbitrary_satellite,
-                                                                              timestamp=timestamp,
-                                                                              facility=facility)
-        position = retriever.run()
+        position = self._get_satellite_position(facility=facility, timestamp=timestamp)
         assert position == PositionTime(altitude=-15.275020193822348,
                                         azimuth=301.7439304748296,
                                         time=timestamp)
@@ -29,13 +28,29 @@ class TestSatellitePositionWithRespectToFacilityRetrieverRhodesmill:
     def test_azimuth_can_be_greater_than_180(self):
         timestamp = datetime(year=2023, month=6, day=7, tzinfo=pytz.UTC)
         facility = Facility(Coordinates(latitude=0, longitude=0))
-        retriever = SatellitePositionWithRespectToFacilityRetrieverRhodesmill(satellite=self._arbitrary_satellite,
-                                                                              timestamp=timestamp,
-                                                                              facility=facility)
-        position = retriever.run()
+        position = self._get_satellite_position(facility=facility, timestamp=timestamp)
         assert position == PositionTime(altitude=-15.275020193822348,
                                         azimuth=301.7439304748296,
                                         time=timestamp)
+
+    def test_altitude_is_not_negative_if_above_horizon_but_below_facility(self):
+        timestamp = datetime(year=2023, month=6, day=7, tzinfo=pytz.UTC)
+        facility_where_satellite_has_zero_altitude = Facility(Coordinates(latitude=0, longitude=-24.66605))
+        same_facility_with_higher_elevation = replace(facility_where_satellite_has_zero_altitude, elevation=1000)
+        position_at_horizon = self._get_satellite_position(facility=facility_where_satellite_has_zero_altitude,
+                                                           timestamp=timestamp)
+        position_with_higher_elevation = self._get_satellite_position(facility=same_facility_with_higher_elevation,
+                                                                      timestamp=timestamp)
+        assert isclose(position_at_horizon.altitude, 0, abs_tol=1e-4)
+        assert position_at_horizon.altitude > 0
+        assert position_with_higher_elevation.altitude > 0
+        assert position_with_higher_elevation.altitude > position_at_horizon.altitude
+
+    def _get_satellite_position(self, facility: Facility, timestamp: datetime) -> PositionTime:
+        retriever = SatellitePositionWithRespectToFacilityRetrieverRhodesmill(satellite=self._arbitrary_satellite,
+                                                                              timestamp=timestamp,
+                                                                              facility=facility)
+        return retriever.run()
 
     @property
     def _arbitrary_satellite(self) -> Satellite:
