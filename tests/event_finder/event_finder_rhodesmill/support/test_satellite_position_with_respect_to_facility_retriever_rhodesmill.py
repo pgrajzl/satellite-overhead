@@ -3,7 +3,6 @@ from datetime import datetime
 from math import isclose
 
 import pytz
-from skyfield.api import load
 
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
@@ -33,7 +32,7 @@ class TestSatellitePositionWithRespectToFacilityRetrieverRhodesmill:
                                         azimuth=301.7439304748296,
                                         time=timestamp)
 
-    def test_altitude_is_not_negative_if_above_horizon_but_below_facility(self):
+    def test_altitude_decreases_as_elevation_increases(self):
         timestamp = datetime(year=2023, month=6, day=7, tzinfo=pytz.UTC)
         facility_where_satellite_has_zero_altitude = Facility(Coordinates(latitude=0, longitude=-24.66605))
         same_facility_with_higher_elevation = replace(facility_where_satellite_has_zero_altitude, elevation=1000)
@@ -43,8 +42,7 @@ class TestSatellitePositionWithRespectToFacilityRetrieverRhodesmill:
                                                                       timestamp=timestamp)
         assert isclose(position_at_horizon.altitude, 0, abs_tol=1e-4)
         assert position_at_horizon.altitude > 0
-        assert position_with_higher_elevation.altitude > 0
-        assert position_with_higher_elevation.altitude > position_at_horizon.altitude
+        assert position_with_higher_elevation.altitude < 0
 
     def _get_satellite_position(self, facility: Facility, timestamp: datetime) -> PositionTime:
         retriever = SatellitePositionWithRespectToFacilityRetrieverRhodesmill(satellite=self._arbitrary_satellite,
