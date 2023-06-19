@@ -1,6 +1,8 @@
 from dataclasses import replace
 from datetime import datetime, timedelta
 
+import pytz
+
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import SatellitesWithinMainBeamFilter, \
     AntennaPosition
@@ -109,6 +111,24 @@ class TestSatellitesWithinMainBeam:
         windows = slew.run()
         assert windows == []
 
+    def test_no_satellites_past_cutoff_time(self):
+        azimuth_outside_main_beam = ARBITRARY_ANTENNA_POSITION.azimuth + ARBITRARY_FACILITY.half_beamwidth + SMALL_EPSILON
+        satellite_position_outside_main_beam = replace(ARBITRARY_ANTENNA_POSITION, azimuth=azimuth_outside_main_beam)
+        satellite_position_inside_main_beam_but_past_cutoff_time = replace(ARBITRARY_ANTENNA_POSITION,
+                                                                           time=ARBITRARY_ANTENNA_POSITION.time + timedelta(seconds=2))
+        satellite_positions = [
+            satellite_position_outside_main_beam,
+            satellite_position_inside_main_beam_but_past_cutoff_time
+        ]
+        cutoff_time = ARBITRARY_ANTENNA_POSITION.time + timedelta(seconds=1)
+        slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
+                                              antenna_positions=[
+                                                  AntennaPosition(satellite_positions=satellite_positions,
+                                                                  antenna_direction=ARBITRARY_ANTENNA_POSITION)],
+                                              cutoff_time=cutoff_time)
+        windows = slew.run()
+        assert windows == []
+
     @property
     def _arbitrary_cutoff_time(self) -> datetime:
-        return datetime.now()
+        return datetime.now(tz=pytz.UTC)

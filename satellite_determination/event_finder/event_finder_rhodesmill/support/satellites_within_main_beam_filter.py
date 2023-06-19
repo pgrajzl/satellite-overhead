@@ -65,9 +65,9 @@ class SatellitesWithinMainBeamFilter:
     def _antenna_positions_by_time(self) -> List[AntennaPosition]:
         return sorted(self._antenna_positions, key=lambda x: x.antenna_direction.time)
 
-    @staticmethod
-    def _satellite_position_above_the_horizon(antenna_position: AntennaPosition) -> List[PositionTime]:
-        return [position for position in antenna_position.satellite_positions if position.altitude >= 0]
+    def _satellite_position_above_the_horizon(self, antenna_position: AntennaPosition) -> List[PositionTime]:
+        return [position for position in antenna_position.satellite_positions
+                if position.altitude >= 0 and position.time < self._cutoff_time]
 
     @staticmethod
     def _sort_satellite_positions_by_time(satellite_positions: List[PositionTime]) -> List[PositionTime]:
