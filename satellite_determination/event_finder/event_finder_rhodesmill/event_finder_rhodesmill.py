@@ -152,11 +152,12 @@ class EventFinderRhodesMill:
                 satellite_positions=self._get_satellite_positions(
                     satellite=satellite,
                     time_window=TimeWindow(
-                        begin=antenna_direction.time,
+                        begin=max(self._reservation.time.begin, antenna_direction.time),
                         end=end_time
                     )),
                 antenna_direction=antenna_direction)
-            for antenna_direction, end_time in zip(self._antenna_direction_path, antenna_direction_end_times)]
+            for antenna_direction, end_time in zip(self._antenna_direction_path, antenna_direction_end_times)
+            if end_time > self._reservation.time.begin]
         time_windows = SatellitesWithinMainBeamFilter(facility=self._reservation.facility,
                                                       antenna_positions=antenna_positions,
                                                       cutoff_time=self._reservation.time.end).run()

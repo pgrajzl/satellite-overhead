@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import SatellitesWithinMainBeamFilter, \
     AntennaPosition
+from tests.definitions import SMALL_EPSILON
 from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY
 
 
@@ -93,12 +94,12 @@ class TestSatellitesWithinMainBeam:
 
     @property
     def _value_slightly_larger_than_half_beamwidth(self) -> float:
-        return ARBITRARY_FACILITY.beamwidth - self._small_epsilon
+        return ARBITRARY_FACILITY.beamwidth - SMALL_EPSILON
 
     def test_one_satellite_below_horizon_but_within_beamwidth(self):
         antenna_position_at_horizon = replace(ARBITRARY_ANTENNA_POSITION, altitude=0)
         satellite_positions = [
-            replace(antenna_position_at_horizon, altitude=-self._small_epsilon)
+            replace(antenna_position_at_horizon, altitude=-SMALL_EPSILON)
         ]
         slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
                                               antenna_positions=[
@@ -107,10 +108,6 @@ class TestSatellitesWithinMainBeam:
                                               cutoff_time=self._arbitrary_cutoff_time)
         windows = slew.run()
         assert windows == []
-
-    @property
-    def _small_epsilon(self) -> float:
-        return 1e-3
 
     @property
     def _arbitrary_cutoff_time(self) -> datetime:

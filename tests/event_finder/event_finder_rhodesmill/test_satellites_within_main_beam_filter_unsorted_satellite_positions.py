@@ -7,6 +7,7 @@ from satellite_determination.custom_dataclasses.position_time import PositionTim
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import AntennaPosition, \
     SatellitesWithinMainBeamFilter
+from tests.definitions import SMALL_EPSILON
 from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY
 
 
@@ -34,9 +35,8 @@ class TestSatellitesWithinMainBeamOneAntennaPositionMultipleSatellitePositions:
 
     @cached_property
     def _satellite_positions_by_time_ascending(self) -> List[PositionTime]:
-        small_epsilon = 1e-3
-        value_slightly_larger_than_half_beamwidth = ARBITRARY_FACILITY.beamwidth - small_epsilon
-        out_of_altitude = ARBITRARY_ANTENNA_POSITION.altitude + value_slightly_larger_than_half_beamwidth
+        value_slightly_larger_than_half_beam_width = ARBITRARY_FACILITY.beamwidth - SMALL_EPSILON
+        out_of_altitude = ARBITRARY_ANTENNA_POSITION.altitude + value_slightly_larger_than_half_beam_width
         return [
             replace(ARBITRARY_ANTENNA_POSITION,
                     altitude=out_of_altitude if i % 2 else ARBITRARY_ANTENNA_POSITION.altitude,
