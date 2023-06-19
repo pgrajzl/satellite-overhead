@@ -1,15 +1,19 @@
+import itertools
 from dataclasses import dataclass
 from datetime import datetime
 from functools import cached_property
 from math import isclose
 from typing import List
 
-from skyfield.toposlib import GeographicPosition, wgs84
+import numpy
 
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.utilities import convert_datetime_to_utc
+
+
+DEGREES_IN_A_CIRCLE = 360
 
 
 @dataclass
@@ -24,7 +28,7 @@ class EnterAndExitEvents:
     exit: List[datetime]
 
 
-class OverheadWindowSlew:
+class SatellitesWithinMainBeamFilter:
     def __init__(self,
                  facility: Facility,
                  antenna_positions: List[AntennaPosition],
@@ -41,13 +45,12 @@ class OverheadWindowSlew:
             satellite_positions = self._satellite_position_above_the_horizon(antenna_position=antenna_position)
             for satellite_position in self._sort_satellite_positions_by_time(satellite_positions=satellite_positions):
                 timestamp = convert_datetime_to_utc(satellite_position.time)
-                is_within_beamwidth_altitude = isclose(satellite_position.altitude,
-                                                       antenna_position.antenna_direction.altitude,
-                                                       abs_tol=self._facility.half_beamwidth)
-                is_within_beamwidth_azimuth = isclose(satellite_position.azimuth,
-                                                      antenna_position.antenna_direction.azimuth,
-                                                      abs_tol=self._facility.half_beamwidth)
-                now_in_view = is_within_beamwidth_altitude and is_within_beamwidth_azimuth
+                is_within_beam_width_altitude = isclose(satellite_position.altitude,
+                                                        antenna_position.antenna_direction.altitude,
+                                                        abs_tol=self._facility.half_beamwidth)
+                now_in_view = is_within_beam_width_altitude \
+                              and self._is_within_beam_with_azimuth(satellite_azimuth=satellite_position.azimuth,
+                                                                    antenna_azimuth=antenna_position.antenna_direction.azimuth)
                 if now_in_view and not self._previously_in_view:
                     enter_events.append(timestamp)
                     self._previously_in_view = True
@@ -69,3 +72,9 @@ class OverheadWindowSlew:
     @staticmethod
     def _sort_satellite_positions_by_time(satellite_positions: List[PositionTime]) -> List[PositionTime]:
         return sorted(satellite_positions, key=lambda x: x.time)
+
+    def _is_within_beam_with_azimuth(self, satellite_azimuth: float, antenna_azimuth: float) -> bool:
+        positions_to_compare_original = [satellite_azimuth, antenna_azimuth]
+        positions_to_compare_next_modulus = (numpy.array(positions_to_compare_original) + DEGREES_IN_A_CIRCLE).tolist()
+        positions_to_compare = itertools.combinations(positions_to_compare_original + positions_to_compare_next_modulus, 2)
+        return any([isclose(*positions, abs_tol=self._facility.half_beamwidth) for positions in positions_to_compare])

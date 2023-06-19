@@ -13,8 +13,8 @@ from satellite_determination.custom_dataclasses.position_time import PositionTim
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.event_finder.event_finder_rhodesmill.support.overhead_window_slew import AntennaPosition, \
-    OverheadWindowSlew
+from satellite_determination.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import AntennaPosition, \
+    SatellitesWithinMainBeamFilter
 from satellite_determination.event_finder.event_finder_rhodesmill.support.overhead_window_from_events import \
     EventRhodesmill, EventTypesRhodesmill, OverheadWindowFromEvents
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
@@ -145,22 +145,21 @@ class EventFinderRhodesMill:
         ]
 
     def _get_satellite_overhead_windows(self, satellite: Satellite) -> Iterable[OverheadWindow]:
+        antenna_direction_end_times = [antenna_direction.time for antenna_direction in self._antenna_direction_path[1:]] \
+                                      + [self._reservation.time.end]
         antenna_positions = [
             AntennaPosition(
-                satellite_positions=self._get_satellite_positions(satellite=satellite,
-                                                                  time_window=TimeWindow(
-                                                                      begin=antenna_direction.time,
-                                                                      end=self._antenna_direction_path[index + 1].time \
-                                                                        if index + 1 < len(self._antenna_direction_path) \
-                                                                        else self._reservation.time.end
-                                                                  )),
-                antenna_direction=antenna_direction
-            )
-            for index, antenna_direction in enumerate(self._antenna_direction_path)
-        ]
-        time_windows = OverheadWindowSlew(facility=self._reservation.facility,
-                                          antenna_positions=antenna_positions,
-                                          cutoff_time=self._reservation.time.end).run()
+                satellite_positions=self._get_satellite_positions(
+                    satellite=satellite,
+                    time_window=TimeWindow(
+                        begin=antenna_direction.time,
+                        end=end_time
+                    )),
+                antenna_direction=antenna_direction)
+            for antenna_direction, end_time in zip(self._antenna_direction_path, antenna_direction_end_times)]
+        time_windows = SatellitesWithinMainBeamFilter(facility=self._reservation.facility,
+                                                      antenna_positions=antenna_positions,
+                                                      cutoff_time=self._reservation.time.end).run()
         return (OverheadWindow(satellite=satellite, overhead_time=time_window) for time_window in time_windows)
 
     def _get_satellite_positions(self, satellite: Satellite, time_window: TimeWindow) -> List[PositionTime]:
