@@ -70,9 +70,9 @@ class WindowFinder:
         ]
 
     def _satellites_overhead(self, reservation: Reservation) -> List[OverheadWindow]:
-        search_window = TimeWindow(begin=reservation.time.begin, end=reservation.time.end)
-        return EventFinderRhodesMill(list_of_satellites=self._satellites, reservation=reservation, antenna_direction_path=[], search_window=search_window).get_overhead_windows()
-
+        return EventFinderRhodesMill(list_of_satellites=self._satellites,
+                                     reservation=reservation,
+                                     antenna_direction_path=[]).get_overhead_windows()
 
     @property
     def _potential_start_times(self) -> List[datetime]:

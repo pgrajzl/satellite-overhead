@@ -1,19 +1,13 @@
 import csv
-from abc import ABC
-from functools import cached_property
-from math import floor
 
 import pytz as pytz
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Iterable, List, Type
-from skyfield.api import load, wgs84
-from skyfield.sgp4lib import EarthSatellite
-from skyfield.timelib import Timescale
-from skyfield.toposlib import GeographicPosition
+from skyfield.api import load
+from skyfield.toposlib import GeographicPosition, wgs84
 
 from satellite_determination.azimuth_filter.azimuth_filtering import AzimuthFilter
-from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
@@ -135,6 +129,13 @@ class EventFinderRhodesMill:
                 writer.writerow(data)
             f.close()
         return 0
+
+    @property
+    def _facility_coordinates_rhodesmill(self) -> GeographicPosition:
+        return wgs84.latlon(
+            latitude_degrees=self._reservation.facility.coordinates.latitude,
+            longitude_degrees=self._reservation.facility.coordinates.longitude,
+            elevation_m=self._reservation.facility.elevation)
 
     def get_overhead_windows_slew(self) -> List[OverheadWindow]:
         return [
