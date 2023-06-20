@@ -1,15 +1,14 @@
 from dataclasses import dataclass
-from enum import Enum
 from functools import cached_property
-from typing import List, Type
+from typing import List
 
-from satellite_determination.custom_dataclasses.observation_path import ObservationPath
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
+from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder import EventFinder
-from satellite_determination.event_finder.event_finder_rhodesmill import EventFinderRhodesMill
+from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from satellite_determination.frequency_filter.frequency_filter import FrequencyFilter
 from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
 
@@ -48,5 +47,5 @@ class Main:
                                observation_frequency=self._reservation.frequency).filter_frequencies()
 
     @property
-    def _altitude_azimuth_pairs(self) -> List[ObservationPath]:
+    def _altitude_azimuth_pairs(self) -> List[PositionTime]:
         return ObservationPathFinder(reservation=self._reservation, time_window=self._reservation.time).calculate_path()

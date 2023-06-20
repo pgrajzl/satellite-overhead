@@ -22,7 +22,7 @@ def main():
     search_window = config_file.search_window
 
     print('Finding satellite interference events for:\n')
-    print('Facility: ', reservation.facility.name, ' at ', reservation.facility.point_coordinates)
+    print('Facility: ', reservation.facility.name, ' at ', reservation.facility.coordinates)
     print('Reservation start time: ', reservation.time.begin)
     print('Reservation end time: ', reservation.time.end)
     print('Observation frequency: ', reservation.frequency.frequency, ' MHz')

@@ -25,8 +25,8 @@ class ConfigFile:
         return Reservation(
             facility=Facility(
                 right_ascension=self._reservation_parameters['RightAscension'],
-                point_coordinates=Coordinates(latitude=float(self._reservation_parameters['Latitude']),
-                                              longitude=float(self._reservation_parameters['Longitude'])),
+                coordinates=Coordinates(latitude=float(self._reservation_parameters['Latitude']),
+                                        longitude=float(self._reservation_parameters['Longitude'])),
                 name=self._reservation_parameters['Name'],
                 declination=self._reservation_parameters['Declination'],
             ),

@@ -1,12 +1,22 @@
-from datetime import timedelta
-from typing import List
+from datetime import datetime
+from typing import Iterable, List
 from skyfield.api import load, wgs84
+from skyfield.toposlib import GeographicPosition
+
 from satellite_determination.azimuth_filter.azimuth_filtering import AzimuthFilter
+
+from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
+from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
+from satellite_determination.event_finder.event_finder_rhodesmill.support.pseudo_continuous_timestamps_calculator import \
+    PseudoContinuousTimestampsCalculator
+from satellite_determination.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import AntennaPosition, \
+    SatellitesWithinMainBeamFilter
 from satellite_determination.event_finder.event_finder import EventFinder
 from satellite_determination.event_finder.support.overhead_window_from_events import \
     EventRhodesmill, EventTypesRhodesmill, OverheadWindowFromEvents
+from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.utilities import convert_datetime_to_utc
 
 
@@ -27,7 +37,7 @@ class EventFinderRhodesMill(EventFinder):
         overhead_windows: List[OverheadWindow] = []
         time_start = ts.from_datetime(convert_datetime_to_utc(self._reservation.time.begin))
         time_end = ts.from_datetime(convert_datetime_to_utc(self._reservation.time.end))
-        coordinates = wgs84.latlon(self._reservation.facility.point_coordinates.latitude, self._reservation.facility.point_coordinates.longitude)
+        coordinates = self._facility_coordinates_rhodesmill
         for satellite in self._list_of_satellites:
             rhodesmill_earthsat = satellite.to_rhodesmill()
             event_times, events = rhodesmill_earthsat.find_events(coordinates, time_start, time_end, altitude_degrees=self._reservation.facility.elevation)
@@ -50,40 +60,51 @@ class EventFinderRhodesMill(EventFinder):
         else:
             return overhead_windows
 
-    def get_overhead_windows_slew(self):
-        ts = load.timescale()
-        azimuth_filtered_overhead_windows = []
-        coordinates = wgs84.latlon(self._reservation.facility.point_coordinates.latitude,
-                                   self._reservation.facility.point_coordinates.longitude)
-        half_beamwidth = self._reservation.facility.beamwidth / 2
-        sat_in_view_flag = 0
-        time_delta = timedelta(seconds=1)  # timedelta to check new azimuth, if we move to more granular seconds takes FOREVER to run but get more windows
-        for sat in self._list_of_satellites:
-            enter_events = []
-            exit_events = []
-            rhodesmill_earthsat = sat.to_rhodesmill()
-            difference = rhodesmill_earthsat - coordinates
-            for point in self._path:
-                starting_interval = point.time
-                ending_interval = point.time + timedelta(minutes=1)
-                while starting_interval < ending_interval:
-                    topocentric = difference.at(ts.from_datetime(point.time))
-                    alt, az, distance = topocentric.altaz()
-                    satellite_altitude = alt.degrees
-                    satellite_azimuth = min(az.degrees, 360 - az.degrees)
-                    if (point.altitude.degree - half_beamwidth) <= satellite_altitude <= (point.altitude.degree + half_beamwidth):
-                            if (point.azimuth.degree - half_beamwidth) <= satellite_azimuth <= (point.azimuth.degree + half_beamwidth) and sat_in_view_flag == 0:
-                                enter_events.append(convert_datetime_to_utc(point.time))
-                            elif (satellite_azimuth > (point.azimuth.degree + half_beamwidth)) or (satellite_azimuth < (point.azimuth.degree - half_beamwidth)):
-                                if sat_in_view_flag == 1:
-                                    exit_events.append(convert_datetime_to_utc(point.time))
-                    starting_interval+=time_delta
-            if enter_events != exit_events:
-                exit_events.append(self._reservation.time.end)
-            enter_and_exit_pairs = zip(enter_events, exit_events)
-            time_windows = [TimeWindow(begin=begin_event, end=exit_event) for begin_event, exit_event in enter_and_exit_pairs]
-            overhead_windows = [OverheadWindow(satellite=sat, overhead_time=time_window) for
-                                time_window in time_windows]
-            for window in overhead_windows:
-                azimuth_filtered_overhead_windows.append(window)
-        return azimuth_filtered_overhead_windows
+    @property
+    def _facility_coordinates_rhodesmill(self) -> GeographicPosition:
+        return wgs84.latlon(
+            latitude_degrees=self._reservation.facility.coordinates.latitude,
+            longitude_degrees=self._reservation.facility.coordinates.longitude,
+            elevation_m=self._reservation.facility.elevation)
+
+    def get_overhead_windows_slew(self) -> List[OverheadWindow]:
+        return [
+            overhead_window
+            for satellite in self._list_of_satellites
+            for overhead_window in self._get_satellite_overhead_windows(satellite=satellite)
+        ]
+
+    def _get_satellite_overhead_windows(self, satellite: Satellite) -> Iterable[OverheadWindow]:
+        antenna_direction_end_times = [antenna_direction.time for antenna_direction in self._antenna_direction_path[1:]] \
+                                      + [self._reservation.time.end]
+        antenna_positions = [
+            AntennaPosition(
+                satellite_positions=self._get_satellite_positions(
+                    satellite=satellite,
+                    time_window=TimeWindow(
+                        begin=max(self._reservation.time.begin, antenna_direction.time),
+                        end=end_time
+                    )),
+                antenna_direction=antenna_direction)
+            for antenna_direction, end_time in zip(self._antenna_direction_path, antenna_direction_end_times)
+            if end_time > self._reservation.time.begin]
+        time_windows = SatellitesWithinMainBeamFilter(facility=self._reservation.facility,
+                                                      antenna_positions=antenna_positions,
+                                                      cutoff_time=self._reservation.time.end).run()
+        return (OverheadWindow(satellite=satellite, overhead_time=time_window) for time_window in time_windows)
+
+    def _get_satellite_positions(self, satellite: Satellite, time_window: TimeWindow) -> List[PositionTime]:
+        pseudo_continuous_timestamps = PseudoContinuousTimestampsCalculator(time_window=time_window,
+                                                                            resolution=self._time_continuity_resolution).run()
+        return [self._get_position_with_respect_to_facility(satellite=satellite,
+                                                            timestamp=convert_datetime_to_utc(timestamp),
+                                                            facility=self._reservation.facility)
+                for timestamp in pseudo_continuous_timestamps]
+
+    def _get_position_with_respect_to_facility(self,
+                                               satellite: Satellite,
+                                               timestamp: datetime,
+                                               facility: Facility) -> PositionTime:
+        return self._satellite_position_with_respect_to_facility_retriever_class(satellite=satellite,
+                                                                                 timestamp=timestamp,
+                                                                                 facility=facility).run()

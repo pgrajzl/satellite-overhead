@@ -21,8 +21,8 @@ class AzimuthFilter:
     def filter_azimuth(self) -> List[OverheadWindow]:
         ts = load.timescale()
         azimuth_filtered_overhead_windows = []
-        coordinates = wgs84.latlon(self._reservation.facility.point_coordinates.latitude,
-                                   self._reservation.facility.point_coordinates.longitude)
+        coordinates = wgs84.latlon(self._reservation.facility.coordinates.latitude,
+                                   self._reservation.facility.coordinates.longitude)
         time_delta = timedelta(seconds=1) #timedelta to check new azimuth, if we move to more granular seconds takes FOREVER to run but get more windows
         for window in self._overhead_windows:
             satellite_azimuth_values = []
