@@ -34,7 +34,6 @@ class TestSortedByLeastNumberOfSatellites:
         suggestions = WindowFinder(
             ideal_reservation=self._ideal_reservation,
             satellites=satellite_list_with_frequency,
-            event_finder=EventFinderRhodesMill,
             start_time_increments=timedelta(hours=4),
             search_window=timedelta(days=1)
         ).search()

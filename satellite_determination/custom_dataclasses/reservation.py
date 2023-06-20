@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 
@@ -25,4 +25,4 @@ class ReservationJsonKey(Enum):
 class Reservation:
     facility: Facility
     time: TimeWindow
-    frequency: FrequencyRange
+    frequency: FrequencyRange = field(default_factory=FrequencyRange)

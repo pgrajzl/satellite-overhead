@@ -21,14 +21,12 @@ class WindowFinder:
     def __init__(self,
                  ideal_reservation: Reservation,
                  satellites: List[Satellite],
-                 event_finder: EventFinderRhodesMill,
                  search_window: timedelta = timedelta(days=1),
                  start_time_increments: timedelta = timedelta(minutes=120)):
         self._ideal_reservation = ideal_reservation
         self._satellites = satellites
         self._search_window = search_window
         self._start_time_increments = start_time_increments
-        self._event_finder = event_finder
 
     def search(self) -> List[SuggestedReservation]:
         suggested_reservations = []
@@ -72,9 +70,9 @@ class WindowFinder:
         ]
 
     def _satellites_overhead(self, reservation: Reservation) -> List[OverheadWindow]:
-        search_window = TimeWindow(begin=reservation.time.begin, end=reservation.time.end)
-        return self._event_finder(list_of_satellites=self._satellites, reservation=reservation, azimuth_altitude_path=None, search_window=search_window).get_overhead_windows()
-
+        return EventFinderRhodesMill(list_of_satellites=self._satellites,
+                                     reservation=reservation,
+                                     antenna_direction_path=[]).get_overhead_windows()
 
     @property
     def _potential_start_times(self) -> List[datetime]:

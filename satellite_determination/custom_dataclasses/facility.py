@@ -7,33 +7,31 @@ from typing import Optional
 class Facility:
     '''
     The Facility data class contains the observation parameters of the facility and the object it is tracking, including coordinates
-    of the RA telescope and its beamwidth, as well as the right ascension and declination values for its observation target. A description
-    of each of the values is below:
+    of the RA telescope and its beamwidth, as well as the right ascension and declination values for its observation target:
 
-    -point_coordinates: latitude and longitude of RA facility. From custom data class Coordinates in custom_dataclasses/coordinates.py
-    -name:              (optional) name of the facility. String.
-    -right_ascension:   (optional) the right ascension of the observation target. This is not needed if you are
-                        performing an observation in a stationary position and the telescope will not slew. String.
-    -declination:       (optional) the declination of the observation target. This is not needed if you are performing
-                        an observation in a stationary position and the telescope will not slew. String.
-    -beamwidth:         (optional) beamwidth of the telescope. This is optional and will assign a default value of 3
-                        if left unassigned. float.
-    -height:            (optional) height of the telescope. float.
-    -azimuth:           (optional) azimuth of the telescope. Only used if performing an observation in a stationary position
-                        so not often needed. float.
-    -elevation:         (optional) elevation (altitude) of the telescope. Only used if performing an observation in a stationary
-                        position so not often needed. float.
+    -coordinates:       location of RA facility. Coordinates.
+    -beamwidth:         beamwidth of the telescope. float. Defaults to 3
+    -height:            height of the telescope. float. Defaults to 100
+    -name:              name of the facility. String. Defaults to 'Unnamed Facility'
+    -elevation:         elevation (altitude) of the telescope in meters. float. Defaults to 0 to find all sats above the horizon
+    -right_ascension:   (optional) the right ascension of the observation target. String.
+    -declination:       (optional) the declination of the observation target. String.
+    -azimuth:           (optional) azimuth of the telescope. float.
 
-    Many of the parameters are left optional as what is needed varies depending on which function of SOPP you are trying to use. If finding interference
-    as an RA telescope tracks a target across the sky, the RA and Dec of the target is necessary but not the azimuth and elevation. The opposite is true
-    for stationary observations.
+    If finding interference as an RA telescope tracks a target across the sky, the right ascension and declination of
+    the target is necessary but not the azimuth and elevation. The opposite is true for stationary observations.
 
     '''
-    point_coordinates: Coordinates
+    coordinates: Coordinates
+    beamwidth: float = 3
+    height: float = 100
     name: Optional[str] = 'Unnamed Facility'
+    elevation: float = 0
     right_ascension: Optional[str] = None
     declination: Optional[str] = None
-    beamwidth: Optional[float] = 3
-    height: Optional[float] = 100 #TODO what is a good default?
-    azimuth: Optional[float] = None #the azimuth and altitude parameters are only necessary if searching for satellites w/ stationary observation
-    elevation: Optional[float] = 0 #default altitude to zero to find all sats above the horizon
+    azimuth: Optional[float] = None
+
+
+    @property
+    def half_beamwidth(self) -> float:
+        return self.beamwidth / 2
