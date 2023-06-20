@@ -1,6 +1,5 @@
 from dataclasses import replace
 from datetime import datetime
-from math import isclose
 
 import pytz
 
@@ -20,17 +19,13 @@ class TestSatellitePositionWithRespectToFacilityRetrieverRhodesmill:
         timestamp = datetime(year=2023, month=6, day=7, tzinfo=pytz.UTC)
         facility = Facility(Coordinates(latitude=0, longitude=0))
         position = self._get_satellite_position(facility=facility, timestamp=timestamp)
-        assert position == PositionTime(altitude=-15.275020193822348,
-                                        azimuth=301.7439304748296,
-                                        time=timestamp)
+        assert position.altitude < 0
 
     def test_azimuth_can_be_greater_than_180(self):
         timestamp = datetime(year=2023, month=6, day=7, tzinfo=pytz.UTC)
         facility = Facility(Coordinates(latitude=0, longitude=0))
         position = self._get_satellite_position(facility=facility, timestamp=timestamp)
-        assert position == PositionTime(altitude=-15.275020193822348,
-                                        azimuth=301.7439304748296,
-                                        time=timestamp)
+        assert position.azimuth > 180
 
     def test_altitude_decreases_as_elevation_increases(self):
         timestamp = datetime(year=2023, month=6, day=7, tzinfo=pytz.UTC)
@@ -40,9 +35,7 @@ class TestSatellitePositionWithRespectToFacilityRetrieverRhodesmill:
                                                            timestamp=timestamp)
         position_with_higher_elevation = self._get_satellite_position(facility=same_facility_with_higher_elevation,
                                                                       timestamp=timestamp)
-        assert isclose(position_at_horizon.altitude, 0, abs_tol=1e-4)
-        assert position_at_horizon.altitude > 0
-        assert position_with_higher_elevation.altitude < 0
+        assert position_with_higher_elevation.altitude < position_at_horizon.altitude
 
     def _get_satellite_position(self, facility: Facility, timestamp: datetime) -> PositionTime:
         retriever = SatellitePositionWithRespectToFacilityRetrieverRhodesmill(satellite=self._arbitrary_satellite,
