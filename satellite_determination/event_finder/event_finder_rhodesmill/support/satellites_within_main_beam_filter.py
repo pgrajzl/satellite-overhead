@@ -42,7 +42,7 @@ class SatellitesWithinMainBeamFilter:
         enter_events = []
         exit_events = []
         for antenna_position in self._antenna_positions_by_time:
-            satellite_positions = self._satellite_position_above_the_horizon(antenna_position=antenna_position)
+            satellite_positions = self._satellite_position_above_the_horizon(satellite_positions=antenna_position.satellite_positions)
             for satellite_position in self._sort_satellite_positions_by_time(satellite_positions=satellite_positions):
                 timestamp = convert_datetime_to_utc(satellite_position.time)
                 is_within_beam_width_altitude = isclose(satellite_position.altitude,
@@ -65,8 +65,8 @@ class SatellitesWithinMainBeamFilter:
     def _antenna_positions_by_time(self) -> List[AntennaPosition]:
         return sorted(self._antenna_positions, key=lambda x: x.antenna_direction.time)
 
-    def _satellite_position_above_the_horizon(self, antenna_position: AntennaPosition) -> List[PositionTime]:
-        return [position for position in antenna_position.satellite_positions
+    def _satellite_position_above_the_horizon(self, satellite_positions: List[PositionTime]) -> List[PositionTime]:
+        return [position for position in satellite_positions
                 if position.altitude >= 0 and position.time < self._cutoff_time]
 
     @staticmethod

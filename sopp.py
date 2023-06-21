@@ -35,7 +35,7 @@ def main():
     satellite_list_with_frequencies = [replace(satellite, frequency=frequency_list.get(satellite.tle_information.satellite_number, []))
                                        for satellite in satellite_list]
 
-    results = Main(reservation=reservation, search_window=search_window, satellites=satellite_list_with_frequencies).run()
+    results = Main(reservation=reservation, satellites=satellite_list_with_frequencies).run()
 
     print("=======================================================================================\n")
     print('       Found ', len(results.interference_windows), ' instances of satellites crossing the main beam.')
