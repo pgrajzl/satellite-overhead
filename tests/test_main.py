@@ -29,7 +29,6 @@ class EventFinderForTestingMain(EventFinder):
 class TestMain:
     def test_arbitrary_inputs_match_expected_output(self):
         result = Main(reservation=self._arbitrary_reservation,
-                      search_window=self._arbitrary_search_window,
                       satellites=self._satellites).run()
         assert result == MainResults(
             satellites_above_horizon=[OverheadWindow(satellite=self._satellite_in_mainbeam,
@@ -61,11 +60,6 @@ class TestMain:
                 bandwidth=10
             )
         )
-
-    @property
-    def _arbitrary_search_window(self) -> TimeWindow:
-        return TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=14, minute=38, tzinfo=pytz.UTC),
-                          end=datetime(year=2023, month=3, day=30, hour=14, minute=40, tzinfo=pytz.UTC))
 
     @property
     def _satellites(self):

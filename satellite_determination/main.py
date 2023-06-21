@@ -22,10 +22,8 @@ class MainResults:
 class Main:
     def __init__(self,
                  reservation: Reservation,
-                 search_window: TimeWindow,
                  satellites: List[Satellite]):
         self._reservation = reservation
-        self._search_window = search_window
         self._satellites = satellites
 
     def run(self) -> MainResults:
