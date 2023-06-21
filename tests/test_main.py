@@ -54,7 +54,8 @@ class TestMain:
                 name='ARBITRARY_1',
                 declination='-38d6m50.8s',
             ),
-            time=self._arbitrary_search_window,
+            time=TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=14, minute=38, tzinfo=pytz.UTC),
+                            end=datetime(year=2023, month=3, day=30, hour=14, minute=40, tzinfo=pytz.UTC)),
             frequency=FrequencyRange(
                 frequency=135,
                 bandwidth=10

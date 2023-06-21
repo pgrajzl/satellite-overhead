@@ -1,8 +1,8 @@
 import datetime
 
-from astropy.coordinates import EarthLocation, SkyCoord, Angle, AltAz
+from astropy.coordinates import EarthLocation, SkyCoord, AltAz
 from astropy.time import Time
-from astropy import units as u
+from astropy import units
 from typing import List
 from datetime import timedelta
 
@@ -29,7 +29,7 @@ class ObservationPathFinder:
         observation_path = []
         observing_location = EarthLocation(lat=str(self._reservation.facility.coordinates.latitude),
                                            lon=str(self._reservation.facility.coordinates.longitude),
-                                           height=self._reservation.facility.height * u.m)
+                                           height=self._reservation.facility.height * units.m)
         target_coordinates = SkyCoord(self._reservation.facility.right_ascension, self._reservation.facility.declination)
         start_time = self._get_time_as_astropy_time(self._time_window.begin)
         end_time = self._get_time_as_astropy_time(self._time_window.end)
@@ -43,7 +43,7 @@ class ObservationPathFinder:
                 time=start_time.datetime.replace(tzinfo=pytz.UTC)
             )
             observation_path.append(point)
-            start_time+=timedelta(minutes=1)
+            start_time += timedelta(minutes=1)
         return observation_path
 
     @staticmethod
