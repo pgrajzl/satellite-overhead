@@ -38,8 +38,7 @@ class Main:
     def _event_finder(self) -> EventFinder:
         return EventFinderRhodesMill(list_of_satellites=self._frequency_filtered_satellites,
                                      reservation=self._reservation,
-                                     azimuth_altitude_path=self._altitude_azimuth_pairs,
-                                     search_window=self._search_window)
+                                     antenna_direction_path=self._antenna_direction_path)
 
     @property
     def _frequency_filtered_satellites(self) -> List[Satellite]:
@@ -47,5 +46,5 @@ class Main:
                                observation_frequency=self._reservation.frequency).filter_frequencies()
 
     @property
-    def _altitude_azimuth_pairs(self) -> List[PositionTime]:
+    def _antenna_direction_path(self) -> List[PositionTime]:
         return ObservationPathFinder(reservation=self._reservation, time_window=self._reservation.time).calculate_path()

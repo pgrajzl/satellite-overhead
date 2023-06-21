@@ -38,8 +38,8 @@ class ObservationPathFinder:
             altitude_azimuth = AltAz(location=observing_location, obstime=observing_time)
             point_coord = target_coordinates.transform_to(altitude_azimuth)
             point = PositionTime(
-                altitude=Angle(point_coord.alt),
-                azimuth=Angle(point_coord.az),
+                altitude=point_coord.alt.degree,
+                azimuth=point_coord.az.degree,
                 time=start_time.datetime.replace(tzinfo=pytz.UTC)
             )
             observation_path.append(point)

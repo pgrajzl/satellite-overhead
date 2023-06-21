@@ -11,8 +11,8 @@ from satellite_determination.custom_dataclasses.satellite.satellite import Satel
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from tests.definitions import SMALL_EPSILON
-from tests.event_finder.test_event_finder import ARBITRARY_SATELLITE_ALTITUDE, ARBITRARY_SATELLITE_AZIMUTH, \
-    SatellitePositionWithRespectToFacilityRetrieverStub
+from tests.event_finder.event_finder_rhodesmill.test_event_finder import ARBITRARY_SATELLITE_ALTITUDE, \
+    ARBITRARY_SATELLITE_AZIMUTH, SatellitePositionWithRespectToFacilityRetrieverStub
 
 
 class TestEventFinderReservationStartTime:

@@ -33,8 +33,8 @@ class TestMain:
                       satellites=self._satellites).run()
         assert result == MainResults(
             satellites_above_horizon=[OverheadWindow(satellite=self._satellite_in_mainbeam,
-                                                     overhead_time=TimeWindow(begin=datetime.datetime(2023, 3, 30, 14, 38, tzinfo=timezone.utc),
-                                                     end=datetime.datetime(2023, 3, 30, 14, 40, tzinfo=timezone.utc))),
+                                                     overhead_time=TimeWindow(begin=datetime(2023, 3, 30, 14, 38, tzinfo=timezone.utc),
+                                                     end=datetime(2023, 3, 30, 14, 40, tzinfo=timezone.utc))),
                                       OverheadWindow(
                                           satellite=self._satellite_inside_frequency_range_and_above_horizon_and_outside_mainbeam,
                                           overhead_time=TimeWindow(
@@ -46,14 +46,12 @@ class TestMain:
                                                  overhead_time=TimeWindow(begin=datetime(2023, 3, 30, 14, 38, tzinfo=timezone.utc),
                                                                           end=datetime(2023, 3, 30, 14, 40, tzinfo=timezone.utc)))])
 
-
     @property
     def _arbitrary_reservation(self) -> Reservation:
         return Reservation(
             facility=Facility(
                 right_ascension='4h42m',
-                point_coordinates=Coordinates(latitude=40.8178049,
-                                              longitude=-121.4695413),
+                coordinates=Coordinates(latitude=40.8178049, longitude=-121.4695413),
                 name='ARBITRARY_1',
                 declination='-38d6m50.8s',
             ),
