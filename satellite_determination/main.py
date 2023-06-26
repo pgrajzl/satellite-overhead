@@ -28,8 +28,8 @@ class Main:
 
     def run(self) -> MainResults:
         return MainResults(
-            satellites_above_horizon=self._event_finder.get_overhead_windows(),
-            interference_windows=self._event_finder.get_overhead_windows_slew()
+            satellites_above_horizon=self._event_finder.get_satellites_above_horizon(),
+            interference_windows=self._event_finder.get_satellites_crossing_main_beam()
         )
 
     @cached_property
@@ -45,4 +45,5 @@ class Main:
 
     @property
     def _antenna_direction_path(self) -> List[PositionTime]:
-        return ObservationPathFinder(reservation=self._reservation, time_window=self._reservation.time).calculate_path()
+        return self._reservation.facility.antenna_positions \
+            or ObservationPathFinder(facility=self._reservation.facility, time_window=self._reservation.time).calculate_path()

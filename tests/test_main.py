@@ -7,6 +7,7 @@ from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
+from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.international_designator import InternationalDesignator
 from satellite_determination.custom_dataclasses.satellite.mean_motion import MeanMotion
@@ -15,15 +16,6 @@ from satellite_determination.custom_dataclasses.satellite.tle_information import
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder import EventFinder
 from satellite_determination.main import Main, MainResults
-
-
-class EventFinderForTestingMain(EventFinder):
-
-    def get_overhead_windows(self) -> List[OverheadWindow]:
-        pass
-
-    def get_overhead_windows_slew(self) -> List[OverheadWindow]:
-        pass
 
 
 class TestMain:
@@ -47,15 +39,16 @@ class TestMain:
 
     @property
     def _arbitrary_reservation(self) -> Reservation:
+        arbitrary_time_window = TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=14, minute=38, tzinfo=pytz.UTC),
+                                           end=datetime(year=2023, month=3, day=30, hour=14, minute=40, tzinfo=pytz.UTC))
         return Reservation(
             facility=Facility(
-                right_ascension='4h42m',
+                antenna_positions=[PositionTime(altitude=90, azimuth=0, time=arbitrary_time_window.begin)],
+                beamwidth=360,
                 coordinates=Coordinates(latitude=40.8178049, longitude=-121.4695413),
                 name='ARBITRARY_1',
-                declination='-38d6m50.8s',
             ),
-            time=TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=14, minute=38, tzinfo=pytz.UTC),
-                            end=datetime(year=2023, month=3, day=30, hour=14, minute=40, tzinfo=pytz.UTC)),
+            time=arbitrary_time_window,
             frequency=FrequencyRange(
                 frequency=135,
                 bandwidth=10

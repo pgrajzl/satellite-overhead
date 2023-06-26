@@ -129,6 +129,27 @@ class TestSatellitesWithinMainBeam:
         windows = slew.run()
         assert windows == []
 
+    def test_satellite_reenters_horizon(self):
+        facility_with_beam_width_that_sees_entire_sky = replace(ARBITRARY_FACILITY, beamwidth=360)
+        satellite_positions_above_horizon = replace(ARBITRARY_ANTENNA_POSITION, altitude=1)
+        satellite_positions_below_horizon = replace(ARBITRARY_ANTENNA_POSITION, altitude=-1)
+        satellite_positions_without_time = [satellite_positions_above_horizon,
+                                            satellite_positions_below_horizon,
+                                            satellite_positions_above_horizon]
+        satellite_positions = [replace(position, time=ARBITRARY_ANTENNA_POSITION.time + timedelta(seconds=i))
+                               for i, position in enumerate(satellite_positions_without_time)]
+        cutoff_time = ARBITRARY_ANTENNA_POSITION.time + timedelta(seconds=len(satellite_positions))
+        slew = SatellitesWithinMainBeamFilter(facility=facility_with_beam_width_that_sees_entire_sky,
+                                              antenna_positions=[
+                                                  AntennaPosition(satellite_positions=satellite_positions,
+                                                                  antenna_direction=ARBITRARY_ANTENNA_POSITION)],
+                                              cutoff_time=cutoff_time)
+        windows = slew.run()
+        assert windows == [
+            TimeWindow(begin=satellite_positions[0].time, end=satellite_positions[1].time),
+            TimeWindow(begin=satellite_positions[2].time, end=cutoff_time),
+        ]
+
     @property
     def _arbitrary_cutoff_time(self) -> datetime:
         return datetime.now(tz=pytz.UTC)

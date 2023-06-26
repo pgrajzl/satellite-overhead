@@ -1,6 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
-from typing import Optional
+from typing import List, Optional
+
+from satellite_determination.custom_dataclasses.position_time import PositionTime
 
 
 @dataclass
@@ -23,6 +25,7 @@ class Facility:
 
     '''
     coordinates: Coordinates
+    antenna_positions: List[PositionTime] = field(default_factory=list)
     beamwidth: float = 3
     height: float = 100
     name: Optional[str] = 'Unnamed Facility'

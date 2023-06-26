@@ -2,6 +2,8 @@ from dataclasses import replace
 from datetime import datetime, timedelta
 from typing import List
 from pathlib import Path
+
+import pytest
 import pytz
 from satellite_determination.utilities import get_script_directory
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
@@ -21,6 +23,7 @@ from tests.window_finder.definitions import ARBITRARY_FACILITY
 _ARBITRARY_FREQUENCY_RANGE = FrequencyRange(frequency=2., bandwidth=1.)
 
 
+@pytest.mark.skip('This feature is deprecated due to users not wanting it.')
 class TestSortedByLeastNumberOfSatellites:
 
     def test_search(self):

@@ -7,8 +7,8 @@ from typing import List
 from datetime import timedelta
 
 from satellite_determination.config_file import TIME_FORMAT
+from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.position_time import PositionTime
-from satellite_determination.custom_dataclasses.reservation import Reservation
 import pytz
 
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
@@ -21,16 +21,16 @@ class ObservationPathFinder:
     target's right ascension and declination to determine this path.
     '''
 
-    def __init__(self, reservation: Reservation, time_window: TimeWindow) -> List[PositionTime]:
-        self._reservation = reservation
+    def __init__(self, facility: Facility, time_window: TimeWindow) -> List[PositionTime]:
+        self._facility = facility
         self._time_window = time_window
 
     def calculate_path(self) -> List[PositionTime]:
         observation_path = []
-        observing_location = EarthLocation(lat=str(self._reservation.facility.coordinates.latitude),
-                                           lon=str(self._reservation.facility.coordinates.longitude),
-                                           height=self._reservation.facility.height * units.m)
-        target_coordinates = SkyCoord(self._reservation.facility.right_ascension, self._reservation.facility.declination)
+        observing_location = EarthLocation(lat=str(self._facility.coordinates.latitude),
+                                           lon=str(self._facility.coordinates.longitude),
+                                           height=self._facility.height * units.m)
+        target_coordinates = SkyCoord(self._facility.right_ascension, self._facility.declination)
         start_time = self._get_time_as_astropy_time(self._time_window.begin)
         end_time = self._get_time_as_astropy_time(self._time_window.end)
         while start_time <= end_time:

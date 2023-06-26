@@ -26,9 +26,9 @@ class EventFinder(ABC):
         self._satellite_position_with_respect_to_facility_retriever_class = satellite_position_with_respect_to_facility_retriever_class
 
     @abstractmethod
-    def get_overhead_windows(self) -> List[OverheadWindow]:
+    def get_satellites_above_horizon(self) -> List[OverheadWindow]:
         pass
 
     @abstractmethod
-    def get_overhead_windows_slew(self) -> List[OverheadWindow]:
+    def get_satellites_crossing_main_beam(self) -> List[OverheadWindow]:
         pass

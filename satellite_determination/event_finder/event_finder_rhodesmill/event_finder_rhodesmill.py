@@ -1,9 +1,6 @@
+from dataclasses import replace
 from datetime import datetime
 from typing import Iterable, List
-from skyfield.api import load, wgs84
-from skyfield.toposlib import GeographicPosition
-
-from satellite_determination.azimuth_filter.azimuth_filtering import AzimuthFilter
 
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
@@ -14,8 +11,6 @@ from satellite_determination.event_finder.event_finder_rhodesmill.support.pseudo
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import AntennaPosition, \
     SatellitesWithinMainBeamFilter
 from satellite_determination.event_finder.event_finder import EventFinder
-from satellite_determination.event_finder.support.overhead_window_from_events import \
-    EventRhodesmill, EventTypesRhodesmill, OverheadWindowFromEvents
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.utilities import convert_datetime_to_utc
 
@@ -32,42 +27,14 @@ class EventFinderRhodesMill(EventFinder):
                                         to determine events for a stationary observation if an azimuth and altitude is provided
 
     '''
-    def get_overhead_windows(self):
-        ts = load.timescale() #provides time objects with the data tables they need to translate between different time scales: the schedule of UTC leap seconds, and the value of ∆T over time.
-        overhead_windows: List[OverheadWindow] = []
-        time_start = ts.from_datetime(convert_datetime_to_utc(self._reservation.time.begin))
-        time_end = ts.from_datetime(convert_datetime_to_utc(self._reservation.time.end))
-        coordinates = self._facility_coordinates_rhodesmill
-        for satellite in self._list_of_satellites:
-            rhodesmill_earthsat = satellite.to_rhodesmill()
-            event_times, events = rhodesmill_earthsat.find_events(coordinates, time_start, time_end, altitude_degrees=self._reservation.facility.elevation)
-            if events.size != 0:
-                rhodesmill_event_list = []
-                for event_time, event in zip(event_times, events):
-                    if event == 0:
-                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.ENTERS, satellite=satellite, timestamp=event_time.utc_datetime())
-                    elif event == 1:
-                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.CULMINATES, satellite=satellite, timestamp=event_time.utc_datetime())
-                    elif event == 2:
-                        translated_event = EventRhodesmill(event_type=EventTypesRhodesmill.EXITS, satellite=satellite, timestamp=event_time.utc_datetime())
-                    rhodesmill_event_list.append(translated_event)
-                sat_windows = OverheadWindowFromEvents(events=rhodesmill_event_list, reservation=self._reservation).get() #passes as custom dataclass Satellite
-                for window in sat_windows:
-                    overhead_windows.append(window)
-        if self._reservation.facility.azimuth is not None:
-            azimuth_filtered_windows = AzimuthFilter(overhead_windows=overhead_windows, reservation=self._reservation).filter_azimuth()
-            return azimuth_filtered_windows
-        else:
-            return overhead_windows
+    def get_satellites_above_horizon(self):
+        facility_with_beam_width_that_sees_entire_sky = replace(self._reservation.facility, beamwidth=360)
+        event_finder = EventFinderRhodesMill(list_of_satellites=self._list_of_satellites,
+                                             reservation=replace(self._reservation, facility=facility_with_beam_width_that_sees_entire_sky),
+                                             antenna_direction_path=[PositionTime(altitude=90, azimuth=0, time=self._reservation.time.begin)])
+        return event_finder.get_satellites_crossing_main_beam()
 
-    @property
-    def _facility_coordinates_rhodesmill(self) -> GeographicPosition:
-        return wgs84.latlon(
-            latitude_degrees=self._reservation.facility.coordinates.latitude,
-            longitude_degrees=self._reservation.facility.coordinates.longitude,
-            elevation_m=self._reservation.facility.elevation)
-
-    def get_overhead_windows_slew(self) -> List[OverheadWindow]:
+    def get_satellites_crossing_main_beam(self) -> List[OverheadWindow]:
         return [
             overhead_window
             for satellite in self._list_of_satellites
