@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-from typing import List
 
 import pytz
 
@@ -14,7 +13,6 @@ from satellite_determination.custom_dataclasses.satellite.mean_motion import Mea
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.event_finder.event_finder import EventFinder
 from satellite_determination.main import Main, MainResults
 
 
@@ -24,31 +22,32 @@ class TestMain:
                       satellites=self._satellites).run()
         assert result == MainResults(
             satellites_above_horizon=[OverheadWindow(satellite=self._satellite_in_mainbeam,
-                                                     overhead_time=TimeWindow(begin=datetime(2023, 3, 30, 14, 38, tzinfo=timezone.utc),
-                                                     end=datetime(2023, 3, 30, 14, 40, tzinfo=timezone.utc))),
+                                                     overhead_time=TimeWindow(
+                                                         begin=datetime(2023, 3, 30, 14, 39, 32, tzinfo=timezone.utc),
+                                                         end=datetime(2023, 3, 30, 14, 39, 36, tzinfo=timezone.utc))),
                                       OverheadWindow(
                                           satellite=self._satellite_inside_frequency_range_and_above_horizon_and_outside_mainbeam,
                                           overhead_time=TimeWindow(
-                                              begin=datetime(2023, 3, 30, 14, 39, 34, 791130, tzinfo=timezone.utc),
-                                              end=datetime(2023, 3, 30, 14, 38, 0, 0, tzinfo=timezone.utc))),
+                                              begin=datetime(2023, 3, 30, 14, 39, 35, tzinfo=timezone.utc),
+                                              end=datetime(2023, 3, 30, 14, 39, 36, tzinfo=timezone.utc))),
 
                                       ],
             interference_windows=[OverheadWindow(satellite=self._satellite_in_mainbeam,
-                                                 overhead_time=TimeWindow(begin=datetime(2023, 3, 30, 14, 38, tzinfo=timezone.utc),
-                                                                          end=datetime(2023, 3, 30, 14, 40, tzinfo=timezone.utc)))])
+                                                 overhead_time=TimeWindow(begin=datetime(2023, 3, 30, 14, 39, 33, tzinfo=timezone.utc),
+                                                                          end=datetime(2023, 3, 30, 14, 39, 36, tzinfo=timezone.utc)))])
 
     @property
     def _arbitrary_reservation(self) -> Reservation:
-        arbitrary_time_window = TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=14, minute=38, tzinfo=pytz.UTC),
-                                           end=datetime(year=2023, month=3, day=30, hour=14, minute=40, tzinfo=pytz.UTC))
+        time_window = TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=14, minute=39, second=32, tzinfo=pytz.UTC),
+                                 end=datetime(year=2023, month=3, day=30, hour=14, minute=39, second=36, tzinfo=pytz.UTC))
         return Reservation(
             facility=Facility(
-                antenna_positions=[PositionTime(altitude=90, azimuth=0, time=arbitrary_time_window.begin)],
-                beamwidth=360,
+                antenna_positions=[PositionTime(altitude=32, azimuth=320, time=time_window.begin)],
+                beamwidth=3.5,
                 coordinates=Coordinates(latitude=40.8178049, longitude=-121.4695413),
                 name='ARBITRARY_1',
             ),
-            time=arbitrary_time_window,
+            time=time_window,
             frequency=FrequencyRange(
                 frequency=135,
                 bandwidth=10
@@ -66,24 +65,28 @@ class TestMain:
     
     @property
     def _satellite_in_mainbeam(self) -> Satellite:
-        return Satellite(name='SAUDISAT 2',
-                         tle_information=TleInformation(argument_of_perigee=2.6581678667138995,
-                                                        drag_coefficient=8.4378e-05,
-                                                        eccentricity=0.0025973,
-                                                        epoch_days=26801.46955532,
-                                                        inclination=1.7179345640550268,
-                                                        international_designator=InternationalDesignator(year=4,
-                                                                                                         launch_number=25,
-                                                                                                         launch_piece='F'),
-                                                        mean_anomaly=3.6295308619113436,
-                                                        mean_motion=MeanMotion(first_derivative=9.605371056982682e-12,
+        return Satellite(name='LILACSAT-2',
+                         tle_information=TleInformation(argument_of_perigee=5.179163326196557,
+                                                        drag_coefficient=0.00020184,
+                                                        eccentricity=0.0012238,
+                                                        epoch_days=26801.52502783,
+                                                        inclination=1.7021271170197139,
+                                                        international_designator=InternationalDesignator(year=15,
+                                                                                                         launch_number=49,
+                                                                                                         launch_piece='K'),
+                                                        mean_anomaly=1.1039888197272412,
+                                                        mean_motion=MeanMotion(first_derivative=1.2756659984194665e-10,
                                                                                second_derivative=0.0,
-                                                                               value=0.06348248105551128),
-                                                        revolution_number=200,
-                                                        right_ascension_of_ascending_node=1.7778098293739442,
-                                                        satellite_number=28371,
+                                                                               value=0.06629635188282393),
+                                                        revolution_number=42329,
+                                                        right_ascension_of_ascending_node=2.4726638018364304,
+                                                        satellite_number=40908,
                                                         classification='U'),
-                         frequency=[FrequencyRange(frequency=137.513, bandwidth=None, status='active')])
+                         frequency=[FrequencyRange(frequency=437.2, bandwidth=None, status='active'),
+                                    FrequencyRange(frequency=437.225, bandwidth=None, status='active'),
+                                    FrequencyRange(frequency=437.2, bandwidth=None, status='active'),
+                                    FrequencyRange(frequency=437.2, bandwidth=None, status='active'),
+                                    FrequencyRange(frequency=144.39, bandwidth=None, status='active')])
 
     @property
     def _satellite_inside_frequency_range_and_above_horizon_and_outside_mainbeam(self) -> Satellite:
