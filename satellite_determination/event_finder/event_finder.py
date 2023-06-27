@@ -14,16 +14,16 @@ from satellite_determination.event_finder.event_finder_rhodesmill.support.satell
 
 class EventFinder(ABC):
     def __init__(self,
+                 antenna_direction_path: List[PositionTime],
                  list_of_satellites: List[Satellite],
                  reservation: Reservation,
-                 antenna_direction_path: List[PositionTime],
-                 time_continuity_resolution: timedelta = timedelta(seconds=1),
-                 satellite_position_with_respect_to_facility_retriever_class: Type[SatellitePositionWithRespectToFacilityRetriever] = SatellitePositionWithRespectToFacilityRetrieverRhodesmill):
-        self._antenna_direction_path = antenna_direction_path
-        self._list_of_satellites = list_of_satellites
-        self._reservation = reservation
-        self._time_continuity_resolution = time_continuity_resolution
-        self._satellite_position_with_respect_to_facility_retriever_class = satellite_position_with_respect_to_facility_retriever_class
+                 satellite_position_with_respect_to_facility_retriever_class: Type[SatellitePositionWithRespectToFacilityRetriever] = SatellitePositionWithRespectToFacilityRetrieverRhodesmill,
+                 time_continuity_resolution: timedelta = timedelta(seconds=1)):
+        self.antenna_direction_path = antenna_direction_path
+        self.list_of_satellites = list_of_satellites
+        self.reservation = reservation
+        self.satellite_position_with_respect_to_facility_retriever_class = satellite_position_with_respect_to_facility_retriever_class
+        self.time_continuity_resolution = time_continuity_resolution
 
     @abstractmethod
     def get_satellites_above_horizon(self) -> List[OverheadWindow]:

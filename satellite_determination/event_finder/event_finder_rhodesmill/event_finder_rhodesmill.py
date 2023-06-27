@@ -28,50 +28,50 @@ class EventFinderRhodesMill(EventFinder):
 
     '''
     def get_satellites_above_horizon(self):
-        facility_with_beam_width_that_sees_entire_sky = replace(self._reservation.facility, beamwidth=360)
-        event_finder = EventFinderRhodesMill(list_of_satellites=self._list_of_satellites,
-                                             reservation=replace(self._reservation, facility=facility_with_beam_width_that_sees_entire_sky),
-                                             antenna_direction_path=[PositionTime(altitude=90, azimuth=0, time=self._reservation.time.begin)])
+        facility_with_beam_width_that_sees_entire_sky = replace(self.reservation.facility, beamwidth=360)
+        event_finder = EventFinderRhodesMill(list_of_satellites=self.list_of_satellites,
+                                             reservation=replace(self.reservation, facility=facility_with_beam_width_that_sees_entire_sky),
+                                             antenna_direction_path=[PositionTime(altitude=90, azimuth=0, time=self.reservation.time.begin)])
         return event_finder.get_satellites_crossing_main_beam()
 
     def get_satellites_crossing_main_beam(self) -> List[OverheadWindow]:
         return [
             overhead_window
-            for satellite in self._list_of_satellites
+            for satellite in self.list_of_satellites
             for overhead_window in self._get_satellite_overhead_windows(satellite=satellite)
         ]
 
     def _get_satellite_overhead_windows(self, satellite: Satellite) -> Iterable[OverheadWindow]:
-        antenna_direction_end_times = [antenna_direction.time for antenna_direction in self._antenna_direction_path[1:]] \
-                                      + [self._reservation.time.end]
+        antenna_direction_end_times = [antenna_direction.time for antenna_direction in self.antenna_direction_path[1:]] \
+                                      + [self.reservation.time.end]
         antenna_positions = [
             AntennaPosition(
                 satellite_positions=self._get_satellite_positions(
                     satellite=satellite,
                     time_window=TimeWindow(
-                        begin=max(self._reservation.time.begin, antenna_direction.time),
+                        begin=max(self.reservation.time.begin, antenna_direction.time),
                         end=end_time
                     )),
                 antenna_direction=antenna_direction)
-            for antenna_direction, end_time in zip(self._antenna_direction_path, antenna_direction_end_times)
-            if end_time > self._reservation.time.begin]
-        time_windows = SatellitesWithinMainBeamFilter(facility=self._reservation.facility,
+            for antenna_direction, end_time in zip(self.antenna_direction_path, antenna_direction_end_times)
+            if end_time > self.reservation.time.begin]
+        time_windows = SatellitesWithinMainBeamFilter(facility=self.reservation.facility,
                                                       antenna_positions=antenna_positions,
-                                                      cutoff_time=self._reservation.time.end).run()
+                                                      cutoff_time=self.reservation.time.end).run()
         return (OverheadWindow(satellite=satellite, overhead_time=time_window) for time_window in time_windows)
 
     def _get_satellite_positions(self, satellite: Satellite, time_window: TimeWindow) -> List[PositionTime]:
         pseudo_continuous_timestamps = PseudoContinuousTimestampsCalculator(time_window=time_window,
-                                                                            resolution=self._time_continuity_resolution).run()
+                                                                            resolution=self.time_continuity_resolution).run()
         return [self._get_position_with_respect_to_facility(satellite=satellite,
                                                             timestamp=convert_datetime_to_utc(timestamp),
-                                                            facility=self._reservation.facility)
+                                                            facility=self.reservation.facility)
                 for timestamp in pseudo_continuous_timestamps]
 
     def _get_position_with_respect_to_facility(self,
                                                satellite: Satellite,
                                                timestamp: datetime,
                                                facility: Facility) -> PositionTime:
-        return self._satellite_position_with_respect_to_facility_retriever_class(satellite=satellite,
-                                                                                 timestamp=timestamp,
-                                                                                 facility=facility).run()
+        return self.satellite_position_with_respect_to_facility_retriever_class(satellite=satellite,
+                                                                                timestamp=timestamp,
+                                                                                facility=facility).run()
