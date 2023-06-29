@@ -42,13 +42,12 @@ class SatellitesWithinMainBeamFilter:
         enter_events = []
         exit_events = []
         for antenna_position in self._antenna_positions_by_time:
-            satellite_positions = self._satellite_position_above_the_horizon(antenna_position=antenna_position)
-            for satellite_position in self._sort_satellite_positions_by_time(satellite_positions=satellite_positions):
+            for satellite_position in self._sort_satellite_positions_by_time(satellite_positions=antenna_position.satellite_positions):
+                if satellite_position.time >= self._cutoff_time:
+                    break
                 timestamp = convert_datetime_to_utc(satellite_position.time)
-                is_within_beam_width_altitude = isclose(satellite_position.altitude,
-                                                        antenna_position.antenna_direction.altitude,
-                                                        abs_tol=self._facility.half_beamwidth)
-                now_in_view = is_within_beam_width_altitude \
+                now_in_view = self._is_within_beam_width_altitude(satellite_altitude=satellite_position.altitude,
+                                                                  antenna_altitude=antenna_position.antenna_direction.altitude) \
                               and self._is_within_beam_with_azimuth(satellite_azimuth=satellite_position.azimuth,
                                                                     antenna_azimuth=antenna_position.antenna_direction.azimuth)
                 if now_in_view and not self._previously_in_view:
@@ -65,13 +64,14 @@ class SatellitesWithinMainBeamFilter:
     def _antenna_positions_by_time(self) -> List[AntennaPosition]:
         return sorted(self._antenna_positions, key=lambda x: x.antenna_direction.time)
 
-    def _satellite_position_above_the_horizon(self, antenna_position: AntennaPosition) -> List[PositionTime]:
-        return [position for position in antenna_position.satellite_positions
-                if position.altitude >= 0 and position.time < self._cutoff_time]
-
     @staticmethod
     def _sort_satellite_positions_by_time(satellite_positions: List[PositionTime]) -> List[PositionTime]:
         return sorted(satellite_positions, key=lambda x: x.time)
+
+    def _is_within_beam_width_altitude(self, satellite_altitude: float, antenna_altitude: float) -> bool:
+        is_above_horizon = satellite_altitude >= 0
+        is_within_beam_width = isclose(satellite_altitude, antenna_altitude, abs_tol=self._facility.half_beamwidth)
+        return is_above_horizon and is_within_beam_width
 
     def _is_within_beam_with_azimuth(self, satellite_azimuth: float, antenna_azimuth: float) -> bool:
         positions_to_compare_original = [satellite_azimuth, antenna_azimuth]

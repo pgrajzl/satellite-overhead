@@ -4,6 +4,7 @@ from typing import List
 
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
+from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
@@ -53,7 +54,6 @@ class WindowFinder:
         suggested_reservations.sort(key=lambda x: len(x.overhead_satellites))
         return suggested_reservations
 
-
     def find(self) -> List[SuggestedReservation]:
         potential_time_windows = [TimeWindow(begin=start_time, end=start_time + self._ideal_reservation.time.duration)
                                   for start_time in self._potential_start_times]
@@ -72,7 +72,7 @@ class WindowFinder:
     def _satellites_overhead(self, reservation: Reservation) -> List[OverheadWindow]:
         return EventFinderRhodesMill(list_of_satellites=self._satellites,
                                      reservation=reservation,
-                                     antenna_direction_path=[]).get_overhead_windows()
+                                     antenna_direction_path=[PositionTime(altitude=0, azimuth=0, time=reservation.time.begin)]).get_satellites_above_horizon()
 
     @property
     def _potential_start_times(self) -> List[datetime]:

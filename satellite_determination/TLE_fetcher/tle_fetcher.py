@@ -25,6 +25,7 @@ class TleFetcher():
         active_sats_url = 'https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle'
         tles = requests.get(active_sats_url, allow_redirects=True)
         tle_file_path = get_satellites_filepath()
+        tle_file_path.parent.mkdir(parents=True, exist_ok=True)
         with open(tle_file_path, 'wb') as f:
             f.write(tles.content)
             f.close()
