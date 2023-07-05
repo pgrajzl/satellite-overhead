@@ -31,18 +31,6 @@ class TestSatellitesWithinMainBeam:
         windows = slew.run()
         assert windows == [TimeWindow(begin=ARBITRARY_ANTENNA_POSITION.time, end=cutoff_time)]
 
-    def test_one_satellite_position_outside_beamwidth_altitude(self):
-        satellite_positions = [
-            replace(ARBITRARY_ANTENNA_POSITION,
-                    altitude=ARBITRARY_ANTENNA_POSITION.altitude - self._value_slightly_larger_than_half_beamwidth)
-        ]
-        slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
-                                              antenna_positions=[AntennaPosition(satellite_positions=satellite_positions,
-                                                                                 antenna_direction=ARBITRARY_ANTENNA_POSITION)],
-                                              cutoff_time=self._arbitrary_cutoff_time)
-        windows = slew.run()
-        assert windows == []
-
     def test_one_satellite_position_outside_beamwidth_azimuth(self):
         satellite_positions = [
             replace(ARBITRARY_ANTENNA_POSITION,
@@ -56,7 +44,7 @@ class TestSatellitesWithinMainBeam:
         assert windows == []
 
     def test_one_satellite_with_multiple_sequential_positions_in_view(self):
-        out_of_altitude = ARBITRARY_ANTENNA_POSITION.altitude + self._value_slightly_larger_than_half_beamwidth
+        out_of_altitude = ARBITRARY_ANTENNA_POSITION.altitude - self._value_slightly_larger_than_half_beamwidth
         satellite_positions = [
             replace(ARBITRARY_ANTENNA_POSITION,
                     altitude=out_of_altitude if i == 2 else ARBITRARY_ANTENNA_POSITION.altitude,
@@ -75,7 +63,7 @@ class TestSatellitesWithinMainBeam:
         ]
 
     def test_one_satellite_with_multiple_sequential_positions_out_of_view(self):
-        out_of_altitude = ARBITRARY_ANTENNA_POSITION.altitude + self._value_slightly_larger_than_half_beamwidth
+        out_of_altitude = ARBITRARY_ANTENNA_POSITION.altitude - self._value_slightly_larger_than_half_beamwidth
         satellite_positions = [
             replace(ARBITRARY_ANTENNA_POSITION,
                     altitude=out_of_altitude if 0 < i < 3 else ARBITRARY_ANTENNA_POSITION.altitude,
@@ -96,7 +84,7 @@ class TestSatellitesWithinMainBeam:
 
     @property
     def _value_slightly_larger_than_half_beamwidth(self) -> float:
-        return ARBITRARY_FACILITY.beamwidth - SMALL_EPSILON
+        return ARBITRARY_FACILITY.half_beamwidth + SMALL_EPSILON
 
     def test_one_satellite_below_horizon_but_within_beamwidth(self):
         antenna_position_at_horizon = replace(ARBITRARY_ANTENNA_POSITION, altitude=0)

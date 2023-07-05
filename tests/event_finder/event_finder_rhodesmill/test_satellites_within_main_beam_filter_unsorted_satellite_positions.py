@@ -35,8 +35,8 @@ class TestSatellitesWithinMainBeamOneAntennaPositionMultipleSatellitePositions:
 
     @cached_property
     def _satellite_positions_by_time_ascending(self) -> List[PositionTime]:
-        value_slightly_larger_than_half_beam_width = ARBITRARY_FACILITY.beamwidth - SMALL_EPSILON
-        out_of_altitude = ARBITRARY_ANTENNA_POSITION.altitude + value_slightly_larger_than_half_beam_width
+        value_slightly_larger_than_half_beam_width = ARBITRARY_FACILITY.half_beamwidth + SMALL_EPSILON
+        out_of_altitude = ARBITRARY_ANTENNA_POSITION.altitude - value_slightly_larger_than_half_beam_width
         return [
             replace(ARBITRARY_ANTENNA_POSITION,
                     altitude=out_of_altitude if i % 2 else ARBITRARY_ANTENNA_POSITION.altitude,
