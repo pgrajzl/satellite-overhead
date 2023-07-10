@@ -19,7 +19,7 @@ class TestConfigFileProvidedArgument:
         return ConfigFile(filepath=Path(get_script_directory(__file__), 'arbitrary_config_file.config'))
 
     def test_reads_inputs_of_provided_config_file_correctly(self, config_file):
-        assert config_file.reservation == Reservation(
+        assert config_file._reservation == Reservation(
             facility=Facility(
                 right_ascension='4h42m',
                 coordinates=Coordinates(latitude=40.8178049,
@@ -35,6 +35,6 @@ class TestConfigFileProvidedArgument:
             )
         )
 
-    def test_reads_search_window_inputs_correctly(self, config_file):
-        assert config_file.search_window == TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=11, tzinfo=pytz.UTC),
-                                                       end=datetime(year=2023, month=3, day=30, hour=12, tzinfo=pytz.UTC))
+    def test_optional_observation_target(self, config_file):
+        assert False
+

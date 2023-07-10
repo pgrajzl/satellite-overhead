@@ -6,6 +6,7 @@ from satellite_determination.custom_dataclasses.frequency_range.support.get_freq
     GetFrequencyDataFromCsv
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.main import Main
+from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
 from satellite_determination.utilities import get_frequencies_filepath, get_satellites_filepath
 from satellite_determination.graph_generator.graph_generator import GraphGenerator
 
@@ -18,8 +19,7 @@ def main():
     print('----------------------------------------------------------------------')
     print('Loading reservation parameters from config file...\n')  # make flag to specify config file, default .config
     config_file = ConfigFile()
-    reservation = config_file.reservation
-    search_window = config_file.search_window
+    reservation = config_file.configuration.reservation
 
     print('Finding satellite interference events for:\n')
     print('Facility: ', reservation.facility.name, ' at ', reservation.facility.coordinates)
@@ -34,6 +34,9 @@ def main():
     frequency_list = GetFrequencyDataFromCsv(filepath=frequency_file).get()
     satellite_list_with_frequencies = [replace(satellite, frequency=frequency_list.get(satellite.tle_information.satellite_number, []))
                                        for satellite in satellite_list]
+
+    reservation.facility.antenna_positions = reservation.facility.antenna_positions \
+        or ObservationPathFinder(facility=reservation.facility, time_window=reservation.time).calculate_path()
 
     results = Main(reservation=reservation, satellites=satellite_list_with_frequencies).run()
 
