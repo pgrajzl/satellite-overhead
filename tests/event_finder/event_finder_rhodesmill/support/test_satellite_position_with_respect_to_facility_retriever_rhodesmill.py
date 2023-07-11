@@ -19,13 +19,13 @@ class TestSatellitePositionWithRespectToFacilityRetrieverRhodesmill:
         timestamp = datetime(year=2023, month=6, day=7, tzinfo=pytz.UTC)
         facility = Facility(Coordinates(latitude=0, longitude=0))
         position = self._get_satellite_position(facility=facility, timestamp=timestamp)
-        assert position.altitude < 0
+        assert position.position.altitude < 0
 
     def test_azimuth_can_be_greater_than_180(self):
         timestamp = datetime(year=2023, month=6, day=7, tzinfo=pytz.UTC)
         facility = Facility(Coordinates(latitude=0, longitude=0))
         position = self._get_satellite_position(facility=facility, timestamp=timestamp)
-        assert position.azimuth > 180
+        assert position.position.azimuth > 180
 
     def test_altitude_decreases_as_elevation_increases(self):
         timestamp = datetime(year=2023, month=6, day=7, tzinfo=pytz.UTC)
@@ -35,7 +35,7 @@ class TestSatellitePositionWithRespectToFacilityRetrieverRhodesmill:
                                                            timestamp=timestamp)
         position_with_higher_elevation = self._get_satellite_position(facility=same_facility_with_higher_elevation,
                                                                       timestamp=timestamp)
-        assert position_with_higher_elevation.altitude < position_at_horizon.altitude
+        assert position_with_higher_elevation.position.altitude < position_at_horizon.position.altitude
 
     def _get_satellite_position(self, facility: Facility, timestamp: datetime) -> PositionTime:
         retriever = SatellitePositionWithRespectToFacilityRetrieverRhodesmill(satellite=self._arbitrary_satellite,

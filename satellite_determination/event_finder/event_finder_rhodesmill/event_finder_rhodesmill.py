@@ -4,6 +4,7 @@ from typing import Iterable, List
 
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
+from satellite_determination.custom_dataclasses.position import Position
 from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.support.pseudo_continuous_timestamps_calculator import \
@@ -31,7 +32,8 @@ class EventFinderRhodesMill(EventFinder):
         facility_with_beam_width_that_sees_entire_sky = replace(self.reservation.facility, beamwidth=360)
         event_finder = EventFinderRhodesMill(list_of_satellites=self.list_of_satellites,
                                              reservation=replace(self.reservation, facility=facility_with_beam_width_that_sees_entire_sky),
-                                             antenna_direction_path=[PositionTime(altitude=90, azimuth=0, time=self.reservation.time.begin)])
+                                             antenna_direction_path=[PositionTime(position=Position(altitude=90, azimuth=0),
+                                                                                  time=self.reservation.time.begin)])
         return event_finder.get_satellites_crossing_main_beam()
 
     def get_satellites_crossing_main_beam(self) -> List[OverheadWindow]:

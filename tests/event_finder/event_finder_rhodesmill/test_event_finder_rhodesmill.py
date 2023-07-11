@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
+from satellite_determination.custom_dataclasses.position import Position
 from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
@@ -20,8 +21,8 @@ ARBITRARY_SATELLITE_AZIMUTH = 0
 class SatellitePositionWithRespectToFacilityRetrieverStub(SatellitePositionWithRespectToFacilityRetriever):
     def run(self) -> PositionTime:
         return PositionTime(
-            altitude=ARBITRARY_SATELLITE_ALTITUDE,
-            azimuth=ARBITRARY_SATELLITE_AZIMUTH,
+            position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
+                              azimuth=ARBITRARY_SATELLITE_AZIMUTH),
             time=self._timestamp
         )
 
@@ -36,8 +37,8 @@ class TestEventFinderRhodesmill:
                                             time=arbitrary_time_window)
         event_finder = EventFinderRhodesMill(list_of_satellites=[arbitrary_satellite],
                                              reservation=arbitrary_reservation,
-                                             antenna_direction_path=[PositionTime(altitude=ARBITRARY_SATELLITE_ALTITUDE,
-                                                                                  azimuth=ARBITRARY_SATELLITE_AZIMUTH,
+                                             antenna_direction_path=[PositionTime(position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
+                                                                                                    azimuth=ARBITRARY_SATELLITE_AZIMUTH),
                                                                                   time=arbitrary_datetime)],
                                              satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
@@ -52,8 +53,8 @@ class TestEventFinderRhodesmill:
                                             time=arbitrary_time_window)
         event_finder = EventFinderRhodesMill(list_of_satellites=arbitrary_satellites,
                                              reservation=arbitrary_reservation,
-                                             antenna_direction_path=[PositionTime(altitude=ARBITRARY_SATELLITE_ALTITUDE,
-                                                                                  azimuth=ARBITRARY_SATELLITE_AZIMUTH,
+                                             antenna_direction_path=[PositionTime(position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
+                                                                                                    azimuth=ARBITRARY_SATELLITE_AZIMUTH),
                                                                                   time=arbitrary_datetime)],
                                              satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
@@ -71,14 +72,14 @@ class TestEventFinderRhodesmill:
         event_finder = EventFinderRhodesMill(list_of_satellites=[arbitrary_satellite],
                                              reservation=arbitrary_reservation,
                                              antenna_direction_path=[
-                                                 PositionTime(altitude=ARBITRARY_SATELLITE_ALTITUDE,
-                                                              azimuth=ARBITRARY_SATELLITE_AZIMUTH,
+                                                 PositionTime(position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
+                                                                                azimuth=ARBITRARY_SATELLITE_AZIMUTH),
                                                               time=arbitrary_datetime),
-                                                 PositionTime(altitude=altitude_outside_beamwidth,
-                                                              azimuth=ARBITRARY_SATELLITE_AZIMUTH,
+                                                 PositionTime(position=Position(altitude=altitude_outside_beamwidth,
+                                                                                azimuth=ARBITRARY_SATELLITE_AZIMUTH),
                                                               time=arbitrary_datetime + timedelta(seconds=1)),
-                                                 PositionTime(altitude=ARBITRARY_SATELLITE_ALTITUDE,
-                                                              azimuth=ARBITRARY_SATELLITE_AZIMUTH,
+                                                 PositionTime(position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
+                                                                                azimuth=ARBITRARY_SATELLITE_AZIMUTH),
                                                               time=arbitrary_datetime + timedelta(seconds=2))
                                              ],
                                              satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub)

@@ -16,7 +16,7 @@ class Facility:
     -elevation:         ground elevation of the telescope in meters. float. Defaults to 0
     -height:            height of the telescope. float. Defaults to 100
     -name:              name of the facility. String. Defaults to 'Unnamed Facility'
-Z    '''
+    '''
     coordinates: Coordinates
     antenna_positions: List[PositionTime] = field(default_factory=list)
     beamwidth: float = 3
