@@ -35,7 +35,7 @@ def main():
     satellite_list_with_frequencies = [replace(satellite, frequency=frequency_list.get(satellite.tle_information.satellite_number, []))
                                        for satellite in satellite_list]
 
-    reservation.facility.antenna_positions = reservation.facility.antenna_positions \
+    reservation.facility.antenna_positions = [config_file.configuration.static_antenna_position] \
         or ObservationPathFinder(facility=reservation.facility, time_window=reservation.time).calculate_path()
 
     results = Main(reservation=reservation, satellites=satellite_list_with_frequencies).run()

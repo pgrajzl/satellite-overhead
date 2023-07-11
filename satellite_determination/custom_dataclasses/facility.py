@@ -18,7 +18,6 @@ class Facility:
     -name:              name of the facility. String. Defaults to 'Unnamed Facility'
     '''
     coordinates: Coordinates
-    antenna_positions: List[PositionTime] = field(default_factory=list)
     beamwidth: float = 3
     elevation: float = 0
     height: float = 100

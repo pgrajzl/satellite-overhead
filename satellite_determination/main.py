@@ -19,8 +19,10 @@ class MainResults:
 
 class Main:
     def __init__(self,
+                 antenna_direction_path: List[PositionTime],
                  reservation: Reservation,
                  satellites: List[Satellite]):
+        self._antenna_direction_path = antenna_direction_path
         self._reservation = reservation
         self._satellites = satellites
 
@@ -40,7 +42,3 @@ class Main:
     def _frequency_filtered_satellites(self) -> List[Satellite]:
         return FrequencyFilter(satellites=self._satellites,
                                observation_frequency=self._reservation.frequency).filter_frequencies()
-
-    @property
-    def _antenna_direction_path(self) -> List[PositionTime]:
-        return self._reservation.facility.antenna_positions

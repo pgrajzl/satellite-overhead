@@ -19,8 +19,10 @@ from satellite_determination.main import Main, MainResults
 
 class TestMain:
     def test_arbitrary_inputs_match_expected_output(self):
+        antenna_positions = [PositionTime(position=Position(altitude=32, azimuth=320), time=self._arbitrary_reservation.time.begin)]
         result = Main(reservation=self._arbitrary_reservation,
-                      satellites=self._satellites).run()
+                      satellites=self._satellites,
+                      antenna_direction_path=antenna_positions).run()
         assert result == MainResults(
             satellites_above_horizon=[OverheadWindow(satellite=self._satellite_in_mainbeam,
                                                      overhead_time=TimeWindow(
@@ -43,7 +45,6 @@ class TestMain:
                                  end=datetime(year=2023, month=3, day=30, hour=14, minute=39, second=36, tzinfo=pytz.UTC))
         return Reservation(
             facility=Facility(
-                antenna_positions=[PositionTime(position=Position(altitude=32, azimuth=320), time=time_window.begin)],
                 beamwidth=3.5,
                 coordinates=Coordinates(latitude=40.8178049, longitude=-121.4695413),
                 name='ARBITRARY_1',
