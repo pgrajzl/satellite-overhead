@@ -54,16 +54,20 @@ class ConfigFile:
 
     @cached_property
     def _observation_target(self) -> ObservationTarget:
-        observation_target_parameters = self._config_object['OBSERVATION TARGET']
-        return ObservationTarget(
-            declination=observation_target_parameters['Declination'],
-            right_ascension=observation_target_parameters['Right Ascension']
+        configuration = self._config_object['OBSERVATION TARGET'] \
+            if 'OBSERVATION TARGET' in self._config_object \
+            else None
+        return configuration and ObservationTarget(
+            declination=configuration['Declination'],
+            right_ascension=configuration['Right Ascension']
         )
 
     @cached_property
     def _static_antenna_position(self) -> Position:
-        configuration = self._config_object['STATIC ANTENNA POSITION']
-        return Position(
+        configuration = self._config_object['STATIC ANTENNA POSITION'] \
+            if 'STATIC ANTENNA POSITION' in self._config_object \
+            else None
+        return configuration and Position(
             altitude=float(configuration['Altitude']),
             azimuth=float(configuration['Azimuth'])
         )
