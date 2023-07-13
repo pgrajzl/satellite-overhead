@@ -2,6 +2,7 @@ from skyfield.api import load
 from skyfield.sgp4lib import EarthSatellite
 from skyfield.toposlib import wgs84
 
+from satellite_determination.custom_dataclasses.position import Position
 from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever import \
     SatellitePositionWithRespectToFacilityRetriever
@@ -23,8 +24,7 @@ class SatellitePositionWithRespectToFacilityRetrieverRhodesmill(SatellitePositio
         topocentric = satellite_rhodesmill_with_respect_to_facility.at(timestamps_rhodesmill)
         altitude, azimuth, _ = topocentric.altaz()
         return PositionTime(
-            altitude=altitude.degrees,
-            azimuth=azimuth.degrees,
+            position=Position(altitude=altitude.degrees, azimuth=azimuth.degrees),
             time=self._timestamp
         )
 

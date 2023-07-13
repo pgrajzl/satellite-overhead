@@ -14,17 +14,17 @@ from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANT
 
 class TestSatellitesWithinMainBeamAltitude:
     def test_one_satellite_position_below_beamwidth_altitude(self):
-        self._run_test(altitude=ARBITRARY_ANTENNA_POSITION.altitude - self._value_slightly_larger_than_half_beamwidth,
+        self._run_test(altitude=ARBITRARY_ANTENNA_POSITION.position.altitude - self._value_slightly_larger_than_half_beamwidth,
                        expected_windows=[])
 
     def test_one_satellite_position_above_beamwidth_altitude(self):
-        self._run_test(altitude=ARBITRARY_ANTENNA_POSITION.altitude + self._value_slightly_larger_than_half_beamwidth,
+        self._run_test(altitude=ARBITRARY_ANTENNA_POSITION.position.altitude + self._value_slightly_larger_than_half_beamwidth,
                        expected_windows=[TimeWindow(begin=ARBITRARY_ANTENNA_POSITION.time, end=self._arbitrary_cutoff_time)])
 
     def _run_test(self, altitude: float, expected_windows: List[TimeWindow]) -> None:
         satellite_positions = [
             replace(ARBITRARY_ANTENNA_POSITION,
-                    altitude=altitude)
+                    position=replace(ARBITRARY_ANTENNA_POSITION.position, altitude=altitude))
         ]
         slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
                                               antenna_positions=[

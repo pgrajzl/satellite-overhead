@@ -46,10 +46,10 @@ class SatellitesWithinMainBeamFilter:
                 if satellite_position.time >= self._cutoff_time:
                     break
                 timestamp = convert_datetime_to_utc(satellite_position.time)
-                now_in_view = self._is_within_beam_width_altitude(satellite_altitude=satellite_position.altitude,
-                                                                  antenna_altitude=antenna_position.antenna_direction.altitude) \
-                              and self._is_within_beam_with_azimuth(satellite_azimuth=satellite_position.azimuth,
-                                                                    antenna_azimuth=antenna_position.antenna_direction.azimuth)
+                now_in_view = self._is_within_beam_width_altitude(satellite_altitude=satellite_position.position.altitude,
+                                                                  antenna_altitude=antenna_position.antenna_direction.position.altitude) \
+                              and self._is_within_beam_with_azimuth(satellite_azimuth=satellite_position.position.azimuth,
+                                                                    antenna_azimuth=antenna_position.antenna_direction.position.azimuth)
                 if now_in_view and not self._previously_in_view:
                     enter_events.append(timestamp)
                     self._previously_in_view = True

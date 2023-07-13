@@ -6,11 +6,9 @@ from satellite_determination.custom_dataclasses.overhead_window import OverheadW
 from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder import EventFinder
 from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from satellite_determination.frequency_filter.frequency_filter import FrequencyFilter
-from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
 
 
 @dataclass
@@ -21,8 +19,10 @@ class MainResults:
 
 class Main:
     def __init__(self,
+                 antenna_direction_path: List[PositionTime],
                  reservation: Reservation,
                  satellites: List[Satellite]):
+        self._antenna_direction_path = antenna_direction_path
         self._reservation = reservation
         self._satellites = satellites
 
@@ -42,8 +42,3 @@ class Main:
     def _frequency_filtered_satellites(self) -> List[Satellite]:
         return FrequencyFilter(satellites=self._satellites,
                                observation_frequency=self._reservation.frequency).filter_frequencies()
-
-    @property
-    def _antenna_direction_path(self) -> List[PositionTime]:
-        return self._reservation.facility.antenna_positions \
-            or ObservationPathFinder(facility=self._reservation.facility, time_window=self._reservation.time).calculate_path()

@@ -19,9 +19,11 @@ class TestSatellitesWithinMainBeamModulo360:
 
     @staticmethod
     def _run_close_azimuth_due_to_modulus(antenna_azimuth: float, satellite_azimuth: float):
-        antenna_position_at_horizon = replace(ARBITRARY_ANTENNA_POSITION, azimuth=antenna_azimuth)
+        antenna_position_at_horizon = replace(ARBITRARY_ANTENNA_POSITION,
+                                              position=replace(ARBITRARY_ANTENNA_POSITION.position,
+                                                               azimuth=antenna_azimuth))
         satellite_positions = [
-            replace(antenna_position_at_horizon, azimuth=satellite_azimuth)
+            replace(antenna_position_at_horizon, position=replace(antenna_position_at_horizon.position, azimuth=satellite_azimuth))
         ]
         cutoff_time = ARBITRARY_ANTENNA_POSITION.time + timedelta(minutes=1)
         slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
