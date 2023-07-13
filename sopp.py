@@ -4,6 +4,7 @@ from satellite_determination.TLE_fetcher.tle_fetcher import TleFetcher
 from satellite_determination.config_file import ConfigFile
 from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
+from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.main import Main
 from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
@@ -35,10 +36,16 @@ def main():
     satellite_list_with_frequencies = [replace(satellite, frequency=frequency_list.get(satellite.tle_information.satellite_number, []))
                                        for satellite in satellite_list]
 
-    reservation.facility.antenna_positions = [config_file.configuration.static_antenna_position] \
-        or ObservationPathFinder(facility=reservation.facility, time_window=reservation.time).calculate_path()
+    antenna_direction_path = [PositionTime(position=config_file.configuration.static_antenna_position,
+                                           time=config_file.configuration.reservation.time.begin)] \
+        if config_file.configuration.static_antenna_position \
+        else ObservationPathFinder(facility=reservation.facility,
+                                   observation_target=config_file.configuration.observation_target,
+                                   time_window=reservation.time).calculate_path()
 
-    results = Main(reservation=reservation, satellites=satellite_list_with_frequencies).run()
+    results = Main(antenna_direction_path=antenna_direction_path,
+                   reservation=reservation,
+                   satellites=satellite_list_with_frequencies).run()
 
     print("=======================================================================================\n")
     print('       Found ', len(results.interference_windows), ' instances of satellites crossing the main beam.')
@@ -53,8 +60,8 @@ def main():
         print('Satellite leaves view: ', window.overhead_time.end)
         print('__________________________________________________\n')
         i += 1
-    GraphGenerator(search_window_start=search_window.begin,
-                   search_window_end=search_window.end,
+    GraphGenerator(search_window_start=reservation.time.begin,
+                   search_window_end=reservation.time.end,
                    satellites_above_horizon=results.satellites_above_horizon,
                    interference_windows=results.interference_windows).generate_graph()
 
