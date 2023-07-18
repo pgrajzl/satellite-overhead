@@ -8,8 +8,12 @@ from satellite_determination.graph_generator.graph_generator import GraphGenerat
 class TestGraphGenerator:
 
     def test_generate_graph(self):
-        graphs = GraphGenerator(search_window_start=self._arbitrary_search_window_start, search_window_end=self._arbitrary_search_window_end, satellites_above_horizon=self._arbitrary_overhead_window, interference_windows=self._arbitrary_overhead_window_two).generate_graph()
+        graphs = GraphGenerator(search_window_start=self._arbitrary_search_window_start,
+                                search_window_end=self._arbitrary_search_window_end,
+                                satellites_above_horizon=self._arbitrary_overhead_window,
+                                interference_windows=self._arbitrary_overhead_window_two).generate_graph()
         return graphs
+
     @property
     def _arbitrary_overhead_window(self) -> List[OverheadWindow]:
         return [OverheadWindow(
