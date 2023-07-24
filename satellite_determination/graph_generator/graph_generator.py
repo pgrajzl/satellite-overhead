@@ -66,6 +66,9 @@ class GraphGenerator:
     @cached_property
     def _search_intervals(self) -> List[datetime]:
         search_intervals = [self._search_window_start]
-        while search_intervals[-1] < self._search_window_end:
-            search_intervals.append(search_intervals[-1] + timedelta(hours=1))
+        while True:
+            next_interval = search_intervals[-1] + timedelta(hours=1)
+            if next_interval >= self._search_window_end:
+                break
+            search_intervals.append(next_interval)
         return search_intervals

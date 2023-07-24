@@ -55,7 +55,7 @@ class TestGraphGenerator:
         return datetime(year=2023, month=4, day=19, hour=7)
 
     def _assert_correct_satellites_above_horizon_calls(self) -> None:
-        expected_satellites_above_horizon_bar_positions = asarray([0, 1, 2, 3, 4, 5, 6, 7, 8]) - 0.2
+        expected_satellites_above_horizon_bar_positions = asarray([0, 1, 2, 3, 4, 5, 6, 7]) - 0.2
         expected_bar_width = 0.4
         assert allequal(self._mock_pyplot.bar.call_args_list[0].args[0], expected_satellites_above_horizon_bar_positions)
         assert allequal(self._mock_pyplot.bar.call_args_list[0].args[1], self._expected_number_of_satellites_above_horizon)
@@ -64,10 +64,10 @@ class TestGraphGenerator:
 
     @property
     def _expected_number_of_satellites_above_horizon(self) -> List[int]:
-        return [0, 0, 1, 0, 0, 0, 0, 0, 0]
+        return [0, 0, 1, 0, 0, 0, 0, 0]
 
     def _assert_correct_satellites_in_main_beam_calls(self) -> None:
-        expected_satellites_in_main_beam_bar_positions = asarray([0, 1, 2, 3, 4, 5, 6, 7, 8]) + 0.2
+        expected_satellites_in_main_beam_bar_positions = asarray([0, 1, 2, 3, 4, 5, 6, 7]) + 0.2
         expected_bar_width = 0.4
         assert allequal(self._mock_pyplot.bar.call_args_list[1].args[0], expected_satellites_in_main_beam_bar_positions)
         assert allequal(self._mock_pyplot.bar.call_args_list[1].args[1], self._expected_number_of_satellites_in_main_beam)
@@ -76,7 +76,7 @@ class TestGraphGenerator:
 
     @property
     def _expected_number_of_satellites_in_main_beam(self) -> List[int]:
-        return [0, 0, 1, 0, 0, 0, 0, 0, 0]
+        return [0, 0, 1, 0, 0, 0, 0, 0]
 
     def _assert_correct_label_calls(self) -> None:
         self._mock_pyplot.xlabel.assert_called_with('Hour (UTC)')
@@ -86,5 +86,5 @@ class TestGraphGenerator:
         self._assert_correct_xtick_calls()
 
     def _assert_correct_xtick_calls(self) -> None:
-        assert allequal(self._mock_pyplot.xticks.call_args.args[0], [0, 1, 2, 3, 4, 5, 6, 7, 8])
-        assert allequal(self._mock_pyplot.xticks.call_args.args[1], ['23', '0', '1', '2', '3', '4', '5', '6', '7'])
+        assert allequal(self._mock_pyplot.xticks.call_args.args[0], [0, 1, 2, 3, 4, 5, 6, 7])
+        assert allequal(self._mock_pyplot.xticks.call_args.args[1], ['23', '0', '1', '2', '3', '4', '5', '6'])
