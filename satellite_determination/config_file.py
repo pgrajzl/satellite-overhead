@@ -1,3 +1,5 @@
+import json
+from abc import ABC, abstractmethod
 from configparser import ConfigParser
 from datetime import datetime
 from functools import cached_property
@@ -11,13 +13,96 @@ from satellite_determination.custom_dataclasses.observation_target import Observ
 from satellite_determination.custom_dataclasses.position import Position
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.utilities import convert_datetime_to_utc, get_default_config_file_filepath
-
+from satellite_determination.utilities import convert_datetime_to_utc, get_default_config_file_filepath, \
+    get_default_config_file_json_filepath
 
 TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
 
 
-class ConfigFile:
+def read_datetime_as_utc(string_value: str) -> datetime:
+    without_timezone = datetime.strptime(string_value, TIME_FORMAT)
+    return convert_datetime_to_utc(without_timezone)
+
+
+class ConfigFileBase(ABC):
+    @cached_property
+    @abstractmethod
+    def configuration(self) -> Configuration:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def filename_extension(cls) -> str:
+        pass
+
+
+class ConfigFileJson(ConfigFileBase):
+    def __init__(self, filepath: Path = get_default_config_file_json_filepath()):
+        self._filepath = filepath
+
+    @cached_property
+    def configuration(self) -> Configuration:
+        return Configuration(
+            reservation=self._reservation,
+            observation_target=self._observation_target,
+            static_antenna_position=self._static_antenna_position
+        )
+
+    @cached_property
+    def _reservation(self) -> Reservation:
+        configuration = self._config_object['reservation']
+        start_datetime = read_datetime_as_utc(configuration['startTimeUtc'])
+        end_datetime_str = read_datetime_as_utc(configuration['endTimeUtc'])
+        return Reservation(
+            facility=Facility(
+                coordinates=Coordinates(latitude=configuration['latitude'],
+                                        longitude=configuration['longitude']),
+                name=configuration['name'],
+            ),
+            time=TimeWindow(begin=start_datetime, end=end_datetime_str),
+            frequency=FrequencyRange(
+                frequency=configuration['frequency'],
+                bandwidth=configuration['bandwidth']
+            )
+        )
+
+    @cached_property
+    def _observation_target(self) -> ObservationTarget:
+        configuration = self._config_object['observationTarget'] \
+            if 'observationTarget' in self._config_object \
+            else None
+        return configuration and ObservationTarget(
+            declination=configuration['declination'],
+            right_ascension=configuration['rightAscension']
+        )
+
+    @cached_property
+    def _static_antenna_position(self) -> Position:
+        configuration = self._config_object['staticAntennaPosition'] \
+            if 'staticAntennaPosition' in self._config_object \
+            else None
+        return configuration and Position(
+            altitude=configuration['altitude'],
+            azimuth=configuration['azimuth']
+        )
+
+    @cached_property
+    def _config_object(self) -> dict:
+        with open(self._filepath, 'r') as f:
+            return json.load(f)
+
+    @classmethod
+    def filename_extension(cls) -> str:
+        return '.json'
+
+
+def get_config_file_object(config_filepath: Path) -> ConfigFileBase:
+    for config_class in (ConfigFile, ConfigFileJson):
+        if config_class.filename_extension() in str(config_filepath):
+            return config_class(filepath=config_filepath)
+
+
+class ConfigFile(ConfigFileBase):
     def __init__(self, filepath: Path = get_default_config_file_filepath()):
         self._filepath = filepath
 
@@ -32,8 +117,8 @@ class ConfigFile:
     @cached_property
     def _reservation(self) -> Reservation:
         configuration = self._config_object['RESERVATION']
-        start_datetime = self._read_datetime_as_utc(configuration['StartTimeUTC'])
-        end_datetime_str = self._read_datetime_as_utc(configuration['EndTimeUTC'])
+        start_datetime = read_datetime_as_utc(configuration['StartTimeUTC'])
+        end_datetime_str = read_datetime_as_utc(configuration['EndTimeUTC'])
         return Reservation(
             facility=Facility(
                 coordinates=Coordinates(latitude=float(configuration['Latitude']),
@@ -46,11 +131,6 @@ class ConfigFile:
                 bandwidth=float(configuration['Bandwidth'])
             )
         )
-
-    @staticmethod
-    def _read_datetime_as_utc(string_value: str) -> datetime:
-        without_timezone = datetime.strptime(string_value, TIME_FORMAT)
-        return convert_datetime_to_utc(without_timezone)
 
     @cached_property
     def _observation_target(self) -> ObservationTarget:
@@ -77,3 +157,7 @@ class ConfigFile:
         config_object = ConfigParser()
         config_object.read(self._filepath)
         return config_object
+
+    @classmethod
+    def filename_extension(cls) -> str:
+        return '.config'

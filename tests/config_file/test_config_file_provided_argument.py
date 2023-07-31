@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 import pytz
 
-from satellite_determination.config_file import ConfigFile
+from satellite_determination.config_file import ConfigFileBase, get_config_file_object
 from satellite_determination.custom_dataclasses.configuration import Configuration
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
@@ -17,9 +17,12 @@ from satellite_determination.utilities import get_script_directory
 
 
 class TestConfigFileProvidedArgument:
-    def test_reads_inputs_of_provided_config_file_correctly(self):
-        config_file = self._get_config_file_object('arbitrary_config_file.config')
-        assert config_file.configuration == Configuration(
+    @pytest.fixture(params=['config_file_json/arbitrary_config_file.json', 'config_file_standard/arbitrary_config_file.config'])
+    def arbitrary_config(self, request):
+        yield self._get_config_file_object(config_filename=request.param)
+
+    def test_reads_inputs_of_provided_config_file_correctly(self, arbitrary_config):
+        assert arbitrary_config.configuration == Configuration(
             reservation=Reservation(
                 facility=Facility(
                     coordinates=Coordinates(latitude=40.8178049,
@@ -38,27 +41,31 @@ class TestConfigFileProvidedArgument:
         )
 
     def test_observation_target_is_optional(self):
-        config_file = self._get_config_file_object('arbitrary_config_file_no_observation_target.config')
+        config_file = self._get_config_file_object(
+            'config_file_standard/arbitrary_config_file_no_observation_target.config')
         assert config_file.configuration.observation_target is None
         assert config_file.configuration.reservation is not None
         assert config_file.configuration.static_antenna_position is not None
 
     def test_error_is_returned_if_partial_observation_target(self):
-        config_file = self._get_config_file_object('arbitrary_config_file_partial_observation_target.config')
+        config_file = self._get_config_file_object(
+            'config_file_standard/arbitrary_config_file_partial_observation_target.config')
         with pytest.raises(KeyError):
             _ = config_file.configuration
 
     def test_static_antenna_position_is_optional(self):
-        config_file = self._get_config_file_object('arbitrary_config_file_no_static_antenna_position.config')
+        config_file = self._get_config_file_object(
+            'config_file_standard/arbitrary_config_file_no_static_antenna_position.config')
         assert config_file.configuration.static_antenna_position is None
         assert config_file.configuration.observation_target is not None
         assert config_file.configuration.reservation is not None
 
     def test_error_is_returned_if_partial_static_antenna_position(self):
-        config_file = self._get_config_file_object('arbitrary_config_file_partial_static_antenna_position.config')
+        config_file = self._get_config_file_object(
+            'config_file_standard/arbitrary_config_file_partial_static_antenna_position.config')
         with pytest.raises(KeyError):
             _ = config_file.configuration
 
     @staticmethod
-    def _get_config_file_object(config_filename: str) -> ConfigFile:
-        return ConfigFile(filepath=Path(get_script_directory(__file__), config_filename))
+    def _get_config_file_object(config_filename: str) -> ConfigFileBase:
+        return get_config_file_object(config_filepath=Path(get_script_directory(__file__), config_filename))

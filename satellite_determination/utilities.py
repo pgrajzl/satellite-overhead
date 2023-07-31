@@ -54,3 +54,8 @@ def get_frequencies_filepath() -> Path:
 CONFIG_FILE_FILENAME = '.config'
 def get_default_config_file_filepath() -> Path:
     return Path(get_supplements_directory(), CONFIG_FILE_FILENAME)
+
+
+CONFIG_FILE_FILENAME_JSON = 'config.json'
+def get_default_config_file_json_filepath() -> Path:
+    return Path(get_supplements_directory(), CONFIG_FILE_FILENAME_JSON)

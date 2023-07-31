@@ -36,7 +36,7 @@ class TestConfigFileDefaultArgument:
     def config_file(self, backup_current_default_config_file):
         default_filepath = get_default_config_file_filepath()
         os.makedirs(os.path.dirname(default_filepath), exist_ok=True)
-        shutil.copyfile(Path(get_script_directory(__file__), 'arbitrary_config_file_2.config'), default_filepath)
+        shutil.copyfile(Path(get_script_directory(__file__), 'config_file_standard/arbitrary_config_file_2.config'), default_filepath)
 
         yield ConfigFile()
 
