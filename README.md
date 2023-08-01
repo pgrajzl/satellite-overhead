@@ -68,7 +68,7 @@ The following is an example of a config file:
       "observationTarget": {
         "declination": "-38d6m50.8s",
         "rightAscension": "4h42m"
-      },
+      }
     }
 
 
