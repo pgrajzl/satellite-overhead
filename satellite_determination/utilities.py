@@ -9,6 +9,8 @@ from uuid import uuid4
 
 import pytz
 
+from satellite_determination.config_file.support.utilities import TIME_FORMAT
+
 
 def read_json_file(filepath: Path) -> dict:
     with open(filepath, 'r') as f:
@@ -30,6 +32,11 @@ def convert_datetime_to_utc(localtime: datetime) -> datetime:
         return localtime.replace(tzinfo=pytz.UTC)
     else:
         return localtime.astimezone(pytz.UTC)
+
+
+def read_datetime_string_as_utc(string_value: str) -> datetime:
+    without_timezone = datetime.strptime(string_value, TIME_FORMAT)
+    return convert_datetime_to_utc(without_timezone)
 
 
 def get_script_directory(module) -> Path:

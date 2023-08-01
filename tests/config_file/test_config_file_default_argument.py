@@ -6,7 +6,8 @@ from pathlib import Path
 import pytest
 import pytz
 
-from satellite_determination.config_file import ConfigFile, get_config_file_object
+from satellite_determination.config_file.config_file_factory import get_config_file_object
+from satellite_determination.config_file.support.config_file_base import ConfigFileBase
 from satellite_determination.custom_dataclasses.configuration import Configuration
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
@@ -50,7 +51,7 @@ class TestConfigFileDefaultArgument:
 
         target_filepath.unlink(missing_ok=True)
 
-    def test_reads_inputs_of_provided_config_file_correctly(self, config_file: ConfigFile):
+    def test_reads_inputs_of_provided_config_file_correctly(self, config_file):
         assert config_file.configuration == Configuration(
             reservation=Reservation(
                 facility=Facility(

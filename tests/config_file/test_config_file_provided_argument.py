@@ -4,7 +4,8 @@ from pathlib import Path
 import pytest
 import pytz
 
-from satellite_determination.config_file import ConfigFileBase, get_config_file_object
+from satellite_determination.config_file.config_file_factory import get_config_file_object
+from satellite_determination.config_file.support.config_file_base import ConfigFileBase
 from satellite_determination.custom_dataclasses.configuration import Configuration
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
