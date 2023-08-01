@@ -65,7 +65,6 @@ class TestConfigFileProvidedArgument:
         assert config_no_static_antenna_position.configuration.observation_target is not None
         assert config_no_static_antenna_position.configuration.reservation is not None
 
-
     @pytest.fixture(params=['config_file_json/arbitrary_config_file_partial_static_antenna_position.json',
                             'config_file_standard/arbitrary_config_file_partial_static_antenna_position.config'])
     def config_partial_static_antenna_position(self, request):
