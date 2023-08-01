@@ -4,6 +4,7 @@ from configparser import ConfigParser
 from datetime import datetime
 from functools import cached_property
 from pathlib import Path
+from typing import Optional
 
 from satellite_determination.custom_dataclasses.configuration import Configuration
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
@@ -13,8 +14,7 @@ from satellite_determination.custom_dataclasses.observation_target import Observ
 from satellite_determination.custom_dataclasses.position import Position
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.utilities import convert_datetime_to_utc, get_default_config_file_filepath, \
-    get_default_config_file_json_filepath
+from satellite_determination.utilities import convert_datetime_to_utc, get_default_config_file_filepath
 
 TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
 
@@ -25,6 +25,9 @@ def read_datetime_as_utc(string_value: str) -> datetime:
 
 
 class ConfigFileBase(ABC):
+    def __init__(self, filepath: Path):
+        self._filepath = filepath
+
     @cached_property
     @abstractmethod
     def configuration(self) -> Configuration:
@@ -37,9 +40,6 @@ class ConfigFileBase(ABC):
 
 
 class ConfigFileJson(ConfigFileBase):
-    def __init__(self, filepath: Path = get_default_config_file_json_filepath()):
-        self._filepath = filepath
-
     @cached_property
     def configuration(self) -> Configuration:
         return Configuration(
@@ -96,16 +96,14 @@ class ConfigFileJson(ConfigFileBase):
         return '.json'
 
 
-def get_config_file_object(config_filepath: Path) -> ConfigFileBase:
+def get_config_file_object(config_filepath: Optional[Path] = None) -> ConfigFileBase:
+    config_filepath = config_filepath or get_default_config_file_filepath()
     for config_class in (ConfigFile, ConfigFileJson):
         if config_class.filename_extension() in str(config_filepath):
             return config_class(filepath=config_filepath)
 
 
 class ConfigFile(ConfigFileBase):
-    def __init__(self, filepath: Path = get_default_config_file_filepath()):
-        self._filepath = filepath
-
     @cached_property
     def configuration(self) -> Configuration:
         return Configuration(

@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from datetime import datetime
 from io import TextIOWrapper
 from pathlib import Path
-from typing import ContextManager, Optional
+from typing import ContextManager, List, Optional
 from uuid import uuid4
 
 import pytz
@@ -52,10 +52,8 @@ def get_frequencies_filepath() -> Path:
 
 
 CONFIG_FILE_FILENAME = '.config'
-def get_default_config_file_filepath() -> Path:
-    return Path(get_supplements_directory(), CONFIG_FILE_FILENAME)
-
-
 CONFIG_FILE_FILENAME_JSON = 'config.json'
-def get_default_config_file_json_filepath() -> Path:
-    return Path(get_supplements_directory(), CONFIG_FILE_FILENAME_JSON)
+def default_config_filepaths() -> List[Path]:
+    return [Path(get_supplements_directory(), CONFIG_FILE_FILENAME), Path(get_supplements_directory(), CONFIG_FILE_FILENAME_JSON)]
+def get_default_config_file_filepath() -> Optional[Path]:
+    return next((path for path in default_config_filepaths() if path.exists()), None)
