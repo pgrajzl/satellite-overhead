@@ -1,8 +1,7 @@
 from configparser import ConfigParser
-from datetime import datetime
 from functools import cached_property
-from pathlib import Path
 
+from satellite_determination.config_file.support.config_file_base import ConfigFileBase
 from satellite_determination.custom_dataclasses.configuration import Configuration
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
@@ -11,16 +10,10 @@ from satellite_determination.custom_dataclasses.observation_target import Observ
 from satellite_determination.custom_dataclasses.position import Position
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.utilities import convert_datetime_to_utc, get_default_config_file_filepath
+from satellite_determination.utilities import read_datetime_string_as_utc
 
 
-TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
-
-
-class ConfigFile:
-    def __init__(self, filepath: Path = get_default_config_file_filepath()):
-        self._filepath = filepath
-
+class ConfigFileStandard(ConfigFileBase):
     @cached_property
     def configuration(self) -> Configuration:
         return Configuration(
@@ -32,8 +25,8 @@ class ConfigFile:
     @cached_property
     def _reservation(self) -> Reservation:
         configuration = self._config_object['RESERVATION']
-        start_datetime = self._read_datetime_as_utc(configuration['StartTimeUTC'])
-        end_datetime_str = self._read_datetime_as_utc(configuration['EndTimeUTC'])
+        start_datetime = read_datetime_string_as_utc(configuration['StartTimeUTC'])
+        end_datetime_str = read_datetime_string_as_utc(configuration['EndTimeUTC'])
         return Reservation(
             facility=Facility(
                 coordinates=Coordinates(latitude=float(configuration['Latitude']),
@@ -46,11 +39,6 @@ class ConfigFile:
                 bandwidth=float(configuration['Bandwidth'])
             )
         )
-
-    @staticmethod
-    def _read_datetime_as_utc(string_value: str) -> datetime:
-        without_timezone = datetime.strptime(string_value, TIME_FORMAT)
-        return convert_datetime_to_utc(without_timezone)
 
     @cached_property
     def _observation_target(self) -> ObservationTarget:
@@ -77,3 +65,7 @@ class ConfigFile:
         config_object = ConfigParser()
         config_object.read(self._filepath)
         return config_object
+
+    @classmethod
+    def filename_extension(cls) -> str:
+        return '.config'

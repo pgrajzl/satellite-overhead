@@ -51,8 +51,60 @@ center frequency (in MHz), `Bandwidth` is the bandwidth of the downlink frequenc
 [here](https://github.com/NSF-Swift/sat-frequency-scraper) that can be used to generate this file.
 
 #### Config file
-There should be a file at `supplements/.config` under the root directory to set default observation values for a reservation. 
+There should be a file at `supplements/config.json` under the root directory to set default observation values for a reservation. 
 The following is an example of a config file:
+
+    {
+      "reservation": {
+        "latitude": 40.8178049,
+        "longitude": -121.4695413,
+        "beamwidth": 3,
+        "name": "ARBITRARY_2",
+        "startTimeUtc": "2023-03-30T10:00:00.000000",
+        "endTimeUtc": "2023-03-30T11:00:00.000000",
+        "frequency": 135,
+        "bandwidth": 10
+      },
+      "observationTarget": {
+        "declination": "-38d6m50.8s",
+        "rightAscension": "4h42m"
+      }
+    }
+
+
+Below is a description of each of these values:
++ "latitude" is the latitude of the RA facility
++ "longitude" is the longitude of the RA facility
++ "beamwidth" is the beamwidth of the RA telescope
++ "name" is the name of the RA facility
++ "startTimeUtc" is the desired start time of the observation in UTC
++ "endTimeUtc" is the desired end time of the observation in UTC
++ "frequency" is the center frequency of the observation
++ "bandwidth" is the bandwidth of the desired observation
+
+
++ "declination" is the declination value of the celestial target the RA telescope is trying to observe
+  + More information can be found in [Astropy's Astronomical Coordinate System](https://docs.astropy.org/en/stable/coordinates/index.html)
++ "rightAscension" is the right ascension value of the celestial target the RA telescope is trying to observe
+  + More information can be found in [Astropy's Astronomical Coordinate System](https://docs.astropy.org/en/stable/coordinates/index.html)
+
+
+###### Static Antenna Position
+A static antenna position may be given instead of an observation target's declination and right ascension.
+The following is an example config file portion. If both a static antenna position and an observation target is given,
+the static antenna position will take precedence.
+    
+    {
+        ...
+        "staticAntennaPosition": {
+          "altitude": 0.2,
+          "azimuth": 0.3
+        }
+    }
+
+
+##### Alternate Config File Format
+You may alternatively supply the config file in `.config` format at `supplements/.config`. An example is as follows
 
     [RESERVATION]
     Latitude=40.8178049
@@ -68,31 +120,10 @@ The following is an example of a config file:
     Declination=-38d6m50.8s
     Right Ascension=4h42m
 
-
-Below is a description of each of these values:
-+ Latitude is the latitude of the RA facility
-+ Longitude is the longitude of the RA facility
-+ Beamwidth is the beamwidth of the RA telescope
-+ Name is the name of the RA facility
-+ StartTimeUTC is the desired start time of the observation in UTC
-+ EndTimeUTC is the desired end time of the observation in UTC
-+ Frequency is the center frequency of the observation
-+ Bandwidth is the bandwidth of the desired observation
-
-+ Declination is the declination value of the celestial target the RA telescope is trying to observe
-  + More information can be found in [Astropy's Astronomical Coordinate System](https://docs.astropy.org/en/stable/coordinates/index.html)
-+ RightAscension is the right ascension value of the celestial target the RA telescope is trying to observe
-  + More information can be found in [Astropy's Astronomical Coordinate System](https://docs.astropy.org/en/stable/coordinates/index.html)
-
-
-###### Static Antenna Position
-A static antenna position may be given instead of an observation target's declination and right ascension.
-The following is an example config file portion. If both a static antenna position and an observation target is given,
-the static antenna position will take precedence.
-    
     [STATIC ANTENNA POSITION]
     Altitude=0.2
     Azimuth=0.3
+
 
 ### Run command
 In the root directory, run the following command:
