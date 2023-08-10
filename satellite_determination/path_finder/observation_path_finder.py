@@ -6,7 +6,7 @@ from astropy import units
 from typing import List
 from datetime import timedelta
 
-from satellite_determination.config_file import TIME_FORMAT
+from satellite_determination.config_file.support.utilities import TIME_FORMAT
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.observation_target import ObservationTarget
 from satellite_determination.custom_dataclasses.position import Position
