@@ -1,7 +1,7 @@
 from dataclasses import replace
 
 from satellite_determination.TLE_fetcher.tle_fetcher import TleFetcher
-from satellite_determination.config_file import ConfigFile
+from satellite_determination.config_file.config_file_factory import get_config_file_object
 from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
 from satellite_determination.custom_dataclasses.position_time import PositionTime
@@ -19,7 +19,7 @@ def main():
     print('|                                                                    |')
     print('----------------------------------------------------------------------')
     print('Loading reservation parameters from config file...\n')  # make flag to specify config file, default .config
-    config_file = ConfigFile()
+    config_file = get_config_file_object()
     reservation = config_file.configuration.reservation
 
     print('Finding satellite interference events for:\n')
