@@ -2,6 +2,7 @@ from dataclasses import replace
 
 from satellite_determination.TLE_fetcher.tle_fetcher import TleFetcher
 from satellite_determination.config_file.config_file_factory import get_config_file_object
+from satellite_determination.custom_dataclasses.configuration import Configuration
 from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
 from satellite_determination.custom_dataclasses.position_time import PositionTime
@@ -10,6 +11,18 @@ from satellite_determination.main import Main
 from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
 from satellite_determination.utilities import get_frequencies_filepath, get_satellites_filepath
 from satellite_determination.graph_generator.graph_generator import GraphGenerator
+
+
+def get_antenna_direction_path(configuration: Configuration):
+    if configuration.antenna_position_times:
+        return configuration.antenna_position_times
+    elif configuration.static_antenna_position:
+        return [PositionTime(position=configuration.static_antenna_position,
+                             time=configuration.reservation.time.begin)]
+    else:
+        return ObservationPathFinder(facility=configuration.reservation.facility,
+                                     observation_target=configuration.observation_target,
+                                     time_window=configuration.reservation.time).calculate_path()
 
 
 def main():
@@ -36,14 +49,7 @@ def main():
     satellite_list_with_frequencies = [replace(satellite, frequency=frequency_list.get(satellite.tle_information.satellite_number, []))
                                        for satellite in satellite_list]
 
-    antenna_direction_path = [PositionTime(position=config_file.configuration.static_antenna_position,
-                                           time=config_file.configuration.reservation.time.begin)] \
-        if config_file.configuration.static_antenna_position \
-        else ObservationPathFinder(facility=reservation.facility,
-                                   observation_target=config_file.configuration.observation_target,
-                                   time_window=reservation.time).calculate_path()
-
-    results = Main(antenna_direction_path=antenna_direction_path,
+    results = Main(antenna_direction_path=get_antenna_direction_path(configuration=config_file.configuration),
                    reservation=reservation,
                    satellites=satellite_list_with_frequencies).run()
 
