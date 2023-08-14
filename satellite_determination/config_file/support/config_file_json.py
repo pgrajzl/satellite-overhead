@@ -45,16 +45,15 @@ class ConfigFileJson(ConfigFileBase):
 
     @cached_property
     def _antenna_position_times(self) -> List[PositionTime]:
-        configuration = self._config_object['antennaPositionTimes']
-        return [PositionTime(position=Position(altitude=position_time['altitude'], azimuth=position_time['azimuth']),
-                             time=read_datetime_string_as_utc(string_value=position_time['time']))
-                for position_time in configuration]
+        configuration = self._config_object.get('antennaPositionTimes')
+        return configuration and [PositionTime(position=Position(altitude=position_time['altitude'],
+                                                                 azimuth=position_time['azimuth']),
+                                               time=read_datetime_string_as_utc(string_value=position_time['time']))
+                                  for position_time in configuration]
 
     @cached_property
     def _observation_target(self) -> ObservationTarget:
-        configuration = self._config_object['observationTarget'] \
-            if 'observationTarget' in self._config_object \
-            else None
+        configuration = self._config_object.get('observationTarget')
         return configuration and ObservationTarget(
             declination=configuration['declination'],
             right_ascension=configuration['rightAscension']
@@ -62,9 +61,7 @@ class ConfigFileJson(ConfigFileBase):
 
     @cached_property
     def _static_antenna_position(self) -> Position:
-        configuration = self._config_object['staticAntennaPosition'] \
-            if 'staticAntennaPosition' in self._config_object \
-            else None
+        configuration = self._config_object.get('staticAntennaPosition')
         return configuration and Position(
             altitude=configuration['altitude'],
             azimuth=configuration['azimuth']
