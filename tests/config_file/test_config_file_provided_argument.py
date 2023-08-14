@@ -12,6 +12,7 @@ from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from satellite_determination.custom_dataclasses.observation_target import ObservationTarget
 from satellite_determination.custom_dataclasses.position import Position
+from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.utilities import get_script_directory
@@ -37,9 +38,19 @@ class TestConfigFileProvidedArgument:
                     bandwidth=10
                 )
             ),
+            antenna_position_times=None,
             observation_target=ObservationTarget(declination='-38d6m50.8s', right_ascension='4h42m'),
-            static_antenna_position=Position(altitude=.2, azimuth=.3)
+            static_antenna_position=Position(altitude=.2, azimuth=.3),
         )
+
+    def test_json_allows_antenna_position_times(self):
+        config = self._get_config_file_object(config_filename='config_file_json/arbitrary_config_file_with_antenna_position_times.json')
+        assert config.configuration.antenna_position_times == [
+            PositionTime(position=Position(altitude=.0, azimuth=.1),
+                         time=datetime(year=2023, month=3, day=30, hour=10, minute=1, tzinfo=pytz.UTC)),
+            PositionTime(position=Position(altitude=.1, azimuth=.2),
+                         time=datetime(year=2023, month=3, day=30, hour=10, minute=2, tzinfo=pytz.UTC))
+        ]
 
     @pytest.fixture(params=['config_file_json/arbitrary_config_file_no_observation_target.json', 'config_file_standard/arbitrary_config_file_no_observation_target.config'])
     def config_no_observation_target(self, request):

@@ -95,12 +95,31 @@ The following is an example config file portion. If both a static antenna positi
 the static antenna position will take precedence.
     
     {
-        ...
-        "staticAntennaPosition": {
-          "altitude": 0.2,
-          "azimuth": 0.3
-        }
+      ...
+      "staticAntennaPosition": {
+        "altitude": 0.2,
+        "azimuth": 0.3
+      }
     }
+
+
+###### Multiple Antenna Positions and Times
+A path of antenna positions (altitude and azimuth) with their times (in UTC) may also be given. This takes precedence over both `observationTarget`
+and `staticAntennaPosition.` The following is an example:
+
+    "antennaPositionTimes": [
+      {
+        "altitude": 0.0,
+        "azimuth": 0.1,
+        "time": "2023-03-30T10:01:00.000000"
+      },
+      {
+        "altitude": 0.1,
+        "azimuth": 0.2,
+        "time": "2023-03-30T10:02:00.000000"
+      }
+    ],
+
 
 
 ##### Alternate Config File Format
