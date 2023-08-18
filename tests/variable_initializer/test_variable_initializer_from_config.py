@@ -16,7 +16,7 @@ from satellite_determination.custom_dataclasses.frequency_range.frequency_range 
 from satellite_determination.custom_dataclasses.position import Position
 from satellite_determination.custom_dataclasses.position_time import PositionTime
 
-class MockSatellitesLoader(SatellitesLoader):
+class StubSatellitesLoader(SatellitesLoader):
     def load_satellites(self):
         return [
             Satellite(name='Satellite1'),
