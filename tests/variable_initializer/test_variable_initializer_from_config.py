@@ -109,8 +109,10 @@ class TestVariableInitializerFromConfig:
         )
 
         satellite_list = var_initializer.get_satellite_list()
-        assert satellite_list[0].name == "Satellite1"
-        assert satellite_list[1].name == "Satellite2"
+        assert satellite_list == [
+            Satellite(name='Satellite1'),
+            Satellite(name='Satellite2'),
+        ]
 
     def test_get_antenna_direction_path_observation_config(self):
         var_initializer = VariableInitializerFromConfig(
