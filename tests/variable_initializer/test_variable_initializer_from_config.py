@@ -77,12 +77,12 @@ class TestVariableInitializerFromConfig:
         return config
 
     @property
-    def mock_satellites_loader(self):
-        return MockSatellitesLoader()
+    def stub_satellites_loader(self):
+        return StubSatellitesLoader()
 
     def test_get_reservation(self):
         var_initializer = VariableInitializerFromConfig(
-                satellites_loader=self.mock_satellites_loader,
+                satellites_loader=self.stub_satellites_loader,
                 config=self.observation_config
         )
         
@@ -104,7 +104,7 @@ class TestVariableInitializerFromConfig:
 
     def test_get_satellite_list(self):
         var_initializer = VariableInitializerFromConfig(
-            satellites_loader=self.mock_satellites_loader,
+            satellites_loader=self.stub_satellites_loader,
             config=self.common_config
         )
 
@@ -116,7 +116,7 @@ class TestVariableInitializerFromConfig:
 
     def test_get_antenna_direction_path_observation_config(self):
         var_initializer = VariableInitializerFromConfig(
-                satellites_loader=self.mock_satellites_loader,
+                satellites_loader=self.stub_satellites_loader,
                 config=self.observation_config
         )
 
@@ -132,7 +132,7 @@ class TestVariableInitializerFromConfig:
 
     def test_get_antenna_direction_path_static_config(self):
         var_initializer = VariableInitializerFromConfig(
-                satellites_loader=self.mock_satellites_loader,
+                satellites_loader=self.stub_satellites_loader,
                 config=self.static_config
         )
         
@@ -146,7 +146,7 @@ class TestVariableInitializerFromConfig:
 
     def test_get_antenna_direction_path_antenna_position_config(self):
         var_initializer = VariableInitializerFromConfig(
-                satellites_loader=self.mock_satellites_loader,
+                satellites_loader=self.stub_satellites_loader,
                 config=self.antenna_position_config
         )
         
