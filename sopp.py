@@ -11,18 +11,8 @@ from satellite_determination.main import Main
 from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
 from satellite_determination.utilities import get_frequencies_filepath, get_satellites_filepath
 from satellite_determination.graph_generator.graph_generator import GraphGenerator
-
-
-def get_antenna_direction_path(configuration: Configuration):
-    if configuration.antenna_position_times:
-        return configuration.antenna_position_times
-    elif configuration.static_antenna_position:
-        return [PositionTime(position=configuration.static_antenna_position,
-                             time=configuration.reservation.time.begin)]
-    else:
-        return ObservationPathFinder(facility=configuration.reservation.facility,
-                                     observation_target=configuration.observation_target,
-                                     time_window=configuration.reservation.time).calculate_path()
+from satellite_determination.variable_initializer.variable_initializer_from_config import VariableInitializerFromConfig
+from satellite_determination.satellites_loader.satellites_loader_from_files import SatellitesLoaderFromFiles
 
 
 def main():
@@ -33,7 +23,11 @@ def main():
     print('----------------------------------------------------------------------')
     print('Loading reservation parameters from config file...\n')  # make flag to specify config file, default .config
     config_file = get_config_file_object()
-    reservation = config_file.configuration.reservation
+    tle_file = get_satellites_filepath()
+    frequency_file = get_frequencies_filepath()
+    satellites_loader = SatellitesLoaderFromFiles(tle_file=tle_file, frequency_file=frequency_file)
+    var_initializer = VariableInitializerFromConfig(satellites_loader=satellites_loader, config=config_file.configuration)
+    reservation = var_initializer.get_reservation()
 
     print('Finding satellite interference events for:\n')
     print('Facility: ', reservation.facility.name, ' at ', reservation.facility.coordinates)
@@ -42,16 +36,9 @@ def main():
     print('Observation frequency: ', reservation.frequency.frequency, ' MHz')
     print('\n----------------------------------------------------------------------')
 
-    tle_file = get_satellites_filepath()
-    frequency_file = get_frequencies_filepath()
-    satellite_list = Satellite.from_tle_file(tlefilepath=tle_file)
-    frequency_list = GetFrequencyDataFromCsv(filepath=frequency_file).get()
-    satellite_list_with_frequencies = [replace(satellite, frequency=frequency_list.get(satellite.tle_information.satellite_number, []))
-                                       for satellite in satellite_list]
-
-    results = Main(antenna_direction_path=get_antenna_direction_path(configuration=config_file.configuration),
-                   reservation=reservation,
-                   satellites=satellite_list_with_frequencies).run()
+    results = Main(antenna_direction_path=var_initializer.get_antenna_direction_path(),
+                   reservation=var_initializer.get_reservation(),
+                   satellites=var_initializer.get_satellite_list()).run()
 
     print("=======================================================================================\n")
     print('       Found ', len(results.interference_windows), ' instances of satellites crossing the main beam.')
