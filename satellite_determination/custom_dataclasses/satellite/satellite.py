@@ -35,11 +35,8 @@ class Satellite:
     frequency: List[FrequencyRange] = field(default_factory=list)
 
     def to_rhodesmill(self) -> EarthSatellite:
-        with temporary_file() as f:
-            f.write(f'{self.name}\n')
-            f.write('\n'.join(self.tle_information.to_tle_lines()))
-            f.flush()
-            return load.tle_file(url=realpath(f.name))[0]
+        line1, line2 = self.tle_information.to_tle_lines()
+        return EarthSatellite(line1=line1, line2=line2, name=self.name)
 
     @classmethod
     def from_tle_file(cls, tlefilepath: Path) -> List['Satellite']:
