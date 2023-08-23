@@ -27,9 +27,23 @@ class Main:
         self._satellites = satellites
 
     def run(self) -> MainResults:
+        overhead_windows_above_horizon = self._event_finder.get_satellites_above_horizon()
+
+        satellites_above_horizon = []
+        [
+            satellites_above_horizon.append(window.satellite) 
+            for window in overhead_windows_above_horizon if window.satellite not in satellites_above_horizon
+        ]
+
+        event_finder = EventFinderRhodesMill(list_of_satellites=satellites_above_horizon,
+                                             reservation=self._reservation,
+                                             antenna_direction_path=self._antenna_direction_path)
+
+        interference_windows = event_finder.get_satellites_crossing_main_beam()
+        
         return MainResults(
-            satellites_above_horizon=self._event_finder.get_satellites_above_horizon(),
-            interference_windows=self._event_finder.get_satellites_crossing_main_beam()
+            satellites_above_horizon=overhead_windows_above_horizon,
+            interference_windows=interference_windows
         )
 
     @cached_property
