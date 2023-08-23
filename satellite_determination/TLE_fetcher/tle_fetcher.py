@@ -17,17 +17,21 @@ PASSWORD = os.getenv("PASSWORD")
 class TleFetcher():
     def get_tles_spacetrak(self):
         print('Logging into Space-Track...')
-        os.system(f'curl -c cookies.txt -b cookies.txt https://www.space-track.org/ajaxauth/login -d "identity={IDENTITY}&password={PASSWORD}"')
-        os.system(f'curl --limit-rate 100K --cookie cookies.txt https://www.space-track.org/basicspacedata/query/class/gp/EPOCH/%3Enow-30/format/3le > ./{SUPPLEMENTS_DIRECTORY_NAME}/{SATELLITES_FILENAME}')
+        spacetrack_url = 'https://www.space-track.org/ajaxauth/login'
+        query = 'https://www.space-track.org/basicspacedata/query/class/gp/EPOCH/%3Enow-30/TLE_LINE0/%3C%3E0%20TBA%20-%20TO%20BE%20ASSIGNED/format/3le'
+        data = {'identity': IDENTITY, 'password': PASSWORD, 'query': query}
+        tles = requests.post(url=spacetrack_url, data=data)
+        self._write_tles_to_file(tles.content)
 
     def get_tles_celestrak(self):
         print('Pulling active satellite TLEs from Celestrak...')
         active_sats_url = 'https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle'
         tles = requests.get(active_sats_url, allow_redirects=True)
+        self._write_tles_to_file(tles.content)
+
+    def _write_tles_to_file(self, content):
         tle_file_path = get_satellites_filepath()
         tle_file_path.parent.mkdir(parents=True, exist_ok=True)
         with open(tle_file_path, 'wb') as f:
-            f.write(tles.content)
+            f.write(content)
             f.close()
-
-
