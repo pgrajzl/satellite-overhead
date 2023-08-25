@@ -18,7 +18,7 @@ class TleFetcher():
     def get_tles_spacetrak(self):
         print('Logging into Space-Track...')
         spacetrack_url = 'https://www.space-track.org/ajaxauth/login'
-        query = 'https://www.space-track.org/basicspacedata/query/class/gp/EPOCH/%3Enow-30/TLE_LINE0/%3C%3E0%20TBA%20-%20TO%20BE%20ASSIGNED/format/3le'
+        query = 'https://www.space-track.org/basicspacedata/query/class/gp/decay_date/null-val/epoch/%3Enow-30/orderby/norad_cat_id/format/3le'
         data = {'identity': IDENTITY, 'password': PASSWORD, 'query': query}
         tles = requests.post(url=spacetrack_url, data=data)
         self._write_tles_to_file(tles.content)
