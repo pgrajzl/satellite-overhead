@@ -2,6 +2,7 @@ import csv
 from enum import Enum
 from pathlib import Path
 from typing import Dict, List
+from collections import defaultdict
 
 from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 
@@ -33,7 +34,7 @@ class GetFrequencyDataFromCsv:
         self._filepath = filepath
 
     def get(self) -> Dict[int, List['FrequencyRange']]:
-        frequencies = {}
+        frequencies = defaultdict(list)
         for line in self._data[1:]:
             id_string = line[FrequencyCsvKeys.ID.value]
             if not id_string or id_string == 'None' or id_string == "nan":
@@ -43,9 +44,6 @@ class GetFrequencyDataFromCsv:
                                              bandwidth=self._get_bandwidth(line),
                                              status=line[FrequencyCsvKeys.STATUS.value])
             id_int = int(id_string)
-            if id_int not in frequencies:
-                frequencies[id_int] = []
-                # frequencies[id_int] = [FrequencyRange(frequency=None, bandwidth=None, status=None)]
             frequencies[id_int].append(frequency_range)
 
         return frequencies
