@@ -61,6 +61,22 @@ class TestFrequencyFilter:
             )
         ]
 
+    def test_no_frequency_data_sat(self):
+        no_freq_data_sat = self._arbitrary_satellite_in_band
+        no_freq_data_sat.frequency = []
+
+        sats = FrequencyFilter(
+            satellites=[no_freq_data_sat],
+            observation_frequency=self._arbitrary_reservation_with_nonzero_timewindow.frequency
+        ).filter_frequencies()
+
+        assert sats == [
+            Satellite(
+                name='name',
+                frequency=[]
+            )
+        ]
+
     @property
     def _arbitrary_satellite_in_band(self) -> Satellite:
         return Satellite(
