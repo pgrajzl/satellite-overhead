@@ -69,6 +69,19 @@ class TestFromCsv:
             )
         ]
 
+    def test_junk_data(self):
+        frequency_file = Path(get_script_directory(__file__), 'arbitrary_frequency_file_junk.csv')
+        frequency_list = GetFrequencyDataFromCsv(filepath=frequency_file).get()
+        frequencies = frequency_list[2023]
+        assert len(frequency_list) == 1
+        assert frequencies == [
+            FrequencyRange(
+                frequency=136.65,
+                bandwidth=12,
+                status='active'
+            )
+        ]
+
 class TestOverlaps:
 
     def test_if_overlaps_lower_range(self):
