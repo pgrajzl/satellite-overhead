@@ -51,21 +51,17 @@ class GetFrequencyDataFromCsv:
     @staticmethod
     def _get_frequency(line: Dict[str, str]):
         frequency = line[FrequencyCsvKeys.FREQUENCY.value]
-        if frequency is None or frequency == 'None':
-            return None
         try:
             return float(frequency)
-        except ValueError:
+        except (TypeError, ValueError):
             return None
 
     @staticmethod
     def _get_bandwidth(line: Dict[str, str]):
         bandwidth = line[FrequencyCsvKeys.BANDWIDTH.value]
-        if bandwidth is None or bandwidth == '' or bandwidth == 'None': 
-            return None
         try:
             return float(bandwidth.split()[0])
-        except ValueError:
+        except (TypeError, ValueError, IndexError):
             return None
 
     @property
