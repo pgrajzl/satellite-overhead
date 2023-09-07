@@ -30,6 +30,7 @@ class TestConfigFileProvidedArgument:
                     coordinates=Coordinates(latitude=40.8178049,
                                             longitude=-121.4695413),
                     name='ARBITRARY_1',
+                    elevation=1000,
                 ),
                 time=TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=10, tzinfo=pytz.UTC),
                                 end=datetime(year=2023, month=3, day=30, hour=11, tzinfo=pytz.UTC)),
