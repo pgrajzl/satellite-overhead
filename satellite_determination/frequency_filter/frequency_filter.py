@@ -23,7 +23,7 @@ class FrequencyFilter:
             has_missing_frequency = not sat.frequency or any(sf.frequency is None for sf in sat.frequency)
 
             frequency_overlaps_target_frequency = any(
-                (sf.frequency is not None) and sf.status != 'inactive' and self._observation_frequency.overlaps(sf)
+                not has_missing_frequency and sf.status != 'inactive' and self._observation_frequency.overlaps(sf)
                 for sf in sat.frequency
             )
 
