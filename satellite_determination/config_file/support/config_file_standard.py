@@ -32,6 +32,7 @@ class ConfigFileStandard(ConfigFileBase):
                 coordinates=Coordinates(latitude=float(configuration['Latitude']),
                                         longitude=float(configuration['Longitude'])),
                 name=configuration['Name'],
+                elevation=float(configuration['Elevation']),
             ),
             time=TimeWindow(begin=start_datetime, end=end_datetime_str),
             frequency=FrequencyRange(
