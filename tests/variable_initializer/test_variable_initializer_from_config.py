@@ -31,8 +31,7 @@ class TestVariableInitializerFromConfig:
                 facility=Facility(
                     coordinates=Coordinates(latitude=40.8178049, longitude=-121.4695413),
                     beamwidth=3,
-                    elevation=0,
-                    height=100,
+                    elevation=100,
                     name='ARBITRARY_2'
                 ),
                 time=TimeWindow(
@@ -91,8 +90,7 @@ class TestVariableInitializerFromConfig:
             facility=Facility(
                 coordinates=Coordinates(latitude=40.8178049, longitude=-121.4695413),
                 beamwidth=3,
-                elevation=0,
-                height=100,
+                elevation=100,
                 name='ARBITRARY_2'
             ),
             time=TimeWindow(
