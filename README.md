@@ -76,7 +76,7 @@ The following is an example of a config file:
 Below is a description of each of these values:
 + "latitude" is the latitude of the RA facility
 + "longitude" is the longitude of the RA facility
-+ "elevation" is the ground level elevation of the RA facility
++ "elevation" is the ground level elevation of the RA facility in meters
 + "beamwidth" is the beamwidth of the RA telescope
 + "name" is the name of the RA facility
 + "startTimeUtc" is the desired start time of the observation in UTC
