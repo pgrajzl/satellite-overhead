@@ -58,6 +58,7 @@ The following is an example of a config file:
       "reservation": {
         "latitude": 40.8178049,
         "longitude": -121.4695413,
+        "elevation": 986,
         "beamwidth": 3,
         "name": "ARBITRARY_2",
         "startTimeUtc": "2023-03-30T10:00:00.000000",
@@ -75,6 +76,7 @@ The following is an example of a config file:
 Below is a description of each of these values:
 + "latitude" is the latitude of the RA facility
 + "longitude" is the longitude of the RA facility
++ "elevation" is the ground level elevation of the RA facility
 + "beamwidth" is the beamwidth of the RA telescope
 + "name" is the name of the RA facility
 + "startTimeUtc" is the desired start time of the observation in UTC
@@ -128,6 +130,7 @@ You may alternatively supply the config file in `.config` format at `supplements
     [RESERVATION]
     Latitude=40.8178049
     Longitude=-121.4695413
+    Elevation=986
     Beamwidth=3
     Name=HCRO
     StartTimeUTC=2023-03-30T10:00:00.000000
