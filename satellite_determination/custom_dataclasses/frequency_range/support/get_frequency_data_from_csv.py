@@ -42,7 +42,7 @@ class GetFrequencyDataFromCsv:
 
             frequency_range = FrequencyRange(frequency=self._get_frequency(line),
                                              bandwidth=self._get_bandwidth(line),
-                                             status=line[FrequencyCsvKeys.STATUS.value])
+                                             status=self._get_status(line))
             id_int = int(id_string)
             frequencies[id_int].append(frequency_range)
 
@@ -63,6 +63,11 @@ class GetFrequencyDataFromCsv:
             return float(bandwidth.split()[0])
         except (TypeError, ValueError, IndexError):
             return None
+
+    @staticmethod
+    def _get_status(line: Dict[str, str]):
+        status = line[FrequencyCsvKeys.STATUS.value].lower()
+        return status
 
     @property
     def _data(self) -> List[Dict[str, str]]:
