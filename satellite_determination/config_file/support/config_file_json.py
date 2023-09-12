@@ -35,6 +35,7 @@ class ConfigFileJson(ConfigFileBase):
                 coordinates=Coordinates(latitude=configuration['latitude'],
                                         longitude=configuration['longitude']),
                 name=configuration['name'],
+                elevation=configuration['elevation'],
             ),
             time=TimeWindow(begin=start_datetime, end=end_datetime_str),
             frequency=FrequencyRange(
