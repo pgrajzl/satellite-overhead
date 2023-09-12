@@ -22,7 +22,7 @@ class FrequencyFilter:
         for sat in self._list_satellites:
             has_missing_frequency = not sat.frequency or any(sf.frequency is None for sf in sat.frequency)
 
-            frequency_overlaps_target_frequency = any(
+            frequency_overlaps_target_frequency = not has_missing_frequency and any(
                 sf.status != 'inactive' and self._observation_frequency.overlaps(sf)
                 for sf in sat.frequency
             )
