@@ -32,7 +32,7 @@ class ObservationPathFinder:
         observation_path = []
         observing_location = EarthLocation(lat=str(self._facility.coordinates.latitude),
                                            lon=str(self._facility.coordinates.longitude),
-                                           height=self._facility.height * units.m)
+                                           height=self._facility.elevation * units.m)
         target_coordinates = SkyCoord(self._observation_target.right_ascension, self._observation_target.declination)
         start_time = self._get_time_as_astropy_time(self._time_window.begin)
         end_time = self._get_time_as_astropy_time(self._time_window.end)

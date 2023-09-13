@@ -14,13 +14,11 @@ class Facility:
     -coordinates:       location of RA facility. Coordinates.
     -beamwidth:         beamwidth of the telescope. float. Defaults to 3
     -elevation:         ground elevation of the telescope in meters. float. Defaults to 0
-    -height:            height of the telescope. float. Defaults to 100
     -name:              name of the facility. String. Defaults to 'Unnamed Facility'
     '''
     coordinates: Coordinates
     beamwidth: float = 3
     elevation: float = 0
-    height: float = 100
     name: Optional[str] = 'Unnamed Facility'
 
     @property
