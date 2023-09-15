@@ -51,7 +51,7 @@ class GraphGeneratorPolar:
         self._annotate_max_alt(ax)
 
         ax.plot(self._azimuth_values, self._altitude_values, label=self._label)
-        self._set_title(ax)
+        ax.set_title(self._title)
 
         # setup the polar graph so North is at the top
         # and that altitude increases from edge of graph to center
@@ -88,11 +88,13 @@ class GraphGeneratorPolar:
         )
         ax.plot(self._azimuth_values[idx], self._altitude_values[idx], marker='+', markersize=10, color='red')
 
-    def _set_title(self, ax):
+    @cached_property
+    def _title(self):
         start_time = self._time_values[0].strftime("%Y-%m-%d %H:%M:%S")
         end_time = self._time_values[-1].strftime("%H:%M:%S UTC")
         title = f'{self._sat_name} {start_time} - {end_time}'
-        ax.set_title(title)
+
+        return title
 
     @cached_property
     def _altitude_values(self):
