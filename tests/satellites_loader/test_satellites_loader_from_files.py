@@ -68,7 +68,6 @@ class TestSatellitesLoaderFromFiles:
 
         tle_file = os.path.join(test_script_directory, 'satellites.tle')
         satellites = SatellitesLoaderFromFiles(tle_file=tle_file).load_satellites()
-        print(satellites[0])
 
         assert satellites[0] == Satellite(
             name='ROSEYCUBESAT-1',
