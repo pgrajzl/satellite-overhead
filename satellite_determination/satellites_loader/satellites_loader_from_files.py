@@ -28,18 +28,16 @@ class SatellitesLoaderFromFiles(SatellitesLoader):
         self.frequency_file = frequency_file
 
     def load_satellites(self) -> List[Satellite]:
-        if self._satellites_freq_data is not None:
-            satellite_list_with_frequencies = [
-                replace(
-                    satellite,
-                    frequency=self._satellites_freq_data.get(satellite.tle_information.satellite_number, [])
-                )
-                for satellite in self._satellites_from_tle
-            ]
+        return self._populate_satellites_with_frequency_data() if self._satellites_freq_data else self._satellites_from_tle
 
-            return satellite_list_with_frequencies
-
-        return self._satellites_from_tle
+    def _populate_satellites_with_frequency_data(self):
+        return [
+            replace(
+                satellite,
+                frequency=self._satellites_freq_data.get(satellite.tle_information.satellite_number, [])
+            )
+            for satellite in self._satellites_from_tle
+        ]
 
     @cached_property
     def _satellites_from_tle(self):
@@ -47,7 +45,4 @@ class SatellitesLoaderFromFiles(SatellitesLoader):
 
     @cached_property
     def _satellites_freq_data(self):
-        if self.frequency_file is not None:
-            return GetFrequencyDataFromCsv(filepath=self.frequency_file).get()
-        else:
-            return None
+        return self.frequency_file and GetFrequencyDataFromCsv(filepath=self.frequency_file).get()
