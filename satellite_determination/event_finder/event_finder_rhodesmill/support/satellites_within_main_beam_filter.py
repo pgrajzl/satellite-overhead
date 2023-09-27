@@ -38,9 +38,10 @@ class SatellitesWithinMainBeamFilter:
         self._antenna_positions = antenna_positions
         self._previously_in_view = False
 
-    def run(self) -> List[TimeWindow]:
-        enter_events = []
-        exit_events = []
+    def run(self) -> List[List[PositionTime]]:
+        view_segments = []  # list to store segments of satellite positions in view
+        satellite_positions_in_view = []
+
         for antenna_position in self._antenna_positions_by_time:
             for satellite_position in self._sort_satellite_positions_by_time(satellite_positions=antenna_position.satellite_positions):
                 if satellite_position.time >= self._cutoff_time:
@@ -50,15 +51,23 @@ class SatellitesWithinMainBeamFilter:
                                                                   antenna_altitude=antenna_position.antenna_direction.position.altitude) \
                               and self._is_within_beam_with_azimuth(satellite_azimuth=satellite_position.position.azimuth,
                                                                     antenna_azimuth=antenna_position.antenna_direction.position.azimuth)
-                if now_in_view and not self._previously_in_view:
-                    enter_events.append(timestamp)
-                    self._previously_in_view = True
+                if now_in_view:
+                    if not self._previously_in_view:
+                        self._previously_in_view = True
+                    satellite_positions_in_view.append(satellite_position)
                 elif not now_in_view and self._previously_in_view:
-                    exit_events.append(timestamp)
                     self._previously_in_view = False
-        exit_events.append(self._cutoff_time)
-        return [TimeWindow(begin=convert_datetime_to_utc(begin_event),
-                           end=convert_datetime_to_utc(exit_event)) for begin_event, exit_event in zip(enter_events, exit_events)]
+                    if satellite_positions_in_view:
+                        # append the current in view sat positions to the view_segments list 
+                        # and reset satellite_positions_in_view
+                        view_segments.append(satellite_positions_in_view)
+                        satellite_positions_in_view = []
+
+        # if there are positions left in satellite_positions_in_view, add them to the view_segments list
+        if satellite_positions_in_view:
+            view_segments.append(satellite_positions_in_view)
+
+        return view_segments
 
     @cached_property
     def _antenna_positions_by_time(self) -> List[AntennaPosition]:
