@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from operator import attrgetter
 from typing import List
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
