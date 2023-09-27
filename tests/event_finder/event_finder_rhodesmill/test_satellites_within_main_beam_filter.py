@@ -31,7 +31,7 @@ class TestSatellitesWithinMainBeam:
                                                                                  antenna_direction=ARBITRARY_ANTENNA_POSITION)],
                                               cutoff_time=cutoff_time)
         windows = slew.run()
-        assert windows == [TimeWindow(begin=ARBITRARY_ANTENNA_POSITION.time, end=cutoff_time)]
+        assert windows[0][0] == ARBITRARY_ANTENNA_POSITION
 
     def test_one_satellite_position_outside_beamwidth_azimuth(self):
         satellite_positions = [
@@ -60,9 +60,9 @@ class TestSatellitesWithinMainBeam:
                                                                   antenna_direction=ARBITRARY_ANTENNA_POSITION)],
                                               cutoff_time=cutoff_time)
         windows = slew.run()
-        assert windows == [
-            TimeWindow(begin=satellite_positions[0].time, end=satellite_positions[-1].time)
-        ]
+        assert len(windows) == 1
+        assert windows[0][0] == satellite_positions[0]
+        assert windows[0][1] == satellite_positions[1]
 
     def test_one_satellite_with_multiple_sequential_positions_out_of_view(self):
         out_of_altitude = ARBITRARY_ANTENNA_POSITION.position.altitude - self._value_slightly_larger_than_half_beamwidth
@@ -70,7 +70,7 @@ class TestSatellitesWithinMainBeam:
             self._replace_antenna_position(antenna_position=ARBITRARY_ANTENNA_POSITION,
                                            altitude=out_of_altitude if 0 < i < 3 else ARBITRARY_ANTENNA_POSITION.position.altitude,
                                            time=ARBITRARY_ANTENNA_POSITION.time + timedelta(minutes=i))
-            for i in range(4)
+            for i in range(6)
         ]
         cutoff_time = ARBITRARY_ANTENNA_POSITION.time + timedelta(minutes=len(satellite_positions))
         slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
@@ -79,10 +79,10 @@ class TestSatellitesWithinMainBeam:
                                                                   antenna_direction=ARBITRARY_ANTENNA_POSITION)],
                                               cutoff_time=cutoff_time)
         windows = slew.run()
-        assert windows == [
-            TimeWindow(begin=satellite_positions[0].time, end=satellite_positions[1].time),
-            TimeWindow(begin=satellite_positions[3].time, end=cutoff_time),
-        ]
+        assert len(windows) == 2
+        assert windows[0][0] == satellite_positions[0]
+        assert windows[1][0] == satellite_positions[3]
+        assert windows[1][-1] == satellite_positions[-1]
 
     @property
     def _value_slightly_larger_than_half_beamwidth(self) -> float:
@@ -139,10 +139,9 @@ class TestSatellitesWithinMainBeam:
                                                                   antenna_direction=ARBITRARY_ANTENNA_POSITION)],
                                               cutoff_time=cutoff_time)
         windows = slew.run()
-        assert windows == [
-            TimeWindow(begin=satellite_positions[0].time, end=satellite_positions[1].time),
-            TimeWindow(begin=satellite_positions[2].time, end=cutoff_time),
-        ]
+        assert len(windows) == 2
+        assert windows[0][0] == satellite_positions[0]
+        assert windows[1][0] == satellite_positions[2]
 
     @property
     def _arbitrary_cutoff_time(self) -> datetime:

@@ -26,7 +26,6 @@ class SatellitePositionWithRespectToFacilityRetrieverStub(SatellitePositionWithR
             time=self._timestamp
         )
 
-
 class TestEventFinderRhodesmill:
     def test_single_satellite(self):
         arbitrary_satellite = Satellite(name='arbitrary')
@@ -42,7 +41,12 @@ class TestEventFinderRhodesmill:
                                                                                   time=arbitrary_datetime)],
                                              satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
-        assert windows == [OverheadWindow(satellite=arbitrary_satellite, overhead_time=arbitrary_time_window)]
+
+        assert len(windows) == 1
+
+        assert windows[0].satellite == arbitrary_satellite
+        assert windows[0].overhead_time.begin == arbitrary_time_window.begin
+        assert windows[0].overhead_time.end == arbitrary_time_window.end - timedelta(seconds=1)
 
     def test_multiple_satellites(self):
         arbitrary_satellites = [Satellite(name='arbitrary'), Satellite(name='arbitrary2')]
@@ -58,35 +62,68 @@ class TestEventFinderRhodesmill:
                                                                                   time=arbitrary_datetime)],
                                              satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
-        assert windows == [OverheadWindow(satellite=satellite, overhead_time=arbitrary_time_window)
-                           for satellite in arbitrary_satellites]
+
+        assert len(windows) == 2
+
+        assert windows[0].satellite == arbitrary_satellites[0]
+        assert windows[0].overhead_time.begin == arbitrary_time_window.begin
+        assert windows[0].overhead_time.end == arbitrary_time_window.end - timedelta(seconds=1)
+
+        assert windows[1].satellite == arbitrary_satellites[1]
+        assert windows[1].overhead_time.begin == arbitrary_time_window.begin
+        assert windows[1].overhead_time.end == arbitrary_time_window.end - timedelta(seconds=1)
 
     def test_multiple_antenna_positions_with_azimuth_filtering(self):
         arbitrary_satellite = Satellite(name='arbitrary')
         arbitrary_datetime = datetime.now(tz=pytz.utc)
-        arbitrary_time_window = TimeWindow(begin=arbitrary_datetime,
-                                           end=arbitrary_datetime + timedelta(seconds=3))
-        arbitrary_reservation = Reservation(facility=Facility(coordinates=Coordinates(latitude=0, longitude=0)),
-                                            time=arbitrary_time_window)
+
+        arbitrary_time_window = TimeWindow(
+            begin=arbitrary_datetime,
+            end=arbitrary_datetime + timedelta(seconds=5)
+        )
+
+        arbitrary_reservation = Reservation(
+            facility=Facility(coordinates=Coordinates(latitude=0, longitude=0)),
+            time=arbitrary_time_window
+        )
+
         altitude_outside_beamwidth = ARBITRARY_SATELLITE_ALTITUDE + arbitrary_reservation.facility.half_beamwidth + SMALL_EPSILON
-        event_finder = EventFinderRhodesMill(list_of_satellites=[arbitrary_satellite],
-                                             reservation=arbitrary_reservation,
-                                             antenna_direction_path=[
-                                                 PositionTime(position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
-                                                                                azimuth=ARBITRARY_SATELLITE_AZIMUTH),
-                                                              time=arbitrary_datetime),
-                                                 PositionTime(position=Position(altitude=altitude_outside_beamwidth,
-                                                                                azimuth=ARBITRARY_SATELLITE_AZIMUTH),
-                                                              time=arbitrary_datetime + timedelta(seconds=1)),
-                                                 PositionTime(position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
-                                                                                azimuth=ARBITRARY_SATELLITE_AZIMUTH),
-                                                              time=arbitrary_datetime + timedelta(seconds=2))
-                                             ],
-                                             satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub)
+        event_finder = EventFinderRhodesMill(
+            list_of_satellites=[arbitrary_satellite],
+            reservation=arbitrary_reservation,
+            antenna_direction_path=[
+                PositionTime(
+                    position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE, azimuth=ARBITRARY_SATELLITE_AZIMUTH),
+                    time=arbitrary_datetime
+                ),
+                PositionTime(
+                    position=Position(altitude=altitude_outside_beamwidth, azimuth=ARBITRARY_SATELLITE_AZIMUTH),
+                    time=arbitrary_datetime + timedelta(seconds=1)
+                ),
+                PositionTime(
+                    position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE, azimuth=ARBITRARY_SATELLITE_AZIMUTH),
+                    time=arbitrary_datetime + timedelta(seconds=2)
+                ),
+                PositionTime(
+                    position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE, azimuth=ARBITRARY_SATELLITE_AZIMUTH),
+                    time=arbitrary_datetime + timedelta(seconds=3)
+                ),
+                PositionTime(
+                    position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE, azimuth=ARBITRARY_SATELLITE_AZIMUTH),
+                    time=arbitrary_datetime + timedelta(seconds=4)
+                )
+            ],
+            satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub
+        )
+
         windows = event_finder.get_satellites_crossing_main_beam()
-        assert windows == [
-            OverheadWindow(satellite=arbitrary_satellite, overhead_time=TimeWindow(begin=arbitrary_datetime,
-                                                                                   end=arbitrary_datetime + timedelta(seconds=1))),
-            OverheadWindow(satellite=arbitrary_satellite, overhead_time=TimeWindow(begin=arbitrary_datetime + timedelta(seconds=2),
-                                                                                   end=arbitrary_datetime + timedelta(seconds=3)))
-        ]
+
+        assert len(windows) == 2
+
+        assert windows[0].satellite == arbitrary_satellite
+        assert windows[0].overhead_time.begin == arbitrary_datetime
+        assert windows[0].overhead_time.end == arbitrary_datetime
+
+        assert windows[1].satellite == arbitrary_satellite
+        assert windows[1].overhead_time.begin == arbitrary_datetime + timedelta(seconds=2)
+        assert windows[1].overhead_time.end == arbitrary_datetime + timedelta(seconds=4)

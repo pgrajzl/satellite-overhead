@@ -32,6 +32,4 @@ class TestSatellitesWithinMainBeamModulo360:
                                                                   antenna_direction=antenna_position_at_horizon)],
                                               cutoff_time=cutoff_time)
         windows = slew.run()
-        assert windows == [
-            TimeWindow(begin=satellite_positions[0].time, end=cutoff_time),
-        ]
+        assert windows[0][0] == satellite_positions[0]

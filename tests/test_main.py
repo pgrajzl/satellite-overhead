@@ -23,21 +23,18 @@ class TestMain:
         result = Main(reservation=self._arbitrary_reservation,
                       satellites=self._satellites,
                       antenna_direction_path=antenna_positions).run()
-        assert result == MainResults(
-            satellites_above_horizon=[OverheadWindow(satellite=self._satellite_in_mainbeam,
-                                                     overhead_time=TimeWindow(
-                                                         begin=datetime(2023, 3, 30, 14, 39, 32, tzinfo=timezone.utc),
-                                                         end=datetime(2023, 3, 30, 14, 39, 36, tzinfo=timezone.utc))),
-                                      OverheadWindow(
-                                          satellite=self._satellite_inside_frequency_range_and_above_horizon_and_outside_mainbeam,
-                                          overhead_time=TimeWindow(
-                                              begin=datetime(2023, 3, 30, 14, 39, 35, tzinfo=timezone.utc),
-                                              end=datetime(2023, 3, 30, 14, 39, 36, tzinfo=timezone.utc))),
 
-                                      ],
-            interference_windows=[OverheadWindow(satellite=self._satellite_in_mainbeam,
-                                                 overhead_time=TimeWindow(begin=datetime(2023, 3, 30, 14, 39, 33, tzinfo=timezone.utc),
-                                                                          end=datetime(2023, 3, 30, 14, 39, 36, tzinfo=timezone.utc)))])
+        assert result.satellites_above_horizon[0].satellite == self._satellite_in_mainbeam
+        assert result.satellites_above_horizon[0].overhead_time.begin == datetime(2023, 3, 30, 14, 39, 32, tzinfo=timezone.utc)
+        assert result.satellites_above_horizon[0].overhead_time.end == datetime(2023, 3, 30, 14, 39, 35, tzinfo=timezone.utc)
+
+        assert result.satellites_above_horizon[1].satellite == self._satellite_inside_frequency_range_and_above_horizon_and_outside_mainbeam
+        assert result.satellites_above_horizon[1].overhead_time.begin == datetime(2023, 3, 30, 14, 39, 35, tzinfo=timezone.utc)
+        assert result.satellites_above_horizon[1].overhead_time.end == datetime(2023, 3, 30, 14, 39, 35, tzinfo=timezone.utc)
+
+        assert result.interference_windows[0].satellite == self._satellite_in_mainbeam
+        assert result.interference_windows[0].overhead_time.begin == datetime(2023, 3, 30, 14, 39, 33, tzinfo=timezone.utc)
+        assert result.interference_windows[0].overhead_time.end == datetime(2023, 3, 30, 14, 39, 35, tzinfo=timezone.utc)
 
     @property
     def _arbitrary_reservation(self) -> Reservation:

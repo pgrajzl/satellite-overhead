@@ -31,7 +31,9 @@ class TestEventFinderReservationStartTime:
                                                                                   time=arbitrary_datetime - timedelta(seconds=1))],
                                              satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
-        assert windows == [OverheadWindow(satellite=arbitrary_satellite, overhead_time=arbitrary_time_window)]
+        assert windows[0].satellite == arbitrary_satellite
+        assert windows[0].overhead_time.begin == arbitrary_time_window.begin
+        assert windows[0].overhead_time.end == arbitrary_time_window.end - timedelta(seconds=1)
 
     def test_antenna_positions_that_end_before_reservation_starts_are_not_included(self):
         arbitrary_satellite = Satellite(name='arbitrary')

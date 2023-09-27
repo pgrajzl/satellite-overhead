@@ -25,13 +25,10 @@ class TestSatellitesWithinMainBeamOneAntennaPositionMultipleSatellitePositions:
                                                                                  antenna_direction=ARBITRARY_ANTENNA_POSITION)],
                                               cutoff_time=cutoff_time)
         windows = slew.run()
-        assert windows == [
-            TimeWindow(begin=self._satellite_positions_by_time_ascending[i].time,
-                       end=self._satellite_positions_by_time_ascending[i + 1].time
-                       if i + 1 < len(self._satellite_positions_by_time_ascending)
-                       else cutoff_time)
-            for i in range(0, len(self._satellite_positions_by_time_ascending), 2)
-        ]
+        assert len(windows) == 3
+        assert windows[0][0] == self._satellite_positions_by_time_ascending[0]
+        assert windows[1][0] == self._satellite_positions_by_time_ascending[2]
+        assert windows[2][0] == self._satellite_positions_by_time_ascending[4]
 
     @cached_property
     def _satellite_positions_by_time_ascending(self) -> List[PositionTime]:

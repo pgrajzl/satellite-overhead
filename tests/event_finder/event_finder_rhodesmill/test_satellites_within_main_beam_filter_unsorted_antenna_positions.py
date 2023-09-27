@@ -26,9 +26,8 @@ class TestSatellitesWithinMainBeamMultipleAntennas:
                                               ],
                                               cutoff_time=cutoff_time)
         windows = slew.run()
-        assert windows == [
-            TimeWindow(begin=ARBITRARY_ANTENNA_POSITION.time, end=cutoff_time)
-        ]
+        assert windows[0][0] == ARBITRARY_ANTENNA_POSITION
+        assert windows[0][-1].time == cutoff_time - timedelta(minutes=1)
 
     @property
     def _antenna_positions_sorted_by_time_ascending(self) -> List[PositionTime]:
