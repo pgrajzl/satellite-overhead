@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from operator import attrgetter
 from typing import List
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
@@ -16,7 +17,10 @@ as well as a TimeWindow object that contains the interference start and end time
 @dataclass
 class OverheadWindow:
     satellite: Satellite
-    positions: List[PositionTime]
+    positions: List[PositionTime] = field(default_factory=list)
+
+    def __post_init__(self):
+        self.positions.sort(key=attrgetter('time'))
 
     @property
     def overhead_time(self):
