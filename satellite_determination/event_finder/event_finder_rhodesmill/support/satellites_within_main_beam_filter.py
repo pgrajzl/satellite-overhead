@@ -22,12 +22,6 @@ class AntennaPosition:
     antenna_direction: PositionTime
 
 
-@dataclass
-class EnterAndExitEvents:
-    enter: List[datetime]
-    exit: List[datetime]
-
-
 class SatellitesWithinMainBeamFilter:
     def __init__(self,
                  facility: Facility,
