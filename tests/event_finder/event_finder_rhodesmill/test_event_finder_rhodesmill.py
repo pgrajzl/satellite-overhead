@@ -13,6 +13,7 @@ from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_r
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever import \
     SatellitePositionWithRespectToFacilityRetriever
 from tests.definitions import SMALL_EPSILON
+from tests.event_finder.event_finder_rhodesmill.definitions import create_overhead_window
 
 ARBITRARY_SATELLITE_ALTITUDE = 0
 ARBITRARY_SATELLITE_AZIMUTH = 0
@@ -41,12 +42,12 @@ class TestEventFinderRhodesmill:
                                                                                   time=arbitrary_datetime)],
                                              satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
+        expected_windows = [
+            create_overhead_window(arbitrary_satellite, 0, 0, arbitrary_time_window.begin, 2)
+        ]
 
         assert len(windows) == 1
-
-        assert windows[0].satellite == arbitrary_satellite
-        assert windows[0].overhead_time.begin == arbitrary_time_window.begin
-        assert windows[0].overhead_time.end == arbitrary_time_window.end - timedelta(seconds=1)
+        assert windows == expected_windows
 
     def test_multiple_satellites(self):
         arbitrary_satellites = [Satellite(name='arbitrary'), Satellite(name='arbitrary2')]
@@ -62,16 +63,13 @@ class TestEventFinderRhodesmill:
                                                                                   time=arbitrary_datetime)],
                                              satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
+        expected_windows = [
+            create_overhead_window(arbitrary_satellites[0], 0, 0, arbitrary_time_window.begin, 2),
+            create_overhead_window(arbitrary_satellites[1], 0, 0, arbitrary_time_window.begin, 2)
+        ]
 
         assert len(windows) == 2
-
-        assert windows[0].satellite == arbitrary_satellites[0]
-        assert windows[0].overhead_time.begin == arbitrary_time_window.begin
-        assert windows[0].overhead_time.end == arbitrary_time_window.end - timedelta(seconds=1)
-
-        assert windows[1].satellite == arbitrary_satellites[1]
-        assert windows[1].overhead_time.begin == arbitrary_time_window.begin
-        assert windows[1].overhead_time.end == arbitrary_time_window.end - timedelta(seconds=1)
+        assert windows == expected_windows
 
     def test_multiple_antenna_positions_with_azimuth_filtering(self):
         arbitrary_satellite = Satellite(name='arbitrary')
@@ -104,26 +102,15 @@ class TestEventFinderRhodesmill:
                     position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE, azimuth=ARBITRARY_SATELLITE_AZIMUTH),
                     time=arbitrary_datetime + timedelta(seconds=2)
                 ),
-                PositionTime(
-                    position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE, azimuth=ARBITRARY_SATELLITE_AZIMUTH),
-                    time=arbitrary_datetime + timedelta(seconds=3)
-                ),
-                PositionTime(
-                    position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE, azimuth=ARBITRARY_SATELLITE_AZIMUTH),
-                    time=arbitrary_datetime + timedelta(seconds=4)
-                )
             ],
             satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub
         )
 
         windows = event_finder.get_satellites_crossing_main_beam()
+        expected_windows = [
+            create_overhead_window(arbitrary_satellite, ARBITRARY_SATELLITE_ALTITUDE, ARBITRARY_SATELLITE_AZIMUTH, arbitrary_time_window.begin, 1),
+            create_overhead_window(arbitrary_satellite, ARBITRARY_SATELLITE_ALTITUDE, ARBITRARY_SATELLITE_AZIMUTH, arbitrary_time_window.begin+timedelta(seconds=2), 3)
+        ]
 
         assert len(windows) == 2
-
-        assert windows[0].satellite == arbitrary_satellite
-        assert windows[0].overhead_time.begin == arbitrary_datetime
-        assert windows[0].overhead_time.end == arbitrary_datetime
-
-        assert windows[1].satellite == arbitrary_satellite
-        assert windows[1].overhead_time.begin == arbitrary_datetime + timedelta(seconds=2)
-        assert windows[1].overhead_time.end == arbitrary_datetime + timedelta(seconds=4)
+        assert windows == expected_windows

@@ -14,7 +14,6 @@ from tests.definitions import SMALL_EPSILON
 from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY
 
 
-
 class TestSatellitesWithinMainBeamAltitude:
     def test_one_satellite_position_below_beamwidth_altitude(self):
         self._run_test(altitude=ARBITRARY_ANTENNA_POSITION.position.altitude - self._value_slightly_larger_than_half_beamwidth,
