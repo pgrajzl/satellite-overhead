@@ -39,7 +39,7 @@ class SatellitesWithinMainBeamFilter:
         self._previously_in_view = False
 
     def run(self) -> List[List[PositionTime]]:
-        view_segments = []  # list to store segments of satellite positions in view
+        segments_of_satellite_positions = []
         satellite_positions_in_view = []
 
         for antenna_position in self._antenna_positions_by_time:
@@ -58,16 +58,13 @@ class SatellitesWithinMainBeamFilter:
                 elif not now_in_view and self._previously_in_view:
                     self._previously_in_view = False
                     if satellite_positions_in_view:
-                        # append the current in view sat positions to the view_segments list 
-                        # and reset satellite_positions_in_view
-                        view_segments.append(satellite_positions_in_view)
+                        segments_of_satellite_positions.append(satellite_positions_in_view)
                         satellite_positions_in_view = []
 
-        # if there are positions left in satellite_positions_in_view, add them to the view_segments list
         if satellite_positions_in_view:
-            view_segments.append(satellite_positions_in_view)
+            segments_of_satellite_positions.append(satellite_positions_in_view)
 
-        return view_segments
+        return segments_of_satellite_positions
 
     @cached_property
     def _antenna_positions_by_time(self) -> List[AntennaPosition]:
