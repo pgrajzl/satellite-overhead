@@ -17,7 +17,7 @@ from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.main import Main, MainResults
 from tests.event_finder.event_finder_rhodesmill.definitions import create_overhead_window
 
-def assert_overhead_windows_eq(actual, expected):
+def assert_overhead_windows_eq(actual: OverheadWindow, expected: OverheadWindow) -> None:
     assert actual.satellite == expected.satellite
     for actual_position, expected_position in zip(actual.positions, expected.positions):
         assert actual_position.position.altitude == pytest.approx(expected_position.position.altitude, abs=1e-6, rel=1e-6)
