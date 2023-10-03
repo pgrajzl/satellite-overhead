@@ -24,9 +24,8 @@ class OverheadWindow:
 
     @property
     def overhead_time(self):
-        if self.positions:
-            begin = self.positions[0].time
-            end = self.positions[-1].time
-            return TimeWindow(begin=begin, end=end)
-        else:
+        if not self.positions:
             return None
+        begin = self.positions[0].time
+        end = self.positions[-1].time
+        return TimeWindow(begin=begin, end=end)
