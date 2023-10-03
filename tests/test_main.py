@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-
+import pytest
 import pytz
 
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
@@ -17,14 +17,21 @@ from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.main import Main, MainResults
 from tests.event_finder.event_finder_rhodesmill.definitions import create_overhead_window
 
+def assert_overhead_windows_eq(actual, expected):
+    assert actual.satellite == expected.satellite
+    for actual_position, expected_position in zip(actual.positions, expected.positions):
+        assert actual_position.position.altitude == pytest.approx(expected_position.position.altitude, abs=1e-6, rel=1e-6)
+        assert actual_position.position.azimuth == pytest.approx(expected_position.position.azimuth, abs=1e-6, rel=1e-6)
+        assert actual_position.time == expected_position.time
+
 class TestMain:
     def test_arbitrary_inputs_match_expected_output(self):
         antenna_positions = [PositionTime(position=Position(altitude=32, azimuth=320), time=self._arbitrary_reservation.time.begin)]
-        result = Main(reservation=self._arbitrary_reservation,
+        actual = Main(reservation=self._arbitrary_reservation,
                       satellites=self._satellites,
                       antenna_direction_path=antenna_positions).run()
 
-        assert result == MainResults(
+        expected = MainResults(
             satellites_above_horizon=[
                 OverheadWindow(
                     satellite=self._satellite_in_mainbeam,
@@ -77,6 +84,10 @@ class TestMain:
                 )
             ]
         )
+
+        assert_overhead_windows_eq(actual.satellites_above_horizon[0], expected.satellites_above_horizon[0])
+        assert_overhead_windows_eq(actual.satellites_above_horizon[1], expected.satellites_above_horizon[1])
+        assert_overhead_windows_eq(actual.interference_windows[0], expected.interference_windows[0])
 
     @property
     def _arbitrary_reservation(self) -> Reservation:
