@@ -9,7 +9,7 @@ from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import SatellitesWithinMainBeamFilter, \
     AntennaPosition
 from tests.definitions import SMALL_EPSILON
-from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY
+from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY, create_expected_windows, assert_windows_eq
 
 
 class TestSatellitesWithinMainBeam:
@@ -31,7 +31,11 @@ class TestSatellitesWithinMainBeam:
                                                                                  antenna_direction=ARBITRARY_ANTENNA_POSITION)],
                                               cutoff_time=cutoff_time)
         windows = slew.run()
-        assert windows == [TimeWindow(begin=ARBITRARY_ANTENNA_POSITION.time, end=cutoff_time)]
+        expected_positions = [ARBITRARY_ANTENNA_POSITION]
+        expected_windows = create_expected_windows(expected_positions)
+
+        assert len(windows) == 1
+        assert_windows_eq(windows, expected_windows)
 
     def test_one_satellite_position_outside_beamwidth_azimuth(self):
         satellite_positions = [
@@ -60,9 +64,11 @@ class TestSatellitesWithinMainBeam:
                                                                   antenna_direction=ARBITRARY_ANTENNA_POSITION)],
                                               cutoff_time=cutoff_time)
         windows = slew.run()
-        assert windows == [
-            TimeWindow(begin=satellite_positions[0].time, end=satellite_positions[-1].time)
-        ]
+        expected_positions = [[satellite_positions[0], satellite_positions[1]]]
+        expected_windows = create_expected_windows(expected_positions)
+
+        assert len(windows) == 1
+        assert_windows_eq(windows, expected_windows)
 
     def test_one_satellite_with_multiple_sequential_positions_out_of_view(self):
         out_of_altitude = ARBITRARY_ANTENNA_POSITION.position.altitude - self._value_slightly_larger_than_half_beamwidth
@@ -70,7 +76,7 @@ class TestSatellitesWithinMainBeam:
             self._replace_antenna_position(antenna_position=ARBITRARY_ANTENNA_POSITION,
                                            altitude=out_of_altitude if 0 < i < 3 else ARBITRARY_ANTENNA_POSITION.position.altitude,
                                            time=ARBITRARY_ANTENNA_POSITION.time + timedelta(minutes=i))
-            for i in range(4)
+            for i in range(6)
         ]
         cutoff_time = ARBITRARY_ANTENNA_POSITION.time + timedelta(minutes=len(satellite_positions))
         slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
@@ -79,10 +85,14 @@ class TestSatellitesWithinMainBeam:
                                                                   antenna_direction=ARBITRARY_ANTENNA_POSITION)],
                                               cutoff_time=cutoff_time)
         windows = slew.run()
-        assert windows == [
-            TimeWindow(begin=satellite_positions[0].time, end=satellite_positions[1].time),
-            TimeWindow(begin=satellite_positions[3].time, end=cutoff_time),
+        expected_positions = [
+            satellite_positions[0],
+            [satellite_positions[3], satellite_positions[4], satellite_positions[5]]
         ]
+        expected_windows = create_expected_windows(expected_positions)
+
+        assert len(windows) == 2
+        assert_windows_eq(windows, expected_windows)
 
     @property
     def _value_slightly_larger_than_half_beamwidth(self) -> float:
@@ -139,10 +149,11 @@ class TestSatellitesWithinMainBeam:
                                                                   antenna_direction=ARBITRARY_ANTENNA_POSITION)],
                                               cutoff_time=cutoff_time)
         windows = slew.run()
-        assert windows == [
-            TimeWindow(begin=satellite_positions[0].time, end=satellite_positions[1].time),
-            TimeWindow(begin=satellite_positions[2].time, end=cutoff_time),
-        ]
+        expected_positions = [satellite_positions[0], satellite_positions[2]]
+        expected_windows = create_expected_windows(expected_positions)
+
+        assert len(windows) == 2
+        assert_windows_eq(windows, expected_windows)
 
     @property
     def _arbitrary_cutoff_time(self) -> datetime:

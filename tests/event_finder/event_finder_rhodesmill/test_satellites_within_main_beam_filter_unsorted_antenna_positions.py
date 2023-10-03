@@ -6,7 +6,7 @@ from satellite_determination.custom_dataclasses.position_time import PositionTim
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import AntennaPosition, \
     SatellitesWithinMainBeamFilter
-from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY
+from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY, create_expected_windows, assert_windows_eq
 
 
 class TestSatellitesWithinMainBeamMultipleAntennas:
@@ -26,9 +26,11 @@ class TestSatellitesWithinMainBeamMultipleAntennas:
                                               ],
                                               cutoff_time=cutoff_time)
         windows = slew.run()
-        assert windows == [
-            TimeWindow(begin=ARBITRARY_ANTENNA_POSITION.time, end=cutoff_time)
-        ]
+        expected_positions = [self._antenna_positions_sorted_by_time_ascending[::]]
+        expected_windows = create_expected_windows(expected_positions)
+
+        assert len(windows) == 1
+        assert_windows_eq(windows, expected_windows)
 
     @property
     def _antenna_positions_sorted_by_time_ascending(self) -> List[PositionTime]:

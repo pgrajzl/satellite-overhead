@@ -66,7 +66,7 @@ class EventFinderRhodesMill(EventFinder):
         time_windows = SatellitesWithinMainBeamFilter(facility=self.reservation.facility,
                                                       antenna_positions=antenna_positions,
                                                       cutoff_time=self.reservation.time.end).run()
-        return (OverheadWindow(satellite=satellite, overhead_time=time_window) for time_window in time_windows)
+        return (OverheadWindow(satellite=satellite, positions=positions) for positions in time_windows)
 
     def _get_satellite_positions(self, satellite: Satellite, time_window: TimeWindow) -> List[PositionTime]:
         pseudo_continuous_timestamps = PseudoContinuousTimestampsCalculator(time_window=time_window,

@@ -14,6 +14,7 @@ from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_r
 from tests.definitions import SMALL_EPSILON
 from tests.event_finder.event_finder_rhodesmill.test_event_finder_rhodesmill import ARBITRARY_SATELLITE_ALTITUDE, \
     ARBITRARY_SATELLITE_AZIMUTH, SatellitePositionWithRespectToFacilityRetrieverStub
+from tests.event_finder.event_finder_rhodesmill.definitions import create_overhead_window
 
 
 class TestEventFinderReservationStartTime:
@@ -31,7 +32,17 @@ class TestEventFinderReservationStartTime:
                                                                                   time=arbitrary_datetime - timedelta(seconds=1))],
                                              satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
-        assert windows == [OverheadWindow(satellite=arbitrary_satellite, overhead_time=arbitrary_time_window)]
+        expected_windows = [
+            create_overhead_window(
+                arbitrary_satellite, 
+                ARBITRARY_SATELLITE_ALTITUDE, 
+                ARBITRARY_SATELLITE_AZIMUTH, 
+                arbitrary_time_window.begin, 
+                2
+            )
+        ]
+
+        assert windows == expected_windows
 
     def test_antenna_positions_that_end_before_reservation_starts_are_not_included(self):
         arbitrary_satellite = Satellite(name='arbitrary')

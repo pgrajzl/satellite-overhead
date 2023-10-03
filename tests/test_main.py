@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-
+import pytest
 import pytz
 
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
@@ -15,29 +15,79 @@ from satellite_determination.custom_dataclasses.satellite.satellite import Satel
 from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.main import Main, MainResults
+from tests.event_finder.event_finder_rhodesmill.definitions import create_overhead_window
 
+def assert_overhead_windows_eq(actual: OverheadWindow, expected: OverheadWindow) -> None:
+    assert actual.satellite == expected.satellite
+    for actual_position, expected_position in zip(actual.positions, expected.positions):
+        assert actual_position.position.altitude == pytest.approx(expected_position.position.altitude, abs=1e-6, rel=1e-6)
+        assert actual_position.position.azimuth == pytest.approx(expected_position.position.azimuth, abs=1e-6, rel=1e-6)
+        assert actual_position.time == expected_position.time
 
 class TestMain:
     def test_arbitrary_inputs_match_expected_output(self):
         antenna_positions = [PositionTime(position=Position(altitude=32, azimuth=320), time=self._arbitrary_reservation.time.begin)]
-        result = Main(reservation=self._arbitrary_reservation,
+        actual = Main(reservation=self._arbitrary_reservation,
                       satellites=self._satellites,
                       antenna_direction_path=antenna_positions).run()
-        assert result == MainResults(
-            satellites_above_horizon=[OverheadWindow(satellite=self._satellite_in_mainbeam,
-                                                     overhead_time=TimeWindow(
-                                                         begin=datetime(2023, 3, 30, 14, 39, 32, tzinfo=timezone.utc),
-                                                         end=datetime(2023, 3, 30, 14, 39, 36, tzinfo=timezone.utc))),
-                                      OverheadWindow(
-                                          satellite=self._satellite_inside_frequency_range_and_above_horizon_and_outside_mainbeam,
-                                          overhead_time=TimeWindow(
-                                              begin=datetime(2023, 3, 30, 14, 39, 35, tzinfo=timezone.utc),
-                                              end=datetime(2023, 3, 30, 14, 39, 36, tzinfo=timezone.utc))),
 
-                                      ],
-            interference_windows=[OverheadWindow(satellite=self._satellite_in_mainbeam,
-                                                 overhead_time=TimeWindow(begin=datetime(2023, 3, 30, 14, 39, 33, tzinfo=timezone.utc),
-                                                                          end=datetime(2023, 3, 30, 14, 39, 36, tzinfo=timezone.utc)))])
+        expected = MainResults(
+            satellites_above_horizon=[
+                OverheadWindow(
+                    satellite=self._satellite_in_mainbeam,
+                    positions=[
+                        PositionTime(
+                            position=Position(altitude=31.92827689000652, azimuth=322.2152123600712),
+                            time=datetime(2023, 3, 30, 14, 39, 32, tzinfo=pytz.UTC)
+                        ),
+                        PositionTime(
+                            position=Position(altitude=32.10476096624609, azimuth=321.73184343501606),
+                            time=datetime(2023, 3, 30, 14, 39, 33, tzinfo=pytz.UTC)
+                        ),
+                        PositionTime(
+                            position=Position(altitude=32.28029629612362, azimuth=321.24277001092725),
+                            time=datetime(2023, 3, 30, 14, 39, 34, tzinfo=pytz.UTC)
+                        ),
+                        PositionTime(
+                            position=Position(altitude=32.45481011166138, azimuth=320.74796378603236),
+                            time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=pytz.UTC)
+                        )
+                    ]
+                ),
+                OverheadWindow(
+                    satellite=self._satellite_inside_frequency_range_and_above_horizon_and_outside_mainbeam,
+                    positions=[
+                        PositionTime(
+                            position=Position(altitude=0.011527751634842421, azimuth=31.169677715036304),
+                            time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=pytz.UTC)
+                        )
+                    ]
+                )
+            ],
+            interference_windows=[
+                OverheadWindow(
+                    satellite=self._satellite_in_mainbeam,
+                    positions=[
+                        PositionTime(
+                            position=Position(altitude=32.10476096624609, azimuth=321.73184343501606),
+                            time=datetime(2023, 3, 30, 14, 39, 33, tzinfo=pytz.UTC)
+                        ),
+                        PositionTime(
+                            position=Position(altitude=32.28029629612362, azimuth=321.24277001092725),
+                            time=datetime(2023, 3, 30, 14, 39, 34, tzinfo=pytz.UTC)
+                        ),
+                        PositionTime(
+                            position=Position(altitude=32.45481011166138, azimuth=320.74796378603236),
+                            time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=pytz.UTC)
+                        )
+                    ]
+                )
+            ]
+        )
+
+        assert_overhead_windows_eq(actual.satellites_above_horizon[0], expected.satellites_above_horizon[0])
+        assert_overhead_windows_eq(actual.satellites_above_horizon[1], expected.satellites_above_horizon[1])
+        assert_overhead_windows_eq(actual.interference_windows[0], expected.interference_windows[0])
 
     @property
     def _arbitrary_reservation(self) -> Reservation:
