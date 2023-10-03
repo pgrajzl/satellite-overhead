@@ -13,14 +13,13 @@ RHODESMILL_TIMESCALE = load.timescale()
 
 class SatellitePositionWithRespectToFacilityRetrieverRhodesmill(SatellitePositionWithRespectToFacilityRetriever):
     _satellite_rhodesmill_cache = {}
+    _facility_latlon_cache = {}
+    _timestamps_cache = {}
 
     def run(self) -> PositionTime:
-        satellite_rhodesmill_with_respect_to_facility = self._satellite_rhodesmill - wgs84.latlon(
-            latitude_degrees=self._facility.coordinates.latitude,
-            longitude_degrees=self._facility.coordinates.longitude,
-            elevation_m=self._facility.elevation)
+        satellite_rhodesmill_with_respect_to_facility = self._satellite_rhodesmill - self._facility_latlon
 
-        timestamps_rhodesmill = RHODESMILL_TIMESCALE.from_datetime(self._timestamp)
+        timestamps_rhodesmill = self._timestamp_rhodesmill
         topocentric = satellite_rhodesmill_with_respect_to_facility.at(timestamps_rhodesmill)
         altitude, azimuth, _ = topocentric.altaz()
         return PositionTime(
@@ -33,3 +32,33 @@ class SatellitePositionWithRespectToFacilityRetrieverRhodesmill(SatellitePositio
         if self._satellite.name not in self._satellite_rhodesmill_cache:
             self._satellite_rhodesmill_cache[self._satellite.name] = self._satellite.to_rhodesmill()
         return self._satellite_rhodesmill_cache[self._satellite.name]
+
+    @property
+    def _facility_latlon(self):
+        facility_key = (
+                self._facility.coordinates.latitude,
+                self._facility.coordinates.longitude,
+                self._facility.elevation
+        )
+
+        if facility_key in self._facility_latlon_cache:
+            return self._facility_latlon_cache[facility_key]
+
+        facility_latlon = wgs84.latlon(
+            latitude_degrees=self._facility.coordinates.latitude,
+            longitude_degrees=self._facility.coordinates.longitude,
+            elevation_m=self._facility.elevation)
+
+        self._facility_latlon_cache[facility_key] = facility_latlon
+
+        return facility_latlon
+
+    @property
+    def _timestamp_rhodesmill(self):
+        if self._timestamp in self._timestamps_cache:
+            return self._timestamps_cache[self._timestamp]
+
+        timestamp_rhodesmill = RHODESMILL_TIMESCALE.from_datetime(self._timestamp)
+        self._timestamps_cache[self._timestamp] = timestamp_rhodesmill
+
+        return timestamp_rhodesmill
