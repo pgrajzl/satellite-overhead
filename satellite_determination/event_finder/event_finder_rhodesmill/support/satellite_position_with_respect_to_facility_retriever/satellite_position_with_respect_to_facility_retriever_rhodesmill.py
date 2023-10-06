@@ -1,6 +1,7 @@
 from skyfield.api import load
 from skyfield.sgp4lib import EarthSatellite
-from skyfield.toposlib import wgs84
+from skyfield.toposlib import wgs84, GeographicPosition
+from skyfield.timelib import Time
 
 from satellite_determination.custom_dataclasses.position import Position
 from satellite_determination.custom_dataclasses.position_time import PositionTime
@@ -19,8 +20,7 @@ class SatellitePositionWithRespectToFacilityRetrieverRhodesmill(SatellitePositio
     def run(self) -> PositionTime:
         satellite_rhodesmill_with_respect_to_facility = self._satellite_rhodesmill - self._facility_latlon
 
-        timestamps_rhodesmill = self._timestamp_rhodesmill
-        topocentric = satellite_rhodesmill_with_respect_to_facility.at(timestamps_rhodesmill)
+        topocentric = satellite_rhodesmill_with_respect_to_facility.at(self._timestamp_rhodesmill)
         altitude, azimuth, _ = topocentric.altaz()
         return PositionTime(
             position=Position(altitude=altitude.degrees, azimuth=azimuth.degrees),
@@ -34,31 +34,27 @@ class SatellitePositionWithRespectToFacilityRetrieverRhodesmill(SatellitePositio
         return self._satellite_rhodesmill_cache[self._satellite.name]
 
     @property
-    def _facility_latlon(self):
+    def _facility_latlon(self) -> GeographicPosition:
         facility_key = (
                 self._facility.coordinates.latitude,
                 self._facility.coordinates.longitude,
                 self._facility.elevation
         )
 
-        if facility_key in self._facility_latlon_cache:
-            return self._facility_latlon_cache[facility_key]
+        if facility_key not in self._facility_latlon_cache:
+            facility_latlon = wgs84.latlon(
+                latitude_degrees=self._facility.coordinates.latitude,
+                longitude_degrees=self._facility.coordinates.longitude,
+                elevation_m=self._facility.elevation)
 
-        facility_latlon = wgs84.latlon(
-            latitude_degrees=self._facility.coordinates.latitude,
-            longitude_degrees=self._facility.coordinates.longitude,
-            elevation_m=self._facility.elevation)
+            self._facility_latlon_cache[facility_key] = facility_latlon
 
-        self._facility_latlon_cache[facility_key] = facility_latlon
-
-        return facility_latlon
+        return self._facility_latlon_cache[facility_key]
 
     @property
-    def _timestamp_rhodesmill(self):
-        if self._timestamp in self._timestamps_cache:
-            return self._timestamps_cache[self._timestamp]
+    def _timestamp_rhodesmill(self) -> Time:
+        if self._timestamp not in self._timestamps_cache:
+            timestamp_rhodesmill = RHODESMILL_TIMESCALE.from_datetime(self._timestamp)
+            self._timestamps_cache[self._timestamp] = timestamp_rhodesmill
 
-        timestamp_rhodesmill = RHODESMILL_TIMESCALE.from_datetime(self._timestamp)
-        self._timestamps_cache[self._timestamp] = timestamp_rhodesmill
-
-        return timestamp_rhodesmill
+        return self._timestamps_cache[self._timestamp]
