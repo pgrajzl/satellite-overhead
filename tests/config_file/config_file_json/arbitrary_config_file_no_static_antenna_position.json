@@ -1,16 +1,20 @@
 {
-  "reservation": {
+  "facility": {
     "latitude": 40.8178049,
     "longitude": -121.4695413,
     "elevation": 1000,
     "beamwidth": 3,
-    "name": "ARBITRARY_1",
+    "name": "ARBITRARY_1"
+  },
+  "observationWindow": {
     "startTimeUtc": "2023-03-30T10:00:00.000000",
-    "endTimeUtc": "2023-03-30T11:00:00.000000",
+    "endTimeUtc": "2023-03-30T11:00:00.000000"
+  },
+  "frequencyRange": {
     "frequency": 135,
     "bandwidth": 10
   },
-  "observationTarget": {
+    "observationTarget": {
     "declination": "-38d6m50.8s",
     "rightAscension": "4h42m"
   }
