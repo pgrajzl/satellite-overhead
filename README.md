@@ -62,7 +62,7 @@ The following is an example of a config file:
         "elevation": 986,
         "name": "HCRO"
       },
-      "observationWindow": {
+      "reservationWindow": {
         "startTimeUtc": "2023-09-27T12:00:00.000000",
         "endTimeUtc": "2023-09-27T13:00:00.000000"
       },
