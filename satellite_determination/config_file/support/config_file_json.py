@@ -29,7 +29,7 @@ class ConfigFileJson(ConfigFileBase):
     def _reservation(self) -> Reservation:
         return Reservation(
             facility=self._facility,
-            time=self._observation_window,
+            time=self._reservation_window,
             frequency=self._frequency_range
         )
 
@@ -47,7 +47,7 @@ class ConfigFileJson(ConfigFileBase):
         )
 
     @cached_property
-    def _observation_window(self) -> TimeWindow:
+    def _reservation_window(self) -> TimeWindow:
         configuration = self._config_object.get('reservationWindow')
         start_datetime = read_datetime_string_as_utc(configuration['startTimeUtc'])
         end_datetime_str = read_datetime_string_as_utc(configuration['endTimeUtc'])
