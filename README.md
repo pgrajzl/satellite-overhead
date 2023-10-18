@@ -56,46 +56,47 @@ The following is an example of a config file:
 
     {
       "facility": {
-        "latitude": 40.8178049,
-        "longitude": -121.4695413,
         "beamwidth": 3,
         "elevation": 986,
+        "latitude": 40.8178049,
+        "longitude": -121.4695413,
         "name": "HCRO"
       },
-      "reservationWindow": {
-        "startTimeUtc": "2023-09-27T12:00:00.000000",
-        "endTimeUtc": "2023-09-27T13:00:00.000000"
-      },
       "frequencyRange": {
-        "frequency": 135,
-        "bandwidth": 10
+        "bandwidth": 10,
+        "frequency": 135
       },
       "observationTarget": {
-        "declination": "7d24m26s",
-        "rightAscension": "5h55m10s"
+        "declination": "-38d6m50.8s",
+        "rightAscension": "4h42m"
+      },
+      "reservationWindow": {
+        "startTimeUtc": "2023-09-27T12:00:00.000000"
+        "endTimeUtc": "2023-09-27T13:00:00.000000",
       }
+
     }
 
-Below is a description of each of these values:
 + The `facility` object contains attributes pertaining to the observation facility:
+    + "beamwidth" is the beamwidth of the RA telescope
+    + "elevation" is the ground level elevation of the RA facility in meters
     + "latitude" is the latitude of the RA facility
     + "longitude" is the longitude of the RA facility
-    + "elevation" is the ground level elevation of the RA facility in meters
-    + "beamwidth" is the beamwidth of the RA telescope
     + "name" is the name of the RA facility
-+ The `reservationWindow` object contains the start and end time of the time window of the observation:
-    + "startTimeUtc" is the desired start time of the observation in UTC
-    + "endTimeUtc" is the desired end time of the observation in UTC
-+ The `frequencyRange` object contains charactersitics of the frequency:
-    + "frequency" is the center frequency of the observation
+
++ The `frequencyRange` object contains characteristics of the frequency:
     + "bandwidth" is the bandwidth of the desired observation
+    + "frequency" is the center frequency of the observation
 
 + The `observationTarget` is the coordinates of the object to be observed:
     + "declination" is the declination value of the celestial target the RA telescope is trying to observe
-      + More information can be found in [Astropy's Astronomical Coordinate System](https://docs.astropy.org/en/stable/coordinates/index.html)
+        + More information can be found in [Astropy's Astronomical Coordinate System](https://docs.astropy.org/en/stable/coordinates/index.html)
     + "rightAscension" is the right ascension value of the celestial target the RA telescope is trying to observe
-      + More information can be found in [Astropy's Astronomical Coordinate System](https://docs.astropy.org/en/stable/coordinates/index.html)
+        + More information can be found in [Astropy's Astronomical Coordinate System](https://docs.astropy.org/en/stable/coordinates/index.html)
 
++ The `reservationWindow` object contains the start and end time of the time window of the observation:
+    + "startTimeUtc" is the desired start time of the observation in UTC
+    + "endTimeUtc" is the desired end time of the observation in UTC
 
 ###### Static Antenna Position
 A static antenna position may be given instead of an observation target's declination and right ascension.
