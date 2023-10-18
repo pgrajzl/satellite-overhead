@@ -6,7 +6,7 @@
     "beamwidth": 3,
     "name": "ARBITRARY_1"
   },
-  "observationWindow": {
+  "reservationWindow": {
     "startTimeUtc": "2023-03-30T10:00:00.000000",
     "endTimeUtc": "2023-03-30T11:00:00.000000"
   },

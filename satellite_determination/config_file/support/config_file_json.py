@@ -48,7 +48,7 @@ class ConfigFileJson(ConfigFileBase):
 
     @cached_property
     def _observation_window(self) -> TimeWindow:
-        configuration = self._config_object.get('observationWindow')
+        configuration = self._config_object.get('reservationWindow')
         start_datetime = read_datetime_string_as_utc(configuration['startTimeUtc'])
         end_datetime_str = read_datetime_string_as_utc(configuration['endTimeUtc'])
 
