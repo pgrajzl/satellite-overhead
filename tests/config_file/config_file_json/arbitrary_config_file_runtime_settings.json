@@ -16,7 +16,7 @@
   },
   "runtimeSettings": {
       "time_continuity_resolution": 5,
-      "num_cores": 6
+      "concurrency_level": 6
   },
   "observationTarget": {
     "declination": "-38d6m50.8s",

@@ -15,6 +15,7 @@ from satellite_determination.custom_dataclasses.position import Position
 from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
+from satellite_determination.custom_dataclasses.runtime_settings import RuntimeSettings
 from satellite_determination.utilities import get_script_directory
 
 
@@ -52,6 +53,12 @@ class TestConfigFileProvidedArgument:
             PositionTime(position=Position(altitude=.1, azimuth=.2),
                          time=datetime(year=2023, month=3, day=30, hour=10, minute=2, tzinfo=pytz.UTC))
         ]
+
+    def test_json_runtime_settings(self):
+        config = self._get_config_file_object(config_filename='config_file_json/arbitrary_config_file_runtime_settings.json')
+        expected = RuntimeSettings(time_continuity_resolution=5, concurrency_level=6)
+        actual = config.configuration.runtime_settings
+        assert expected == actual
 
     @pytest.fixture(params=['config_file_json/arbitrary_config_file_no_observation_target.json', 'config_file_standard/arbitrary_config_file_no_observation_target.config'])
     def config_no_observation_target(self, request):
