@@ -14,7 +14,15 @@
     "frequency": 135,
     "bandwidth": 10
   },
-    "staticAntennaPosition": {
+  "runtimeSettings": {
+      "time_continuity_resolution": 5,
+      "num_cores": 6
+  },
+  "observationTarget": {
+    "declination": "-38d6m50.8s",
+    "rightAscension": "4h42m"
+  },
+  "staticAntennaPosition": {
     "altitude": 0.2,
     "azimuth": 0.3
   }

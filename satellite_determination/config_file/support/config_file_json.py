@@ -27,21 +27,40 @@ class ConfigFileJson(ConfigFileBase):
 
     @cached_property
     def _reservation(self) -> Reservation:
-        configuration = self._config_object['reservation']
-        start_datetime = read_datetime_string_as_utc(configuration['startTimeUtc'])
-        end_datetime_str = read_datetime_string_as_utc(configuration['endTimeUtc'])
         return Reservation(
-            facility=Facility(
-                coordinates=Coordinates(latitude=configuration['latitude'],
-                                        longitude=configuration['longitude']),
+            facility=self._facility,
+            time=self._reservation_window,
+            frequency=self._frequency_range
+        )
+
+    @cached_property
+    def _facility(self) -> Facility:
+        configuration = self._config_object.get('facility')
+
+        return Facility(
+                coordinates=Coordinates(
+                    latitude=configuration['latitude'],
+                    longitude=configuration['longitude']
+                ),
                 name=configuration['name'],
                 elevation=configuration['elevation'],
-            ),
-            time=TimeWindow(begin=start_datetime, end=end_datetime_str),
-            frequency=FrequencyRange(
-                frequency=configuration['frequency'],
-                bandwidth=configuration['bandwidth']
-            )
+        )
+
+    @cached_property
+    def _reservation_window(self) -> TimeWindow:
+        configuration = self._config_object.get('reservationWindow')
+        start_datetime = read_datetime_string_as_utc(configuration['startTimeUtc'])
+        end_datetime_str = read_datetime_string_as_utc(configuration['endTimeUtc'])
+
+        return TimeWindow(begin=start_datetime, end=end_datetime_str)
+
+    @cached_property
+    def _frequency_range(self) -> FrequencyRange:
+        configuration = self._config_object.get('frequencyRange')
+
+        return FrequencyRange(
+            frequency=configuration['frequency'],
+            bandwidth=configuration['bandwidth']
         )
 
     @cached_property
