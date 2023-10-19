@@ -102,8 +102,8 @@ The following is an example of a config file:
     + "endTimeUtc" is the desired end time of the observation in UTC
 
 + The `runtimeSettings` object sets various runtime settings it includes:
-    + "concurrency_level" Specifies the number of parallel jobs to run during satellite position computation, which can significantly improve performance.
-    + "time_continuity_resolution" Sets the sampling rate for satellite position calculations in seconds. For example, a value of 1 indicates that satellite positions are calculated every second.
+    + "concurrency_level" specifies the number of parallel jobs to run during satellite position computation, which can significantly improve performance.
+    + "time_continuity_resolution" sets the sampling rate for satellite position calculations in seconds. For example, a value of 1 indicates that satellite positions are calculated every second.
 
 ###### Static Antenna Position
 A static antenna position may be given instead of an observation target's declination and right ascension.
