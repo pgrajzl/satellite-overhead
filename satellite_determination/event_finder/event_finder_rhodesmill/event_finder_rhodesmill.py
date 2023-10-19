@@ -1,5 +1,5 @@
 from dataclasses import replace
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Iterable, List, Type
 
 from satellite_determination.custom_dataclasses.facility import Facility
@@ -19,6 +19,7 @@ from satellite_determination.event_finder.event_finder_rhodesmill.support.satell
 from satellite_determination.event_finder.event_finder import EventFinder
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.utilities import convert_datetime_to_utc
+from satellite_determination.custom_dataclasses.runtime_settings import RuntimeSettings
 
 
 class EventFinderRhodesMill(EventFinder):
@@ -27,12 +28,12 @@ class EventFinderRhodesMill(EventFinder):
                  list_of_satellites: List[Satellite],
                  reservation: Reservation,
                  satellite_position_with_respect_to_facility_retriever_class: Type[SatellitePositionWithRespectToFacilityRetriever] = SatellitePositionWithRespectToFacilityRetrieverRhodesmill,
-                 time_continuity_resolution: timedelta = timedelta(seconds=1)):
+                 runtime_settings: RuntimeSettings = RuntimeSettings()):
         super().__init__(antenna_direction_path=antenna_direction_path,
                          list_of_satellites=list_of_satellites,
                          reservation=reservation,
                          satellite_position_with_respect_to_facility_retriever_class=satellite_position_with_respect_to_facility_retriever_class,
-                         time_continuity_resolution=time_continuity_resolution)
+                         runtime_settings=runtime_settings)
 
     def get_satellites_above_horizon(self):
         facility_with_beam_width_that_sees_entire_sky = replace(self.reservation.facility, beamwidth=360)
@@ -70,7 +71,7 @@ class EventFinderRhodesMill(EventFinder):
 
     def _get_satellite_positions(self, satellite: Satellite, time_window: TimeWindow) -> List[PositionTime]:
         pseudo_continuous_timestamps = PseudoContinuousTimestampsCalculator(time_window=time_window,
-                                                                            resolution=self.time_continuity_resolution).run()
+                                                                            resolution=self.runtime_settings.time_continuity_resolution).run()
         return [self._get_position_with_respect_to_facility(satellite=satellite,
                                                             timestamp=convert_datetime_to_utc(timestamp),
                                                             facility=self.reservation.facility)

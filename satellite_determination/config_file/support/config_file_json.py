@@ -12,6 +12,7 @@ from satellite_determination.custom_dataclasses.position import Position
 from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
+from satellite_determination.custom_dataclasses.runtime_settings import RuntimeSettings
 from satellite_determination.utilities import read_datetime_string_as_utc
 
 
@@ -20,6 +21,7 @@ class ConfigFileJson(ConfigFileBase):
     def configuration(self) -> Configuration:
         return Configuration(
             reservation=self._reservation,
+            runtime_settings=self._runtime_settings,
             antenna_position_times=self._antenna_position_times,
             observation_target=self._observation_target,
             static_antenna_position=self._static_antenna_position
@@ -62,6 +64,15 @@ class ConfigFileJson(ConfigFileBase):
             frequency=configuration['frequency'],
             bandwidth=configuration['bandwidth']
         )
+
+    @cached_property
+    def _runtime_settings(self) -> RuntimeSettings:
+        configuration = self._config_object.get('runtimeSettings')
+
+        return RuntimeSettings(
+            time_continuity_resolution=configuration['time_continuity_resolution'],
+            concurrency_level=configuration['concurrency_level']
+        ) if configuration else RuntimeSettings()
 
     @cached_property
     def _antenna_position_times(self) -> List[PositionTime]:

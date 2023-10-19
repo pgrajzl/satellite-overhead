@@ -71,10 +71,13 @@ The following is an example of a config file:
         "rightAscension": "4h42m"
       },
       "reservationWindow": {
-        "startTimeUtc": "2023-09-27T12:00:00.000000"
-        "endTimeUtc": "2023-09-27T13:00:00.000000",
+        "startTimeUtc": "2023-09-27T12:00:00.000000",
+        "endTimeUtc": "2023-09-27T13:00:00.000000"
+      },
+      "runtimeSettings": {
+          "concurrency_level": 4,
+          "time_continuity_resolution": 1
       }
-
     }
 
 + The `facility` object contains attributes pertaining to the observation facility:
@@ -97,6 +100,10 @@ The following is an example of a config file:
 + The `reservationWindow` object contains the start and end time of the time window of the observation:
     + "startTimeUtc" is the desired start time of the observation in UTC
     + "endTimeUtc" is the desired end time of the observation in UTC
+
++ The `runtimeSettings` object sets various runtime settings it includes:
+    + "concurrency_level" specifies the number of parallel jobs to run during satellite position computation, which can significantly improve performance.
+    + "time_continuity_resolution" sets the sampling rate for satellite position calculations in seconds. For example, a value of 1 indicates that satellite positions are calculated every second.
 
 ###### Static Antenna Position
 A static antenna position may be given instead of an observation target's declination and right ascension.
