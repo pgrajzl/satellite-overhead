@@ -69,13 +69,10 @@ class ConfigFileJson(ConfigFileBase):
     def _runtime_settings(self) -> RuntimeSettings:
         configuration = self._config_object.get('runtimeSettings')
 
-        if not configuration:
-            return RuntimeSettings()
-
         return RuntimeSettings(
             time_continuity_resolution=configuration['time_continuity_resolution'],
             concurrency_level=configuration['concurrency_level']
-        )
+        ) if configuration else RuntimeSettings()
 
     @cached_property
     def _antenna_position_times(self) -> List[PositionTime]:
