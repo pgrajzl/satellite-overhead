@@ -137,30 +137,6 @@ and `staticAntennaPosition.` The following is an example:
     ],
 
 
-
-##### Alternate Config File Format
-You may alternatively supply the config file in `.config` format at `supplements/.config`. An example is as follows
-
-    [RESERVATION]
-    Latitude=40.8178049
-    Longitude=-121.4695413
-    Elevation=986
-    Beamwidth=3
-    Name=HCRO
-    StartTimeUTC=2023-03-30T10:00:00.000000
-    EndTimeUTC=2023-03-30T15:00:00.000000
-    Frequency=135
-    Bandwidth=10
-    
-    [OBSERVATION TARGET]
-    Declination=-38d6m50.8s
-    Right Ascension=4h42m
-
-    [STATIC ANTENNA POSITION]
-    Altitude=0.2
-    Azimuth=0.3
-
-
 ### Run command
 In the root directory, run the following command:
 
