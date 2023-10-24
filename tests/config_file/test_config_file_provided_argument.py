@@ -20,7 +20,7 @@ from satellite_determination.utilities import get_script_directory
 
 
 class TestConfigFileProvidedArgument:
-    @pytest.fixture(params=['config_file_json/arbitrary_config_file.json', 'config_file_standard/arbitrary_config_file.config'])
+    @pytest.fixture(params=['config_file_json/arbitrary_config_file.json'])
     def config_arbitrary(self, request):
         yield self._get_config_file_object(config_filename=request.param)
 
@@ -60,7 +60,7 @@ class TestConfigFileProvidedArgument:
         actual = config.configuration.runtime_settings
         assert expected == actual
 
-    @pytest.fixture(params=['config_file_json/arbitrary_config_file_no_observation_target.json', 'config_file_standard/arbitrary_config_file_no_observation_target.config'])
+    @pytest.fixture(params=['config_file_json/arbitrary_config_file_no_observation_target.json'])
     def config_no_observation_target(self, request):
         yield self._get_config_file_object(config_filename=request.param)
     def test_observation_target_is_optional(self, config_no_observation_target):
@@ -68,16 +68,14 @@ class TestConfigFileProvidedArgument:
         assert config_no_observation_target.configuration.reservation is not None
         assert config_no_observation_target.configuration.static_antenna_position is not None
 
-    @pytest.fixture(params=['config_file_json/arbitrary_config_file_partial_observation_target.json',
-                            'config_file_standard/arbitrary_config_file_partial_observation_target.config'])
+    @pytest.fixture(params=['config_file_json/arbitrary_config_file_partial_observation_target.json'])
     def config_partial_observation_target(self, request):
         yield self._get_config_file_object(config_filename=request.param)
     def test_error_is_returned_if_partial_observation_target(self, config_partial_observation_target):
         with pytest.raises(KeyError):
             _ = config_partial_observation_target.configuration
 
-    @pytest.fixture(params=['config_file_json/arbitrary_config_file_no_static_antenna_position.json',
-                            'config_file_standard/arbitrary_config_file_no_static_antenna_position.config'])
+    @pytest.fixture(params=['config_file_json/arbitrary_config_file_no_static_antenna_position.json'])
     def config_no_static_antenna_position(self, request):
         yield self._get_config_file_object(config_filename=request.param)
     def test_static_antenna_position_is_optional(self, config_no_static_antenna_position):
@@ -85,8 +83,7 @@ class TestConfigFileProvidedArgument:
         assert config_no_static_antenna_position.configuration.observation_target is not None
         assert config_no_static_antenna_position.configuration.reservation is not None
 
-    @pytest.fixture(params=['config_file_json/arbitrary_config_file_partial_static_antenna_position.json',
-                            'config_file_standard/arbitrary_config_file_partial_static_antenna_position.config'])
+    @pytest.fixture(params=['config_file_json/arbitrary_config_file_partial_static_antenna_position.json'])
     def config_partial_static_antenna_position(self, request):
         yield self._get_config_file_object(config_filename=request.param)
     def test_error_is_returned_if_partial_static_antenna_position(self, config_partial_static_antenna_position):

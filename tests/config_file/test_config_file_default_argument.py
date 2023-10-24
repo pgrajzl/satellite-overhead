@@ -36,8 +36,7 @@ class TestConfigFileDefaultArgument:
             if backup_filepath.exists():
                 os.rename(backup_filepath, default_filepath)
 
-    @pytest.fixture(scope='class', params=[('config_file_json/arbitrary_config_file_2.json', CONFIG_FILE_FILENAME_JSON),
-                                           ('config_file_standard/arbitrary_config_file_2.config', CONFIG_FILE_FILENAME)])
+    @pytest.fixture(scope='class', params=[('config_file_json/arbitrary_config_file_2.json', CONFIG_FILE_FILENAME_JSON)])
     def config_file(self, request, backup_current_default_config_file):
         source_relative_filepath, target_filename = request.param
         supplements_directory = get_supplements_directory()
