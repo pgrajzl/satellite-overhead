@@ -1,7 +1,7 @@
 from dataclasses import replace
 from typing import List
 
-from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
+from satellite_determination.path_finder.observation_path_finder_astropy import ObservationPathFinderAstropy
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.configuration import Configuration
@@ -24,6 +24,6 @@ class VariableInitializerFromConfig(VariableInitializer):
             return [PositionTime(position=self.config.static_antenna_position,
                                  time=self.config.reservation.time.begin)]
         else:
-            return ObservationPathFinder(facility=self.config.reservation.facility,
+            return ObservationPathFinderAstropy(facility=self.config.reservation.facility,
                                          observation_target=self.config.observation_target,
                                          time_window=self.config.reservation.time).calculate_path()
