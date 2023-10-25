@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 from datetime import timedelta
 import re
 
@@ -14,7 +14,7 @@ from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
 
 
-class ObservationPathFinderRhodesmill(ObservationPathFinder):
+class ObservationPathFinderRhodesMill(ObservationPathFinder):
     '''
     The ObservationPathFinder determines the path the telescope will need to follow to track its target and returns
     a list of altitude, azimuth, and timestamp to represent the telescope's movement. It uses the observation
@@ -39,8 +39,8 @@ class ObservationPathFinderRhodesmill(ObservationPathFinder):
         earth = eph['earth']
 
         target_coordinates = Star(
-            ra_hours=ObservationPathFinderRhodesmill.right_ascension_to_rhodesmill(self._observation_target),
-            dec_degrees=ObservationPathFinderRhodesmill.declination_to_rhodesmill(self._observation_target)
+            ra_hours=ObservationPathFinderRhodesMill.right_ascension_to_rhodesmill(self._observation_target),
+            dec_degrees=ObservationPathFinderRhodesMill.declination_to_rhodesmill(self._observation_target)
         )
         start_time = self._time_window.begin
         end_time = self._time_window.end
@@ -62,15 +62,15 @@ class ObservationPathFinderRhodesmill(ObservationPathFinder):
         return observation_path
 
     @staticmethod
-    def _parse_coordinate(coordinate_str):
+    def _parse_coordinate(coordinate_str: str) -> Tuple[float, float, float]:
         parts = [float(part) for part in re.split('[hdms]', coordinate_str) if part]
 
         return tuple(parts)
 
     @staticmethod
-    def right_ascension_to_rhodesmill(observation_target):
-        return ObservationPathFinderRhodesmill._parse_coordinate(observation_target.right_ascension)
+    def right_ascension_to_rhodesmill(observation_target: ObservationTarget) -> Tuple[float, float, float]:
+        return ObservationPathFinderRhodesMill._parse_coordinate(observation_target.right_ascension)
 
     @staticmethod
-    def declination_to_rhodesmill(observation_target):
-        return ObservationPathFinderRhodesmill._parse_coordinate(observation_target.declination)
+    def declination_to_rhodesmill(observation_target: ObservationTarget) -> Tuple[float, float, float]:
+        return ObservationPathFinderRhodesMill._parse_coordinate(observation_target.declination)
