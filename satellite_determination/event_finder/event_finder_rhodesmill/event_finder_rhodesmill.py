@@ -22,6 +22,7 @@ from satellite_determination.custom_dataclasses.satellite.satellite import Satel
 from satellite_determination.utilities import convert_datetime_to_utc
 from satellite_determination.custom_dataclasses.runtime_settings import RuntimeSettings
 
+
 class EventFinderRhodesMill(EventFinder):
     def __init__(self,
                  antenna_direction_path: List[PositionTime],
