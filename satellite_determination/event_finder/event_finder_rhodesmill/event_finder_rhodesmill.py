@@ -1,6 +1,7 @@
 from dataclasses import replace
 from datetime import datetime
 from typing import Iterable, List, Type
+import multiprocessing
 
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
@@ -20,7 +21,6 @@ from satellite_determination.event_finder.event_finder import EventFinder
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 from satellite_determination.utilities import convert_datetime_to_utc
 from satellite_determination.custom_dataclasses.runtime_settings import RuntimeSettings
-
 
 class EventFinderRhodesMill(EventFinder):
     def __init__(self,
@@ -44,11 +44,18 @@ class EventFinderRhodesMill(EventFinder):
         return event_finder.get_satellites_crossing_main_beam()
 
     def get_satellites_crossing_main_beam(self) -> List[OverheadWindow]:
-        return [
-            overhead_window
-            for satellite in self.list_of_satellites
-            for overhead_window in self._get_satellite_overhead_windows(satellite=satellite)
-        ]
+        if self.runtime_settings.concurrency_level > 1:
+            pool = multiprocessing.Pool(processes=self.runtime_settings.concurrency_level)
+            results = pool.map(self._get_satellite_overhead_windows, self.list_of_satellites)
+            pool.close()
+            pool.join()
+            return [overhead_window for result in results for overhead_window in result]
+        else:
+            return [
+                overhead_window
+                for satellite in self.list_of_satellites
+                for overhead_window in self._get_satellite_overhead_windows(satellite=satellite)
+            ]
 
     def _get_satellite_overhead_windows(self, satellite: Satellite) -> Iterable[OverheadWindow]:
         antenna_direction_end_times = [antenna_direction.time for antenna_direction in self.antenna_direction_path[1:]] \
@@ -67,7 +74,7 @@ class EventFinderRhodesMill(EventFinder):
         time_windows = SatellitesWithinMainBeamFilter(facility=self.reservation.facility,
                                                       antenna_positions=antenna_positions,
                                                       cutoff_time=self.reservation.time.end).run()
-        return (OverheadWindow(satellite=satellite, positions=positions) for positions in time_windows)
+        return [OverheadWindow(satellite=satellite, positions=positions) for positions in time_windows]
 
     def _get_satellite_positions(self, satellite: Satellite, time_window: TimeWindow) -> List[PositionTime]:
         pseudo_continuous_timestamps = PseudoContinuousTimestampsCalculator(time_window=time_window,
