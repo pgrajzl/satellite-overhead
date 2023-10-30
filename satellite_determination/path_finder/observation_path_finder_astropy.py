@@ -17,12 +17,6 @@ from satellite_determination.custom_dataclasses.time_window import TimeWindow
 
 
 class ObservationPathFinderAstropy(ObservationPathFinder):
-    '''
-    The ObservationPathFinder determines the path the telescope will need to follow to track its target and returns
-    a list of altitude, azimuth, and timestamp to represent the telescope's movement. It uses the observation
-    target's right ascension and declination to determine this path.
-    '''
-
     def __init__(self, facility: Facility, observation_target: ObservationTarget, time_window: TimeWindow) -> List[PositionTime]:
         self._facility = facility
         self._observation_target = observation_target
