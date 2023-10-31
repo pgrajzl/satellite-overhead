@@ -45,7 +45,7 @@ class EventFinderRhodesMill(EventFinder):
         return event_finder.get_satellites_crossing_main_beam()
 
     def get_satellites_crossing_main_beam(self) -> List[OverheadWindow]:
-        pool = multiprocessing.Pool(processes=self.runtime_settings.concurrency_level)
+        pool = multiprocessing.Pool(processes=self.runtime_settings.concurrency_level if self.runtime_settings.concurrency_level >= 1 else 1)
         results = pool.map(self._get_satellite_overhead_windows, self.list_of_satellites)
         pool.close()
         pool.join()
