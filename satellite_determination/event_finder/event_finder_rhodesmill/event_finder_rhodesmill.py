@@ -45,20 +45,14 @@ class EventFinderRhodesMill(EventFinder):
         return event_finder.get_satellites_crossing_main_beam()
 
     def get_satellites_crossing_main_beam(self) -> List[OverheadWindow]:
-        if self.runtime_settings.concurrency_level > 1:
-            pool = multiprocessing.Pool(processes=self.runtime_settings.concurrency_level)
-            results = pool.map(self._get_satellite_overhead_windows, self.list_of_satellites)
-            pool.close()
-            pool.join()
-            return [overhead_window for result in results for overhead_window in result]
-        else:
-            return [
-                overhead_window
-                for satellite in self.list_of_satellites
-                for overhead_window in self._get_satellite_overhead_windows(satellite=satellite)
-            ]
+        pool = multiprocessing.Pool(processes=self.runtime_settings.concurrency_level)
+        results = pool.map(self._get_satellite_overhead_windows, self.list_of_satellites)
+        pool.close()
+        pool.join()
 
-    def _get_satellite_overhead_windows(self, satellite: Satellite) -> Iterable[OverheadWindow]:
+        return [overhead_window for result in results for overhead_window in result]
+
+    def _get_satellite_overhead_windows(self, satellite: Satellite) -> List[OverheadWindow]:
         antenna_direction_end_times = [antenna_direction.time for antenna_direction in self.antenna_direction_path[1:]] \
                                       + [self.reservation.time.end]
         antenna_positions = [
