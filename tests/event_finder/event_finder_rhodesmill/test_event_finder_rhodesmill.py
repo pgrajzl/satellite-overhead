@@ -1,5 +1,6 @@
 import pytz
 from datetime import datetime, timedelta
+from typing import List
 
 from satellite_determination.custom_dataclasses.coordinates import Coordinates
 from satellite_determination.custom_dataclasses.facility import Facility
@@ -23,7 +24,7 @@ class SatellitePositionsWithRespectToFacilityRetrieverStub:
     def __init__(self, facility, datetimes):
         self._datetimes = datetimes
 
-    def run(self, satellite: Satellite) -> PositionTime:
+    def run(self, satellite: Satellite) -> List[PositionTime]:
         return [
             PositionTime(
                 position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE, azimuth=ARBITRARY_SATELLITE_AZIMUTH),
