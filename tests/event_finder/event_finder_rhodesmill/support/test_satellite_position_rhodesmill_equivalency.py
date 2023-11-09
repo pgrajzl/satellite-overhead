@@ -23,9 +23,6 @@ class TestSatellitePositionWithRespectToFacilityRetrieverEquivalency:
             facility=self._facility,
             datetimes=self._times,
         )
-
-        print(self._times)
-
         actual = multi.run(satellite=self._satellite)
         expected = [
             SatellitePositionWithRespectToFacilityRetrieverRhodesmill(
