@@ -1,9 +1,7 @@
 from dataclasses import replace
-from datetime import datetime
-from typing import Iterable, List, Type
+from typing import List, Type
 import multiprocessing
 
-from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
 from satellite_determination.custom_dataclasses.position import Position
 from satellite_determination.custom_dataclasses.position_time import PositionTime
@@ -11,15 +9,14 @@ from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.support.pseudo_continuous_timestamps_calculator import \
     PseudoContinuousTimestampsCalculator
-from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever import \
-    SatellitePositionWithRespectToFacilityRetriever
-from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever_rhodesmill import \
-    SatellitePositionWithRespectToFacilityRetrieverRhodesmill
+from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever import \
+    SatellitePositionsWithRespectToFacilityRetriever
+from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever_rhodesmill import \
+    SatellitePositionsWithRespectToFacilityRetrieverRhodesmill
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import AntennaPosition, \
     SatellitesWithinMainBeamFilter
 from satellite_determination.event_finder.event_finder import EventFinder
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from satellite_determination.utilities import convert_datetime_to_utc
 from satellite_determination.custom_dataclasses.runtime_settings import RuntimeSettings
 
 
@@ -28,13 +25,23 @@ class EventFinderRhodesMill(EventFinder):
                  antenna_direction_path: List[PositionTime],
                  list_of_satellites: List[Satellite],
                  reservation: Reservation,
-                 satellite_position_with_respect_to_facility_retriever_class: Type[SatellitePositionWithRespectToFacilityRetriever] = SatellitePositionWithRespectToFacilityRetrieverRhodesmill,
+                 satellite_position_with_respect_to_facility_retriever_class: Type[SatellitePositionsWithRespectToFacilityRetriever] = SatellitePositionsWithRespectToFacilityRetrieverRhodesmill,
                  runtime_settings: RuntimeSettings = RuntimeSettings()):
         super().__init__(antenna_direction_path=antenna_direction_path,
                          list_of_satellites=list_of_satellites,
                          reservation=reservation,
                          satellite_position_with_respect_to_facility_retriever_class=satellite_position_with_respect_to_facility_retriever_class,
                          runtime_settings=runtime_settings)
+
+        datetimes = PseudoContinuousTimestampsCalculator(
+            time_window=reservation.time,
+            resolution=runtime_settings.time_continuity_resolution
+        ).run()
+
+        self.satellite_positions_retriever = satellite_position_with_respect_to_facility_retriever_class(
+            facility=reservation.facility,
+            datetimes=datetimes
+        )
 
     def get_satellites_above_horizon(self):
         facility_with_beam_width_that_sees_entire_sky = replace(self.reservation.facility, beamwidth=360)
@@ -45,7 +52,8 @@ class EventFinderRhodesMill(EventFinder):
         return event_finder.get_satellites_crossing_main_beam()
 
     def get_satellites_crossing_main_beam(self) -> List[OverheadWindow]:
-        pool = multiprocessing.Pool(processes=int(self.runtime_settings.concurrency_level) if self.runtime_settings.concurrency_level > 1 else 1)
+        processes = int(self.runtime_settings.concurrency_level) if self.runtime_settings.concurrency_level > 1 else 1
+        pool = multiprocessing.Pool(processes=processes)
         results = pool.map(self._get_satellite_overhead_windows, self.list_of_satellites)
         pool.close()
         pool.join()
@@ -53,36 +61,41 @@ class EventFinderRhodesMill(EventFinder):
         return [overhead_window for result in results for overhead_window in result]
 
     def _get_satellite_overhead_windows(self, satellite: Satellite) -> List[OverheadWindow]:
-        antenna_direction_end_times = [antenna_direction.time for antenna_direction in self.antenna_direction_path[1:]] \
-                                      + [self.reservation.time.end]
+        antenna_direction_end_times = (
+            [antenna_direction.time for antenna_direction in self.antenna_direction_path[1:]]
+            + [self.reservation.time.end]
+        )
+        satellite_positions = self._get_satellite_positions(satellite)
         antenna_positions = [
             AntennaPosition(
-                satellite_positions=self._get_satellite_positions(
-                    satellite=satellite,
+                satellite_positions=self._get_satellite_positions_from_time_window(
+                    satellite_positions,
                     time_window=TimeWindow(
                         begin=max(self.reservation.time.begin, antenna_direction.time),
                         end=end_time
-                    )),
-                antenna_direction=antenna_direction)
+                    )
+                ),
+                antenna_direction=antenna_direction
+            )
             for antenna_direction, end_time in zip(self.antenna_direction_path, antenna_direction_end_times)
-            if end_time > self.reservation.time.begin]
+            if end_time > self.reservation.time.begin
+        ]
         time_windows = SatellitesWithinMainBeamFilter(facility=self.reservation.facility,
                                                       antenna_positions=antenna_positions,
                                                       cutoff_time=self.reservation.time.end).run()
+
         return [OverheadWindow(satellite=satellite, positions=positions) for positions in time_windows]
 
-    def _get_satellite_positions(self, satellite: Satellite, time_window: TimeWindow) -> List[PositionTime]:
-        pseudo_continuous_timestamps = PseudoContinuousTimestampsCalculator(time_window=time_window,
-                                                                            resolution=self.runtime_settings.time_continuity_resolution).run()
-        return [self._get_position_with_respect_to_facility(satellite=satellite,
-                                                            timestamp=convert_datetime_to_utc(timestamp),
-                                                            facility=self.reservation.facility)
-                for timestamp in pseudo_continuous_timestamps]
+    def _get_satellite_positions(self, satellite: Satellite) -> List[PositionTime]:
+        return self.satellite_positions_retriever.run(satellite)
 
-    def _get_position_with_respect_to_facility(self,
-                                               satellite: Satellite,
-                                               timestamp: datetime,
-                                               facility: Facility) -> PositionTime:
-        return self.satellite_position_with_respect_to_facility_retriever_class(satellite=satellite,
-                                                                                timestamp=timestamp,
-                                                                                facility=facility).run()
+    @staticmethod
+    def _get_satellite_positions_from_time_window(
+        satellite_positions: List[PositionTime],
+        time_window: TimeWindow
+    ) -> List[PositionTime]:
+        return [
+            positions
+            for positions in satellite_positions
+            if positions.time >= time_window.begin and positions.time < time_window.end
+        ]
