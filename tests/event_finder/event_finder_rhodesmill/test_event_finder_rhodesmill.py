@@ -19,13 +19,19 @@ ARBITRARY_SATELLITE_ALTITUDE = 0
 ARBITRARY_SATELLITE_AZIMUTH = 0
 
 
-class SatellitePositionWithRespectToFacilityRetrieverStub(SatellitePositionWithRespectToFacilityRetriever):
-    def run(self) -> PositionTime:
-        return PositionTime(
-            position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
-                              azimuth=ARBITRARY_SATELLITE_AZIMUTH),
-            time=self._timestamp
-        )
+class SatellitePositionsWithRespectToFacilityRetrieverStub:
+    def __init__(self, facility, datetimes):
+        self._datetimes = datetimes
+
+    def run(self, satellite: Satellite) -> PositionTime:
+        return [
+            PositionTime(
+                position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE, azimuth=ARBITRARY_SATELLITE_AZIMUTH),
+                time=time
+            )
+            for time in self._datetimes
+        ]
+
 
 class TestEventFinderRhodesmill:
     def test_single_satellite(self):
@@ -40,7 +46,7 @@ class TestEventFinderRhodesmill:
                                              antenna_direction_path=[PositionTime(position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
                                                                                                     azimuth=ARBITRARY_SATELLITE_AZIMUTH),
                                                                                   time=arbitrary_datetime)],
-                                             satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub)
+                                             satellite_position_with_respect_to_facility_retriever_class=SatellitePositionsWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
         expected_windows = [
             create_overhead_window(arbitrary_satellite, 0, 0, arbitrary_time_window.begin, 2)
@@ -61,7 +67,7 @@ class TestEventFinderRhodesmill:
                                              antenna_direction_path=[PositionTime(position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
                                                                                                     azimuth=ARBITRARY_SATELLITE_AZIMUTH),
                                                                                   time=arbitrary_datetime)],
-                                             satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub)
+                                             satellite_position_with_respect_to_facility_retriever_class=SatellitePositionsWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
         expected_windows = [
             create_overhead_window(arbitrary_satellites[0], 0, 0, arbitrary_time_window.begin, 2),
@@ -103,7 +109,7 @@ class TestEventFinderRhodesmill:
                     time=arbitrary_datetime + timedelta(seconds=2)
                 ),
             ],
-            satellite_position_with_respect_to_facility_retriever_class=SatellitePositionWithRespectToFacilityRetrieverStub
+            satellite_position_with_respect_to_facility_retriever_class=SatellitePositionsWithRespectToFacilityRetrieverStub
         )
 
         windows = event_finder.get_satellites_crossing_main_beam()
