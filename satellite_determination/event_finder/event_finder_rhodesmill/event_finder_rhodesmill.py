@@ -7,8 +7,8 @@ from satellite_determination.custom_dataclasses.position import Position
 from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.event_finder.event_finder_rhodesmill.support.pseudo_continuous_timestamps_calculator import \
-    PseudoContinuousTimestampsCalculator
+from satellite_determination.event_finder.event_finder_rhodesmill.support.evenly_spaced_time_intervals_calculator import \
+    EvenlySpacedTimeIntervalsCalculator
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever import \
     SatellitePositionsWithRespectToFacilityRetriever
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever_rhodesmill import \
@@ -33,7 +33,7 @@ class EventFinderRhodesMill(EventFinder):
                          satellite_position_with_respect_to_facility_retriever_class=satellite_position_with_respect_to_facility_retriever_class,
                          runtime_settings=runtime_settings)
 
-        datetimes = PseudoContinuousTimestampsCalculator(
+        datetimes = EvenlySpacedTimeIntervalsCalculator(
             time_window=reservation.time,
             resolution=runtime_settings.time_continuity_resolution
         ).run()

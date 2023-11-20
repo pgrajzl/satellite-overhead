@@ -5,7 +5,7 @@ from typing import List
 from satellite_determination.custom_dataclasses.time_window import TimeWindow
 
 
-class PseudoContinuousTimestampsCalculator:
+class EvenlySpacedTimeIntervalsCalculator:
     def __init__(self, time_window: TimeWindow, resolution: timedelta = timedelta(seconds=1)):
         self._resolution = resolution
         self._time_window = time_window

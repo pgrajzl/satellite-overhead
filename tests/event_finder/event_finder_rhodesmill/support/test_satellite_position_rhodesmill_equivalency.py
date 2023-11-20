@@ -1,5 +1,5 @@
-from satellite_determination.event_finder.event_finder_rhodesmill.support.pseudo_continuous_timestamps_calculator import \
-    PseudoContinuousTimestampsCalculator
+from satellite_determination.event_finder.event_finder_rhodesmill.support.evenly_spaced_time_intervals_calculator import \
+    EvenlySpacedTimeIntervalsCalculator
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever_rhodesmill import \
     SatellitePositionsWithRespectToFacilityRetrieverRhodesmill
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever_rhodesmill import \
@@ -88,7 +88,7 @@ class TestSatellitePositionWithRespectToFacilityRetrieverEquivalency:
             end=read_datetime_string_as_utc('2023-10-06T0:10:00.000000'),
         )
 
-        times = PseudoContinuousTimestampsCalculator(
+        times = EvenlySpacedTimeIntervalsCalculator(
             time_window=time_window,
             resolution=timedelta(seconds=1)
         ).run()
