@@ -4,17 +4,14 @@ from typing import List
 
 from satellite_determination.custom_dataclasses.facility import Facility
 from satellite_determination.custom_dataclasses.position_time import PositionTime
+from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
 
 
 class SatellitePositionsWithRespectToFacilityRetriever(ABC):
     def __init__(self, facility: Facility, datetimes: List[datetime]):
         self._datetimes = datetimes
-        self._facility_latlon = self._calculate_facility_latlon(facility)
+        self._facility = facility
 
     @abstractmethod
-    def run(self) -> PositionTime:
-        pass
-
-    @abstractmethod
-    def _calculate_facility_latlon(self, facility: Facility):
+    def run(self, satellite: Satellite) -> List[PositionTime]:
         pass

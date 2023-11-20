@@ -18,12 +18,13 @@ RHODESMILL_TIMESCALE = load.timescale()
 class SatellitePositionsWithRespectToFacilityRetrieverRhodesmill(SatellitePositionsWithRespectToFacilityRetriever):
     def __init__(self, facility: Facility, datetimes: List[datetime]):
         super().__init__(facility, datetimes)
-        self._t = RHODESMILL_TIMESCALE.from_datetimes(datetimes)
+        self._timescales = RHODESMILL_TIMESCALE.from_datetimes(datetimes)
+        self._facility_latlon = self._calculate_facility_latlon(self._facility)
 
     def run(self, satellite: Satellite) -> List[PositionTime]:
         satellite_rhodesmill_with_respect_to_facility = satellite.to_rhodesmill() - self._facility_latlon
 
-        topocentric = satellite_rhodesmill_with_respect_to_facility.at(self._t)
+        topocentric = satellite_rhodesmill_with_respect_to_facility.at(self._timescales)
         altitude, azimuth, _ = topocentric.altaz()
 
         return [
