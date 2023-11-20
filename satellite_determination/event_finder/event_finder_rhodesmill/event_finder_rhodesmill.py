@@ -38,7 +38,7 @@ class EventFinderRhodesMill(EventFinder):
             resolution=runtime_settings.time_continuity_resolution
         ).run()
 
-        self.satellite_positions_retriever = satellite_position_with_respect_to_facility_retriever_class(
+        self._satellite_positions_retriever = satellite_position_with_respect_to_facility_retriever_class(
             facility=reservation.facility,
             datetimes=datetimes
         )
@@ -65,10 +65,10 @@ class EventFinderRhodesMill(EventFinder):
             [antenna_direction.time for antenna_direction in self.antenna_direction_path[1:]]
             + [self.reservation.time.end]
         )
-        satellite_positions = self._get_satellite_positions(satellite)
+        satellite_positions = self._get_satellite_positions_within_reservation(satellite)
         antenna_positions = [
             AntennaPosition(
-                satellite_positions=self._get_satellite_positions_from_time_window(
+                satellite_positions=self._filter_satellite_positions_within_time_window(
                     satellite_positions,
                     time_window=TimeWindow(
                         begin=max(self.reservation.time.begin, antenna_direction.time),
@@ -86,16 +86,16 @@ class EventFinderRhodesMill(EventFinder):
 
         return [OverheadWindow(satellite=satellite, positions=positions) for positions in time_windows]
 
-    def _get_satellite_positions(self, satellite: Satellite) -> List[PositionTime]:
-        return self.satellite_positions_retriever.run(satellite)
+    def _get_satellite_positions_within_reservation(self, satellite: Satellite) -> List[PositionTime]:
+        return self._satellite_positions_retriever.run(satellite)
 
     @staticmethod
-    def _get_satellite_positions_from_time_window(
+    def _filter_satellite_positions_within_time_window(
         satellite_positions: List[PositionTime],
         time_window: TimeWindow
     ) -> List[PositionTime]:
         return [
             positions
             for positions in satellite_positions
-            if positions.time >= time_window.begin and positions.time < time_window.end
+            if time_window.begin <= positions.time < time_window.end
         ]
