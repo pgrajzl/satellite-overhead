@@ -2,16 +2,16 @@ import pytz
 from datetime import datetime, timedelta
 from typing import List
 
-from satellite_determination.dataclasses.coordinates import Coordinates
-from satellite_determination.dataclasses.facility import Facility
-from satellite_determination.dataclasses.overhead_window import OverheadWindow
-from satellite_determination.dataclasses.position import Position
-from satellite_determination.dataclasses.position_time import PositionTime
-from satellite_determination.dataclasses.reservation import Reservation
-from satellite_determination.dataclasses.satellite.satellite import Satellite
-from satellite_determination.dataclasses.time_window import TimeWindow
-from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
-from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever import \
+from sopp.dataclasses.coordinates import Coordinates
+from sopp.dataclasses.facility import Facility
+from sopp.dataclasses.overhead_window import OverheadWindow
+from sopp.dataclasses.position import Position
+from sopp.dataclasses.position_time import PositionTime
+from sopp.dataclasses.reservation import Reservation
+from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.dataclasses.time_window import TimeWindow
+from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
+from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever import \
     SatellitePositionWithRespectToFacilityRetriever
 from tests.definitions import SMALL_EPSILON
 from tests.event_finder.event_finder_rhodesmill.definitions import create_overhead_window

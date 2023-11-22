@@ -2,19 +2,19 @@ from datetime import datetime, timezone
 import pytest
 import pytz
 
-from satellite_determination.dataclasses.coordinates import Coordinates
-from satellite_determination.dataclasses.facility import Facility
-from satellite_determination.dataclasses.frequency_range.frequency_range import FrequencyRange
-from satellite_determination.dataclasses.overhead_window import OverheadWindow
-from satellite_determination.dataclasses.position import Position
-from satellite_determination.dataclasses.position_time import PositionTime
-from satellite_determination.dataclasses.reservation import Reservation
-from satellite_determination.dataclasses.satellite.international_designator import InternationalDesignator
-from satellite_determination.dataclasses.satellite.mean_motion import MeanMotion
-from satellite_determination.dataclasses.satellite.satellite import Satellite
-from satellite_determination.dataclasses.satellite.tle_information import TleInformation
-from satellite_determination.dataclasses.time_window import TimeWindow
-from satellite_determination.main import Main, MainResults
+from sopp.dataclasses.coordinates import Coordinates
+from sopp.dataclasses.facility import Facility
+from sopp.dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.dataclasses.overhead_window import OverheadWindow
+from sopp.dataclasses.position import Position
+from sopp.dataclasses.position_time import PositionTime
+from sopp.dataclasses.reservation import Reservation
+from sopp.dataclasses.satellite.international_designator import InternationalDesignator
+from sopp.dataclasses.satellite.mean_motion import MeanMotion
+from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.dataclasses.satellite.tle_information import TleInformation
+from sopp.dataclasses.time_window import TimeWindow
+from sopp.main import Main, MainResults
 from tests.event_finder.event_finder_rhodesmill.definitions import create_overhead_window
 
 def assert_overhead_windows_eq(actual: OverheadWindow, expected: OverheadWindow) -> None:

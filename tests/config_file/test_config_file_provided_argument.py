@@ -4,19 +4,19 @@ from pathlib import Path
 import pytest
 import pytz
 
-from satellite_determination.config_file.config_file_factory import get_config_file_object
-from satellite_determination.config_file.support.config_file_base import ConfigFileBase
-from satellite_determination.dataclasses.configuration import Configuration
-from satellite_determination.dataclasses.coordinates import Coordinates
-from satellite_determination.dataclasses.facility import Facility
-from satellite_determination.dataclasses.frequency_range.frequency_range import FrequencyRange
-from satellite_determination.dataclasses.observation_target import ObservationTarget
-from satellite_determination.dataclasses.position import Position
-from satellite_determination.dataclasses.position_time import PositionTime
-from satellite_determination.dataclasses.reservation import Reservation
-from satellite_determination.dataclasses.time_window import TimeWindow
-from satellite_determination.dataclasses.runtime_settings import RuntimeSettings
-from satellite_determination.utilities import get_script_directory
+from sopp.config_file.config_file_factory import get_config_file_object
+from sopp.config_file.support.config_file_base import ConfigFileBase
+from sopp.dataclasses.configuration import Configuration
+from sopp.dataclasses.coordinates import Coordinates
+from sopp.dataclasses.facility import Facility
+from sopp.dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.dataclasses.observation_target import ObservationTarget
+from sopp.dataclasses.position import Position
+from sopp.dataclasses.position_time import PositionTime
+from sopp.dataclasses.reservation import Reservation
+from sopp.dataclasses.time_window import TimeWindow
+from sopp.dataclasses.runtime_settings import RuntimeSettings
+from sopp.utilities import get_script_directory
 
 
 class TestConfigFileProvidedArgument:

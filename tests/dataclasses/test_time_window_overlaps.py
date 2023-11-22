@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from satellite_determination.dataclasses.time_window import TimeWindow
+from sopp.dataclasses.time_window import TimeWindow
 
 
 class TestTimeWindowOverlaps:

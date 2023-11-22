@@ -2,15 +2,15 @@ from datetime import datetime, timedelta
 
 import pytz
 
-from satellite_determination.dataclasses.coordinates import Coordinates
-from satellite_determination.dataclasses.facility import Facility
-from satellite_determination.dataclasses.overhead_window import OverheadWindow
-from satellite_determination.dataclasses.position import Position
-from satellite_determination.dataclasses.position_time import PositionTime
-from satellite_determination.dataclasses.reservation import Reservation
-from satellite_determination.dataclasses.satellite.satellite import Satellite
-from satellite_determination.dataclasses.time_window import TimeWindow
-from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
+from sopp.dataclasses.coordinates import Coordinates
+from sopp.dataclasses.facility import Facility
+from sopp.dataclasses.overhead_window import OverheadWindow
+from sopp.dataclasses.position import Position
+from sopp.dataclasses.position_time import PositionTime
+from sopp.dataclasses.reservation import Reservation
+from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.dataclasses.time_window import TimeWindow
+from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from tests.definitions import SMALL_EPSILON
 from tests.event_finder.event_finder_rhodesmill.test_event_finder_rhodesmill import ARBITRARY_SATELLITE_ALTITUDE, \
     ARBITRARY_SATELLITE_AZIMUTH, SatellitePositionsWithRespectToFacilityRetrieverStub

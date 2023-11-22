@@ -3,9 +3,9 @@ import pytz
 import numpy as np
 from datetime import datetime
 
-from satellite_determination.graph_generator.graph_polar import GraphGeneratorPolar
-from satellite_determination.dataclasses.position_time import PositionTime
-from satellite_determination.dataclasses.position import Position
+from sopp.graph_generator.graph_polar import GraphGeneratorPolar
+from sopp.dataclasses.position_time import PositionTime
+from sopp.dataclasses.position import Position
 
 observation_data = [
     PositionTime(

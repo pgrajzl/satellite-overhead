@@ -4,9 +4,9 @@ from typing import Optional
 
 import pytz
 
-from satellite_determination.dataclasses.position_time import PositionTime
-from satellite_determination.dataclasses.time_window import TimeWindow
-from satellite_determination.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import SatellitesWithinMainBeamFilter, \
+from sopp.dataclasses.position_time import PositionTime
+from sopp.dataclasses.time_window import TimeWindow
+from sopp.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import SatellitesWithinMainBeamFilter, \
     AntennaPosition
 from tests.definitions import SMALL_EPSILON
 from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY, create_expected_windows, assert_windows_eq

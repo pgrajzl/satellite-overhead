@@ -1,8 +1,8 @@
-from satellite_determination.dataclasses.satellite.international_designator import InternationalDesignator
-from satellite_determination.dataclasses.satellite.mean_motion import MeanMotion
-from satellite_determination.dataclasses.satellite.satellite import Satellite
-from satellite_determination.dataclasses.frequency_range.frequency_range import FrequencyRange
-from satellite_determination.dataclasses.satellite.tle_information import TleInformation
+from sopp.dataclasses.satellite.international_designator import InternationalDesignator
+from sopp.dataclasses.satellite.mean_motion import MeanMotion
+from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.dataclasses.satellite.tle_information import TleInformation
 
 
 def expected_international_space_station_tle_as_satellite_cu() -> Satellite:

@@ -1,5 +1,5 @@
-from satellite_determination.dataclasses.coordinates import Coordinates
-from satellite_determination.dataclasses.facility import Facility
+from sopp.dataclasses.coordinates import Coordinates
+from sopp.dataclasses.facility import Facility
 
 ARBITRARY_FACILITY = Facility(
     beamwidth=3.,

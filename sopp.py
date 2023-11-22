@@ -1,18 +1,18 @@
 from dataclasses import replace
 
-from satellite_determination.tle_fetcher.tle_fetcher import TleFetcher
-from satellite_determination.config_file.config_file_factory import get_config_file_object
-from satellite_determination.dataclasses.configuration import Configuration
-from satellite_determination.dataclasses.frequency_range.support.get_frequency_data_from_csv import \
+from sopp.tle_fetcher.tle_fetcher import TleFetcher
+from sopp.config_file.config_file_factory import get_config_file_object
+from sopp.dataclasses.configuration import Configuration
+from sopp.dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
-from satellite_determination.dataclasses.position_time import PositionTime
-from satellite_determination.dataclasses.satellite.satellite import Satellite
-from satellite_determination.main import Main
-from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
-from satellite_determination.utilities import get_frequencies_filepath, get_satellites_filepath
-from satellite_determination.graph_generator.graph_generator import GraphGenerator
-from satellite_determination.variable_initializer.variable_initializer_from_config import VariableInitializerFromConfig
-from satellite_determination.satellites_loader.satellites_loader_from_files import SatellitesLoaderFromFiles
+from sopp.dataclasses.position_time import PositionTime
+from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.main import Main
+from sopp.path_finder.observation_path_finder import ObservationPathFinder
+from sopp.utilities import get_frequencies_filepath, get_satellites_filepath
+from sopp.graph_generator.graph_generator import GraphGenerator
+from sopp.variable_initializer.variable_initializer_from_config import VariableInitializerFromConfig
+from sopp.satellites_loader.satellites_loader_from_files import SatellitesLoaderFromFiles
 
 
 def main():

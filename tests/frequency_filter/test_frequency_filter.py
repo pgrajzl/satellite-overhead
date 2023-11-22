@@ -1,10 +1,10 @@
 from datetime import datetime
-from satellite_determination.dataclasses.frequency_range.frequency_range import FrequencyRange
-from satellite_determination.dataclasses.satellite.satellite import Satellite
-from satellite_determination.dataclasses.reservation import Reservation
-from satellite_determination.dataclasses.facility import Facility, Coordinates
-from satellite_determination.dataclasses.time_window import TimeWindow
-from satellite_determination.frequency_filter.frequency_filter import FrequencyFilter
+from sopp.dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.dataclasses.reservation import Reservation
+from sopp.dataclasses.facility import Facility, Coordinates
+from sopp.dataclasses.time_window import TimeWindow
+from sopp.frequency_filter.frequency_filter import FrequencyFilter
 
 
 class TestFrequencyFilter:

@@ -1,12 +1,12 @@
 import pytest
 
-from satellite_determination.utilities import read_datetime_string_as_utc
-from satellite_determination.dataclasses.facility import Facility
-from satellite_determination.dataclasses.coordinates import Coordinates
-from satellite_determination.dataclasses.time_window import TimeWindow
-from satellite_determination.dataclasses.observation_target import ObservationTarget
-from satellite_determination.path_finder.observation_path_finder_rhodesmill import ObservationPathFinderRhodesMill
-from satellite_determination.path_finder.observation_path_finder_astropy import ObservationPathFinderAstropy
+from sopp.utilities import read_datetime_string_as_utc
+from sopp.dataclasses.facility import Facility
+from sopp.dataclasses.coordinates import Coordinates
+from sopp.dataclasses.time_window import TimeWindow
+from sopp.dataclasses.observation_target import ObservationTarget
+from sopp.path_finder.observation_path_finder_rhodesmill import ObservationPathFinderRhodesMill
+from sopp.path_finder.observation_path_finder_astropy import ObservationPathFinderAstropy
 
 
 class TestPathFinderEquivalency:

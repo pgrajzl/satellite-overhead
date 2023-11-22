@@ -3,14 +3,14 @@ from datetime import datetime
 
 import pytz
 
-from satellite_determination.dataclasses.coordinates import Coordinates
-from satellite_determination.dataclasses.facility import Facility
-from satellite_determination.dataclasses.position_time import PositionTime
-from satellite_determination.dataclasses.satellite.international_designator import InternationalDesignator
-from satellite_determination.dataclasses.satellite.mean_motion import MeanMotion
-from satellite_determination.dataclasses.satellite.satellite import Satellite
-from satellite_determination.dataclasses.satellite.tle_information import TleInformation
-from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever_rhodesmill import \
+from sopp.dataclasses.coordinates import Coordinates
+from sopp.dataclasses.facility import Facility
+from sopp.dataclasses.position_time import PositionTime
+from sopp.dataclasses.satellite.international_designator import InternationalDesignator
+from sopp.dataclasses.satellite.mean_motion import MeanMotion
+from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.dataclasses.satellite.tle_information import TleInformation
+from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever_rhodesmill import \
     SatellitePositionWithRespectToFacilityRetrieverRhodesmill
 
 

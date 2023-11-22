@@ -1,4 +1,4 @@
-from satellite_determination.dataclasses.satellite.international_designator import InternationalDesignator
+from sopp.dataclasses.satellite.international_designator import InternationalDesignator
 
 
 class TestInternationalDesignatorFromString:

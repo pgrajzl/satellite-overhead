@@ -1,10 +1,10 @@
 from typing import List
 
-from satellite_determination.dataclasses.overhead_window import OverheadWindow
-from satellite_determination.dataclasses.reservation import Reservation
-from satellite_determination.dataclasses.satellite.satellite import Satellite
-from satellite_determination.dataclasses.time_window import TimeWindow
-from satellite_determination.event_finder.validator import Validator
+from sopp.dataclasses.overhead_window import OverheadWindow
+from sopp.dataclasses.reservation import Reservation
+from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.dataclasses.time_window import TimeWindow
+from sopp.event_finder.validator import Validator
 
 
 class ValidatorSatellitesAreOverheadAtSpecificTimes(Validator):

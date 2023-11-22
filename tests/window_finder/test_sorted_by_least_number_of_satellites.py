@@ -5,18 +5,18 @@ from pathlib import Path
 
 import pytest
 import pytz
-from satellite_determination.utilities import get_script_directory
-from satellite_determination.dataclasses.frequency_range.frequency_range import FrequencyRange
-from satellite_determination.dataclasses.frequency_range.support.get_frequency_data_from_csv import \
+from sopp.utilities import get_script_directory
+from sopp.dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
-from satellite_determination.dataclasses.overhead_window import OverheadWindow
-from satellite_determination.dataclasses.reservation import Reservation
-from satellite_determination.dataclasses.satellite.satellite import Satellite
-from satellite_determination.dataclasses.time_window import TimeWindow
-from satellite_determination.dataclasses.satellite.tle_information import TleInformation
-from satellite_determination.dataclasses.satellite.international_designator import InternationalDesignator
-from satellite_determination.dataclasses.satellite.mean_motion import MeanMotion
-from satellite_determination.window_finder import SuggestedReservation, WindowFinder
+from sopp.dataclasses.overhead_window import OverheadWindow
+from sopp.dataclasses.reservation import Reservation
+from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.dataclasses.time_window import TimeWindow
+from sopp.dataclasses.satellite.tle_information import TleInformation
+from sopp.dataclasses.satellite.international_designator import InternationalDesignator
+from sopp.dataclasses.satellite.mean_motion import MeanMotion
+from sopp.window_finder import SuggestedReservation, WindowFinder
 from tests.window_finder.definitions import ARBITRARY_FACILITY
 
 
