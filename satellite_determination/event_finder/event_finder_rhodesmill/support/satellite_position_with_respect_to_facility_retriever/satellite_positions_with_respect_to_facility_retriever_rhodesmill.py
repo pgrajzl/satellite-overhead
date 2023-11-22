@@ -19,7 +19,7 @@ class SatellitePositionsWithRespectToFacilityRetrieverRhodesmill(SatellitePositi
     def __init__(self, facility: Facility, datetimes: List[datetime]):
         super().__init__(facility, datetimes)
         self._timescales = RHODESMILL_TIMESCALE.from_datetimes(datetimes)
-        self._facility_latlon = self._calculate_facility_latlon(self._facility)
+        self._facility_latlon = self._calculate_facility_latlon()
 
     def run(self, satellite: Satellite) -> List[PositionTime]:
         satellite_rhodesmill_with_respect_to_facility = satellite.to_rhodesmill() - self._facility_latlon
@@ -35,9 +35,9 @@ class SatellitePositionsWithRespectToFacilityRetrieverRhodesmill(SatellitePositi
             for altitude, azimuth, time in zip(altitude.degrees, azimuth.degrees, self._datetimes)
         ]
 
-    def _calculate_facility_latlon(self, facility: Facility):
+    def _calculate_facility_latlon(self):
         return wgs84.latlon(
-            latitude_degrees=facility.coordinates.latitude,
-            longitude_degrees=facility.coordinates.longitude,
-            elevation_m=facility.elevation
+            latitude_degrees=self._facility.coordinates.latitude,
+            longitude_degrees=self._facility.coordinates.longitude,
+            elevation_m=self._facility.elevation
         )
