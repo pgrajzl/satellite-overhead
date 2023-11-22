@@ -5,8 +5,8 @@ from satellite_determination.custom_dataclasses.overhead_window import OverheadW
 from satellite_determination.custom_dataclasses.position_time import PositionTime
 from satellite_determination.custom_dataclasses.reservation import Reservation
 from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever import \
-    SatellitePositionWithRespectToFacilityRetriever
+from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_positions_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever import \
+    SatellitePositionsWithRespectToFacilityRetriever
 from satellite_determination.custom_dataclasses.runtime_settings import RuntimeSettings
 
 
@@ -26,13 +26,13 @@ class EventFinder(ABC):
                  antenna_direction_path: List[PositionTime],
                  list_of_satellites: List[Satellite],
                  reservation: Reservation,
-                 satellite_position_with_respect_to_facility_retriever_class: Type[SatellitePositionWithRespectToFacilityRetriever],
+                 satellite_positions_with_respect_to_facility_retriever_class: Type[SatellitePositionsWithRespectToFacilityRetriever],
                  runtime_settings: RuntimeSettings = RuntimeSettings()):
 
         self.antenna_direction_path = antenna_direction_path
         self.list_of_satellites = list_of_satellites
         self.reservation = reservation
-        self.satellite_position_with_respect_to_facility_retriever_class = satellite_position_with_respect_to_facility_retriever_class
+        self.satellite_positions_with_respect_to_facility_retriever_class = satellite_positions_with_respect_to_facility_retriever_class
         self.runtime_settings = runtime_settings
 
     @abstractmethod

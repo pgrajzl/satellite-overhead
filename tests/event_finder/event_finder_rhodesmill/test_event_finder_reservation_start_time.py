@@ -30,7 +30,7 @@ class TestEventFinderReservationStartTime:
                                              antenna_direction_path=[PositionTime(position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
                                                                                                     azimuth=ARBITRARY_SATELLITE_AZIMUTH),
                                                                                   time=arbitrary_datetime - timedelta(seconds=1))],
-                                             satellite_position_with_respect_to_facility_retriever_class=SatellitePositionsWithRespectToFacilityRetrieverStub)
+                                             satellite_positions_with_respect_to_facility_retriever_class=SatellitePositionsWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
         expected_windows = [
             create_overhead_window(
@@ -65,6 +65,6 @@ class TestEventFinderReservationStartTime:
                                              antenna_direction_path=[
                                                  antenna_position_that_ends_before_reservation_begins,
                                                  antenna_position_that_has_no_satellites_in_beam],
-                                             satellite_position_with_respect_to_facility_retriever_class=SatellitePositionsWithRespectToFacilityRetrieverStub)
+                                             satellite_positions_with_respect_to_facility_retriever_class=SatellitePositionsWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
         assert windows == []
