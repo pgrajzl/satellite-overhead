@@ -4,7 +4,7 @@ from pathlib import Path
 from satellite_determination.dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
 from satellite_determination.dataclasses.satellite.satellite import Satellite
-from tests.custom_dataclasses.satellite.utilities import expected_international_space_station_tle_as_satellite_cu
+from tests.dataclasses.satellite.utilities import expected_international_space_station_tle_as_satellite_cu
 from satellite_determination.utilities import get_script_directory
 
 
