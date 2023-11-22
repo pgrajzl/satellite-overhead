@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Dict, List
 from collections import defaultdict
 
-from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from satellite_determination.dataclasses.frequency_range.frequency_range import FrequencyRange
 
 
 class FrequencyCsvKeys(Enum):

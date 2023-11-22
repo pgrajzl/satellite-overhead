@@ -5,8 +5,8 @@ from typing import List
 import matplotlib.pyplot as plt
 import numpy as np
 
-from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
+from satellite_determination.dataclasses.overhead_window import OverheadWindow
+from satellite_determination.dataclasses.time_window import TimeWindow
 
 
 class GraphGenerator:

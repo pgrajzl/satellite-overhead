@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 
-from satellite_determination.custom_dataclasses.facility import Facility
-from satellite_determination.custom_dataclasses.position_time import PositionTime
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
+from satellite_determination.dataclasses.facility import Facility
+from satellite_determination.dataclasses.position_time import PositionTime
+from satellite_determination.dataclasses.satellite.satellite import Satellite
 
 
 class SatellitePositionWithRespectToFacilityRetriever(ABC):

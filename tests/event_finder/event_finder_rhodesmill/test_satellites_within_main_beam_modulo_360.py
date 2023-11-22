@@ -1,7 +1,7 @@
 from dataclasses import replace
 from datetime import timedelta
 
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
+from satellite_determination.dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import AntennaPosition, \
     SatellitesWithinMainBeamFilter
 from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY, create_expected_windows, assert_windows_eq

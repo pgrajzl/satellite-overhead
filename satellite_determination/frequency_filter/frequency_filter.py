@@ -1,7 +1,7 @@
 from typing import List
 
-from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
+from satellite_determination.dataclasses.frequency_range.frequency_range import FrequencyRange
+from satellite_determination.dataclasses.satellite.satellite import Satellite
 
 '''
 The FrequencyFilter determines if a satellite's downlink transmission frequency overlaps with the desired observation frequency

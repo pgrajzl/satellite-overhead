@@ -6,11 +6,11 @@ from skyfield.api import load
 from skyfield.toposlib import wgs84
 from skyfield.starlib import Star
 
-from satellite_determination.custom_dataclasses.facility import Facility
-from satellite_determination.custom_dataclasses.observation_target import ObservationTarget
-from satellite_determination.custom_dataclasses.position_time import PositionTime
-from satellite_determination.custom_dataclasses.position import Position
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
+from satellite_determination.dataclasses.facility import Facility
+from satellite_determination.dataclasses.observation_target import ObservationTarget
+from satellite_determination.dataclasses.position_time import PositionTime
+from satellite_determination.dataclasses.position import Position
+from satellite_determination.dataclasses.time_window import TimeWindow
 from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
 
 

@@ -6,8 +6,8 @@ from typing import List, Optional
 from skyfield.api import load
 from skyfield.sgp4lib import EarthSatellite
 
-from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
-from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
+from satellite_determination.dataclasses.frequency_range.frequency_range import FrequencyRange
+from satellite_determination.dataclasses.satellite.tle_information import TleInformation
 from satellite_determination.utilities import temporary_file
 
 '''
@@ -17,7 +17,7 @@ for each satellite.
 
   + name:               name of satellite. string.
   + tle_information:    stores TLE information. TleInformation is another custom object to store TLE data and can be found in
-                        ROOT/satellite_determination/custom_dataclasses/satellite/tle_information.py
+                        ROOT/satellite_determination/dataclasses/satellite/tle_information.py
   + frequency:          list of type FrequencyRange. FrequencyRange is a custom dataclass that stores a center frequency and bandwidth.
   
 

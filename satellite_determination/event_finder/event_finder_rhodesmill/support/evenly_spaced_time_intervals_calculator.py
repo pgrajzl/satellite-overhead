@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from math import ceil
 from typing import List
 
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
+from satellite_determination.dataclasses.time_window import TimeWindow
 
 
 class EvenlySpacedTimeIntervalsCalculator:

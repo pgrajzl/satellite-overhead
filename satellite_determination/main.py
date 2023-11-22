@@ -2,10 +2,10 @@ from dataclasses import dataclass
 from functools import cached_property
 from typing import List
 
-from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
-from satellite_determination.custom_dataclasses.position_time import PositionTime
-from satellite_determination.custom_dataclasses.reservation import Reservation
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
+from satellite_determination.dataclasses.overhead_window import OverheadWindow
+from satellite_determination.dataclasses.position_time import PositionTime
+from satellite_determination.dataclasses.reservation import Reservation
+from satellite_determination.dataclasses.satellite.satellite import Satellite
 from satellite_determination.event_finder.event_finder import EventFinder
 from satellite_determination.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from satellite_determination.frequency_filter.frequency_filter import FrequencyFilter

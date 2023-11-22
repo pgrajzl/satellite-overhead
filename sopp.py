@@ -2,11 +2,11 @@ from dataclasses import replace
 
 from satellite_determination.TLE_fetcher.tle_fetcher import TleFetcher
 from satellite_determination.config_file.config_file_factory import get_config_file_object
-from satellite_determination.custom_dataclasses.configuration import Configuration
-from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
+from satellite_determination.dataclasses.configuration import Configuration
+from satellite_determination.dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
-from satellite_determination.custom_dataclasses.position_time import PositionTime
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
+from satellite_determination.dataclasses.position_time import PositionTime
+from satellite_determination.dataclasses.satellite.satellite import Satellite
 from satellite_determination.main import Main
 from satellite_determination.path_finder.observation_path_finder import ObservationPathFinder
 from satellite_determination.utilities import get_frequencies_filepath, get_satellites_filepath

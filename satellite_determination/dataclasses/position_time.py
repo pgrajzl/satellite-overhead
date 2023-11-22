@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from satellite_determination.custom_dataclasses.position import Position
+from satellite_determination.dataclasses.position import Position
 
 
 @dataclass

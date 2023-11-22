@@ -38,19 +38,27 @@ class GraphGeneratorPolar:
     generator.generate_graph()
     """
 
-    def __init__(self, observation_data: List[PositionTime], sat_name: Optional[str] = 'Satellite'):
-        self._observation_data = observation_data
-        self._sat_name = sat_name
-        self._label = 'Satellite Alt-Az'
+    def __init__(
+        self,
+        antenna_path: List[PositionTime],
+        interference_data: List[PositionTime],
+        name: Optional[str] = 'Satellite'
+    ):
+        self._interference_data = interference_data
+        self._antenna_path = antenna_path
+        self._name = name
+        self._label1 = 'Satellite Interference Events'
+        self._label2 = 'Antenna Path'
 
     def generate_graph(self):
-        fig = plt.figure(figsize=(8, 8))
+        fig = plt.figure(figsize=(16, 16))
         ax = fig.add_subplot(111, projection='polar')
 
-        self._annotate_start_end_times(ax)
-        self._annotate_max_alt(ax)
+        #self._annotate_start_end_times(ax)
+        #self._annotate_max_alt(ax)
 
-        ax.plot(self._azimuth_values, self._altitude_values, label=self._label)
+        ax.scatter(self._azimuth_values, self._altitude_values, label=self._label1)
+        ax.plot(self.antenna_path_azimuth_values, self.antenna_path_altitude_values, label=self._label2, color='red')
         ax.set_title(self._title)
 
         # setup the polar graph so North is at the top
@@ -92,18 +100,26 @@ class GraphGeneratorPolar:
     def _title(self):
         start_time = self._time_values[0].strftime("%Y-%m-%d %H:%M:%S")
         end_time = self._time_values[-1].strftime("%H:%M:%S UTC")
-        title = f'{self._sat_name} {start_time} - {end_time}'
+        title = f'{self._name} {start_time} - {end_time}'
 
         return title
 
     @cached_property
     def _altitude_values(self):
-        return np.array([entry.position.altitude for entry in self._observation_data])
+        return np.array([entry.position.altitude for entry in self._interference_data])
 
     @cached_property
     def _azimuth_values(self):
-        return np.radians([entry.position.azimuth for entry in self._observation_data])
+        return np.radians([entry.position.azimuth for entry in self._interference_data])
+
+    @cached_property
+    def antenna_path_altitude_values(self):
+        return np.array([entry.position.altitude for entry in self._antenna_path])
+
+    @cached_property
+    def antenna_path_azimuth_values(self):
+        return np.radians([entry.position.azimuth for entry in self._antenna_path])
 
     @cached_property
     def _time_values(self):
-        return [entry.time for entry in self._observation_data]
+        return [entry.time for entry in self._interference_data]

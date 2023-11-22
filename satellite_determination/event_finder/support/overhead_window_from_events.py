@@ -3,10 +3,10 @@ from datetime import datetime
 from enum import Enum
 from typing import List
 import pytz
-from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
-from satellite_determination.custom_dataclasses.reservation import Reservation
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
+from satellite_determination.dataclasses.overhead_window import OverheadWindow
+from satellite_determination.dataclasses.reservation import Reservation
+from satellite_determination.dataclasses.satellite.satellite import Satellite
+from satellite_determination.dataclasses.time_window import TimeWindow
 
 
 class EventTypesRhodesmill(Enum):

@@ -2,10 +2,10 @@ from dataclasses import replace
 from typing import List
 
 from satellite_determination.path_finder.observation_path_finder_astropy import ObservationPathFinderAstropy
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from satellite_determination.custom_dataclasses.reservation import Reservation
-from satellite_determination.custom_dataclasses.configuration import Configuration
-from satellite_determination.custom_dataclasses.position_time import PositionTime
+from satellite_determination.dataclasses.satellite.satellite import Satellite
+from satellite_determination.dataclasses.reservation import Reservation
+from satellite_determination.dataclasses.configuration import Configuration
+from satellite_determination.dataclasses.position_time import PositionTime
 from satellite_determination.variable_initializer.variable_initializer import VariableInitializer
 from satellite_determination.satellites_loader.satellites_loader import SatellitesLoader
 

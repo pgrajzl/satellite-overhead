@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from functools import cached_property
 from pathlib import Path
 
-from satellite_determination.custom_dataclasses.configuration import Configuration
+from satellite_determination.dataclasses.configuration import Configuration
 
 
 class ConfigFileBase(ABC):

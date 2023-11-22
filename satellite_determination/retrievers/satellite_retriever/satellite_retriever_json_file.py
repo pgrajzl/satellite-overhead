@@ -1,6 +1,6 @@
 from typing import List
 
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
+from satellite_determination.dataclasses.satellite.satellite import Satellite
 from satellite_determination.retrievers.retriever_json_file import RetrieverJsonFile
 from satellite_determination.retrievers.satellite_retriever.satellite_retriever import SatelliteRetriever
 

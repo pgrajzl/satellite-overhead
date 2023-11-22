@@ -1,6 +1,6 @@
 import pytest
 
-from satellite_determination.custom_dataclasses.observation_target import ObservationTarget
+from satellite_determination.dataclasses.observation_target import ObservationTarget
 from satellite_determination.path_finder.observation_path_finder_rhodesmill import ObservationPathFinderRhodesMill
 from path_finder_base_test import PathFinderBaseTest
 

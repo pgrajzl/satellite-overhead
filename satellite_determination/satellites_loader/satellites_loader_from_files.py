@@ -3,8 +3,8 @@ from typing import List
 from functools import cached_property
 
 from satellite_determination.satellites_loader.satellites_loader import SatellitesLoader
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from satellite_determination.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
+from satellite_determination.dataclasses.satellite.satellite import Satellite
+from satellite_determination.dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
 
 

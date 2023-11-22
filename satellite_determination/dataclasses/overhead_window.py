@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 from operator import attrgetter
 from typing import List
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.custom_dataclasses.position_time import PositionTime
+from satellite_determination.dataclasses.satellite.satellite import Satellite
+from satellite_determination.dataclasses.time_window import TimeWindow
+from satellite_determination.dataclasses.position_time import PositionTime
 
 '''
 OverheadWindow class is designed to store the time windows that a given satellite is overhead and includes the Satellite object,

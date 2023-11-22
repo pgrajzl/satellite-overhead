@@ -5,10 +5,10 @@ import pytest
 from numpy import asarray
 from numpy.ma import allequal
 
-from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.custom_dataclasses.position import Position
-from satellite_determination.custom_dataclasses.position_time import PositionTime
+from satellite_determination.dataclasses.overhead_window import OverheadWindow
+from satellite_determination.dataclasses.time_window import TimeWindow
+from satellite_determination.dataclasses.position import Position
+from satellite_determination.dataclasses.position_time import PositionTime
 from satellite_determination.graph_generator import graph_generator
 from satellite_determination.graph_generator.graph_generator import GraphGenerator
 

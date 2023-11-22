@@ -2,11 +2,11 @@ from dataclasses import replace
 from typing import List, Type
 import multiprocessing
 
-from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
-from satellite_determination.custom_dataclasses.position import Position
-from satellite_determination.custom_dataclasses.position_time import PositionTime
-from satellite_determination.custom_dataclasses.reservation import Reservation
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
+from satellite_determination.dataclasses.overhead_window import OverheadWindow
+from satellite_determination.dataclasses.position import Position
+from satellite_determination.dataclasses.position_time import PositionTime
+from satellite_determination.dataclasses.reservation import Reservation
+from satellite_determination.dataclasses.time_window import TimeWindow
 from satellite_determination.event_finder.event_finder_rhodesmill.support.evenly_spaced_time_intervals_calculator import \
     EvenlySpacedTimeIntervalsCalculator
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever import \
@@ -16,8 +16,8 @@ from satellite_determination.event_finder.event_finder_rhodesmill.support.satell
 from satellite_determination.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import AntennaPosition, \
     SatellitesWithinMainBeamFilter
 from satellite_determination.event_finder.event_finder import EventFinder
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from satellite_determination.custom_dataclasses.runtime_settings import RuntimeSettings
+from satellite_determination.dataclasses.satellite.satellite import Satellite
+from satellite_determination.dataclasses.runtime_settings import RuntimeSettings
 
 
 class EventFinderRhodesMill(EventFinder):

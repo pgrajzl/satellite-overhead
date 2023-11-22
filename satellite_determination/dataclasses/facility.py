@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
-from satellite_determination.custom_dataclasses.coordinates import Coordinates
+from satellite_determination.dataclasses.coordinates import Coordinates
 from typing import List, Optional
 
-from satellite_determination.custom_dataclasses.position_time import PositionTime
+from satellite_determination.dataclasses.position_time import PositionTime
 
 
 @dataclass

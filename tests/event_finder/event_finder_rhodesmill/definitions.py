@@ -2,11 +2,11 @@ from datetime import datetime, timedelta
 
 import pytz
 
-from satellite_determination.custom_dataclasses.coordinates import Coordinates
-from satellite_determination.custom_dataclasses.facility import Facility
-from satellite_determination.custom_dataclasses.position import Position
-from satellite_determination.custom_dataclasses.position_time import PositionTime
-from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
+from satellite_determination.dataclasses.coordinates import Coordinates
+from satellite_determination.dataclasses.facility import Facility
+from satellite_determination.dataclasses.position import Position
+from satellite_determination.dataclasses.position_time import PositionTime
+from satellite_determination.dataclasses.overhead_window import OverheadWindow
 
 ARBITRARY_FACILITY = Facility(coordinates=Coordinates(latitude=0, longitude=0))
 
