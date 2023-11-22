@@ -1,6 +1,6 @@
 from dataclasses import replace
 
-from satellite_determination.TLE_fetcher.tle_fetcher import TleFetcher
+from satellite_determination.tle_fetcher.tle_fetcher import TleFetcher
 from satellite_determination.config_file.config_file_factory import get_config_file_object
 from satellite_determination.dataclasses.configuration import Configuration
 from satellite_determination.dataclasses.frequency_range.support.get_frequency_data_from_csv import \
