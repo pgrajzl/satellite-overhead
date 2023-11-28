@@ -92,7 +92,7 @@ observation_target = ObservationTarget(declination='7d24m25.426s', right_ascensi
 
 ##### ObservationPathFinder
 
-The [ObservationPathFinder](https://github.com/NSF-Swift/satellite-overhead/blob/main/satellite_determination/path_finder/observation_path_finder.py) class utilizes the previously created `ObservationTarget`, `Facility`, and `TimeWindow` to generate an antenna direction path. The antenna direction path is a list of `PositionTime` objects, capturing each minute within the observation window with the antenna's current altitude and azimuth coordinates.
+The [ObservationPathFinder](https://github.com/NSF-Swift/satellite-overhead/blob/main/satellite_determination/path_finder/observation_path_finder.py) class utilizes the previously created `ObservationTarget`, `Facility`, and `TimeWindow` to generate an antenna direction path. The antenna direction path is a list of `PositionTime` objects, capturing each minute within the observation window with the antenna's current altitude and azimuth coordinates. It is used to determine at any given moment, where the antenna is directed.
 
 ```python
 antenna_direction_path = ObservationPathFinderRhodesmill(
@@ -101,7 +101,7 @@ antenna_direction_path = ObservationPathFinderRhodesmill(
     time_window=time_window
 ).calculate_path()
 ```
-Alternatively, instead of specifying an observation target and utilizing the PathFinder class to generate the antenna direction path, you can provide a custom antenna path as a list of `PositionTime` objects.
+Instead of specifying an observation target and utilizing the `PathFinder` class to generate the antenna direction path, a custom antenna path can be provided as a list of `PositionTime` objects.
 
 ### Load Satellite Data
 
