@@ -2,10 +2,10 @@ from dataclasses import replace
 from typing import List
 
 from sopp.path_finder.observation_path_finder_astropy import ObservationPathFinderAstropy
-from sopp.dataclasses.satellite.satellite import Satellite
-from sopp.dataclasses.reservation import Reservation
-from sopp.dataclasses.configuration import Configuration
-from sopp.dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.configuration import Configuration
+from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.variable_initializer.variable_initializer import VariableInitializer
 from sopp.satellites_loader.satellites_loader import SatellitesLoader
 

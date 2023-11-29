@@ -4,8 +4,8 @@ import numpy as np
 from datetime import datetime
 
 from sopp.graph_generator.graph_polar import GraphGeneratorPolar
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.position import Position
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.position import Position
 
 observation_data = [
     PositionTime(

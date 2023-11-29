@@ -1,9 +1,9 @@
 from datetime import datetime
-from sopp.dataclasses.frequency_range.frequency_range import FrequencyRange
-from sopp.dataclasses.satellite.satellite import Satellite
-from sopp.dataclasses.reservation import Reservation
-from sopp.dataclasses.facility import Facility, Coordinates
-from sopp.dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.facility import Facility, Coordinates
+from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.frequency_filter.frequency_filter import FrequencyFilter
 
 

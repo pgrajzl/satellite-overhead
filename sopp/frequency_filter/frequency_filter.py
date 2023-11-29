@@ -1,7 +1,7 @@
 from typing import List
 
-from sopp.dataclasses.frequency_range.frequency_range import FrequencyRange
-from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.custom_dataclasses.satellite.satellite import Satellite
 
 '''
 The FrequencyFilter determines if a satellite's downlink transmission frequency overlaps with the desired observation frequency

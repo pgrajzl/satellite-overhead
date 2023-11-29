@@ -2,11 +2,11 @@ from datetime import datetime, timedelta
 
 import pytz
 
-from sopp.dataclasses.coordinates import Coordinates
-from sopp.dataclasses.facility import Facility
-from sopp.dataclasses.position import Position
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.overhead_window import OverheadWindow
+from sopp.custom_dataclasses.coordinates import Coordinates
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.overhead_window import OverheadWindow
 
 ARBITRARY_FACILITY = Facility(coordinates=Coordinates(latitude=0, longitude=0))
 

@@ -2,11 +2,11 @@ from dataclasses import replace
 from typing import List, Type
 import multiprocessing
 
-from sopp.dataclasses.overhead_window import OverheadWindow
-from sopp.dataclasses.position import Position
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.reservation import Reservation
-from sopp.dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.overhead_window import OverheadWindow
+from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.event_finder.event_finder_rhodesmill.support.evenly_spaced_time_intervals_calculator import \
     EvenlySpacedTimeIntervalsCalculator
 from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever import \
@@ -16,8 +16,8 @@ from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_r
 from sopp.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import AntennaPosition, \
     SatellitesWithinMainBeamFilter
 from sopp.event_finder.event_finder import EventFinder
-from sopp.dataclasses.satellite.satellite import Satellite
-from sopp.dataclasses.runtime_settings import RuntimeSettings
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 
 
 class EventFinderRhodesMill(EventFinder):

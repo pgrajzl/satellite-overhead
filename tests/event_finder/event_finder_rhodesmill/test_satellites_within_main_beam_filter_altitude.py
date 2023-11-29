@@ -5,9 +5,9 @@ from typing import List
 
 import pytz
 
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.position import Position
-from sopp.dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import SatellitesWithinMainBeamFilter, \
     AntennaPosition
 from tests.definitions import SMALL_EPSILON

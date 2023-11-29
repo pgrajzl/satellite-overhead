@@ -6,8 +6,8 @@ from sgp4.model import Satrec
 from sgp4.vallado_cpp import WGS72
 from sgp4.io import verify_checksum
 
-from sopp.dataclasses.satellite.international_designator import InternationalDesignator
-from sopp.dataclasses.satellite.mean_motion import MeanMotion
+from sopp.custom_dataclasses.satellite.international_designator import InternationalDesignator
+from sopp.custom_dataclasses.satellite.mean_motion import MeanMotion
 
 
 @dataclass

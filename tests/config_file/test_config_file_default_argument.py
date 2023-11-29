@@ -8,14 +8,14 @@ import pytz
 
 from sopp.config_file.config_file_factory import get_config_file_object
 from sopp.config_file.support.config_file_base import ConfigFileBase
-from sopp.dataclasses.configuration import Configuration
-from sopp.dataclasses.coordinates import Coordinates
-from sopp.dataclasses.facility import Facility
-from sopp.dataclasses.frequency_range.frequency_range import FrequencyRange
-from sopp.dataclasses.observation_target import ObservationTarget
-from sopp.dataclasses.position import Position
-from sopp.dataclasses.reservation import Reservation
-from sopp.dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.configuration import Configuration
+from sopp.custom_dataclasses.coordinates import Coordinates
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.custom_dataclasses.observation_target import ObservationTarget
+from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.utilities import CONFIG_FILE_FILENAME, CONFIG_FILE_FILENAME_JSON, default_config_filepaths, \
     get_script_directory, get_supplements_directory
 

@@ -8,12 +8,12 @@ from typing import List
 from datetime import timedelta
 
 from sopp.config_file.support.utilities import TIME_FORMAT
-from sopp.dataclasses.facility import Facility
-from sopp.dataclasses.observation_target import ObservationTarget
-from sopp.dataclasses.position import Position
-from sopp.dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.observation_target import ObservationTarget
+from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.path_finder.observation_path_finder import ObservationPathFinder
-from sopp.dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.time_window import TimeWindow
 
 
 class ObservationPathFinderAstropy(ObservationPathFinder):

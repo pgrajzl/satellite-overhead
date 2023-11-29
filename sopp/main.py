@@ -2,10 +2,10 @@ from dataclasses import dataclass
 from functools import cached_property
 from typing import List
 
-from sopp.dataclasses.overhead_window import OverheadWindow
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.reservation import Reservation
-from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.overhead_window import OverheadWindow
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.event_finder.event_finder import EventFinder
 from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from sopp.frequency_filter.frequency_filter import FrequencyFilter

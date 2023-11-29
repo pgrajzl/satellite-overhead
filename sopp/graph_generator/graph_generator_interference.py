@@ -46,7 +46,7 @@ class GraphGeneratorInterference:
         #ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=30))
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
 
-        ax.set_xlabel('Time')
+        ax.set_xlabel('Time UTC')
         ax.set_ylabel('Satellites Crossing Main Beam Count')
         ax.set_title(self._title)
         ax.grid(axis='y')

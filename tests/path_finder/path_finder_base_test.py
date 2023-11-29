@@ -1,10 +1,10 @@
 import pytest
 
 from sopp.utilities import read_datetime_string_as_utc
-from sopp.dataclasses.facility import Facility
-from sopp.dataclasses.coordinates import Coordinates
-from sopp.dataclasses.time_window import TimeWindow
-from sopp.dataclasses.observation_target import ObservationTarget
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.coordinates import Coordinates
+from sopp.custom_dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.observation_target import ObservationTarget
 
 
 class PathFinderBaseTest:

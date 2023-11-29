@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from sopp.dataclasses.reservation import Reservation
-from sopp.dataclasses.satellite.satellite import Satellite
-from sopp.dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.satellites_loader.satellites_loader import SatellitesLoader
 
 class VariableInitializer(ABC):

@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import List, Type
 
-from sopp.dataclasses.overhead_window import OverheadWindow
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.reservation import Reservation
-from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.overhead_window import OverheadWindow
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever import \
     SatellitePositionWithRespectToFacilityRetriever
-from sopp.dataclasses.runtime_settings import RuntimeSettings
+from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 
 
 class EventFinder(ABC):

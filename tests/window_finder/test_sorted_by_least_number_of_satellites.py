@@ -6,16 +6,16 @@ from pathlib import Path
 import pytest
 import pytz
 from sopp.utilities import get_script_directory
-from sopp.dataclasses.frequency_range.frequency_range import FrequencyRange
-from sopp.dataclasses.frequency_range.support.get_frequency_data_from_csv import \
+from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
-from sopp.dataclasses.overhead_window import OverheadWindow
-from sopp.dataclasses.reservation import Reservation
-from sopp.dataclasses.satellite.satellite import Satellite
-from sopp.dataclasses.time_window import TimeWindow
-from sopp.dataclasses.satellite.tle_information import TleInformation
-from sopp.dataclasses.satellite.international_designator import InternationalDesignator
-from sopp.dataclasses.satellite.mean_motion import MeanMotion
+from sopp.custom_dataclasses.overhead_window import OverheadWindow
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.satellite.tle_information import TleInformation
+from sopp.custom_dataclasses.satellite.international_designator import InternationalDesignator
+from sopp.custom_dataclasses.satellite.mean_motion import MeanMotion
 from sopp.window_finder import SuggestedReservation, WindowFinder
 from tests.window_finder.definitions import ARBITRARY_FACILITY
 

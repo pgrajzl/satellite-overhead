@@ -2,14 +2,14 @@ import pytz
 from datetime import datetime, timedelta
 from typing import List
 
-from sopp.dataclasses.coordinates import Coordinates
-from sopp.dataclasses.facility import Facility
-from sopp.dataclasses.overhead_window import OverheadWindow
-from sopp.dataclasses.position import Position
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.reservation import Reservation
-from sopp.dataclasses.satellite.satellite import Satellite
-from sopp.dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.coordinates import Coordinates
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.overhead_window import OverheadWindow
+from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever import \
     SatellitePositionWithRespectToFacilityRetriever

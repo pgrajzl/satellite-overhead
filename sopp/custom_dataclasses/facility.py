@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
-from sopp.dataclasses.coordinates import Coordinates
+from sopp.custom_dataclasses.coordinates import Coordinates
 from typing import List, Optional
 
-from sopp.dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.position_time import PositionTime
 
 
 @dataclass

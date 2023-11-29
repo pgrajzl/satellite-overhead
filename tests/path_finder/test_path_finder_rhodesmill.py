@@ -1,6 +1,6 @@
 import pytest
 
-from sopp.dataclasses.observation_target import ObservationTarget
+from sopp.custom_dataclasses.observation_target import ObservationTarget
 from sopp.path_finder.observation_path_finder_rhodesmill import ObservationPathFinderRhodesMill
 from path_finder_base_test import PathFinderBaseTest
 

@@ -5,8 +5,8 @@ from typing import List
 import matplotlib.pyplot as plt
 import numpy as np
 
-from sopp.dataclasses.overhead_window import OverheadWindow
-from sopp.dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.overhead_window import OverheadWindow
+from sopp.custom_dataclasses.time_window import TimeWindow
 
 
 class GraphGenerator:

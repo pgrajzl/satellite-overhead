@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from functools import cached_property
 from pathlib import Path
 
-from sopp.dataclasses.configuration import Configuration
+from sopp.custom_dataclasses.configuration import Configuration
 
 
 class ConfigFileBase(ABC):

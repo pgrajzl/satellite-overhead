@@ -2,18 +2,18 @@ from datetime import datetime, timezone
 import pytest
 import pytz
 
-from sopp.dataclasses.coordinates import Coordinates
-from sopp.dataclasses.facility import Facility
-from sopp.dataclasses.frequency_range.frequency_range import FrequencyRange
-from sopp.dataclasses.overhead_window import OverheadWindow
-from sopp.dataclasses.position import Position
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.reservation import Reservation
-from sopp.dataclasses.satellite.international_designator import InternationalDesignator
-from sopp.dataclasses.satellite.mean_motion import MeanMotion
-from sopp.dataclasses.satellite.satellite import Satellite
-from sopp.dataclasses.satellite.tle_information import TleInformation
-from sopp.dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.coordinates import Coordinates
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.custom_dataclasses.overhead_window import OverheadWindow
+from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.satellite.international_designator import InternationalDesignator
+from sopp.custom_dataclasses.satellite.mean_motion import MeanMotion
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.satellite.tle_information import TleInformation
+from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.main import Main, MainResults
 from tests.event_finder.event_finder_rhodesmill.definitions import create_overhead_window
 

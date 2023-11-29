@@ -7,9 +7,9 @@ from typing import List
 
 import numpy
 
-from sopp.dataclasses.facility import Facility
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.utilities import convert_datetime_to_utc
 
 

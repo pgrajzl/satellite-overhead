@@ -1,9 +1,9 @@
 from typing import List
 
-from sopp.dataclasses.overhead_window import OverheadWindow
-from sopp.dataclasses.reservation import Reservation
-from sopp.dataclasses.satellite.satellite import Satellite
-from sopp.dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.overhead_window import OverheadWindow
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.event_finder.validator import Validator
 
 

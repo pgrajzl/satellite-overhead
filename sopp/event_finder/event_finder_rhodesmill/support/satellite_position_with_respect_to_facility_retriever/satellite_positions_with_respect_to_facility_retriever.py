@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import List
 
-from sopp.dataclasses.facility import Facility
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.satellite.satellite import Satellite
 
 
 class SatellitePositionsWithRespectToFacilityRetriever(ABC):

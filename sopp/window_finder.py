@@ -2,12 +2,12 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import List
 
-from sopp.dataclasses.frequency_range.frequency_range import FrequencyRange
-from sopp.dataclasses.overhead_window import OverheadWindow
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.reservation import Reservation
-from sopp.dataclasses.satellite.satellite import Satellite
-from sopp.dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.custom_dataclasses.overhead_window import OverheadWindow
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
 
 

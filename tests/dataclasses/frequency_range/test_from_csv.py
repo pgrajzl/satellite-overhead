@@ -1,5 +1,5 @@
-from sopp.dataclasses.frequency_range.frequency_range import FrequencyRange
-from sopp.dataclasses.frequency_range.support.get_frequency_data_from_csv import GetFrequencyDataFromCsv
+from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import GetFrequencyDataFromCsv
 from sopp.utilities import get_script_directory
 from pathlib import Path
 

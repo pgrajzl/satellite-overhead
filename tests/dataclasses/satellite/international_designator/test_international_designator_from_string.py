@@ -1,4 +1,4 @@
-from sopp.dataclasses.satellite.international_designator import InternationalDesignator
+from sopp.custom_dataclasses.satellite.international_designator import InternationalDesignator
 
 
 class TestInternationalDesignatorFromString:

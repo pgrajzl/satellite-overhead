@@ -3,8 +3,8 @@ from typing import List
 from functools import cached_property
 
 from sopp.satellites_loader.satellites_loader import SatellitesLoader
-from sopp.dataclasses.satellite.satellite import Satellite
-from sopp.dataclasses.frequency_range.support.get_frequency_data_from_csv import \
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
 
 

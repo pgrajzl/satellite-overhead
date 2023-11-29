@@ -2,11 +2,11 @@ from dataclasses import replace
 
 from sopp.tle_fetcher.tle_fetcher import TleFetcher
 from sopp.config_file.config_file_factory import get_config_file_object
-from sopp.dataclasses.configuration import Configuration
-from sopp.dataclasses.frequency_range.support.get_frequency_data_from_csv import \
+from sopp.custom_dataclasses.configuration import Configuration
+from sopp.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.main import Main
 from sopp.path_finder.observation_path_finder import ObservationPathFinder
 from sopp.utilities import get_frequencies_filepath, get_satellites_filepath

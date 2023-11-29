@@ -3,7 +3,7 @@ from functools import cached_property
 import numpy as np
 import matplotlib.pyplot as plt
 
-from sopp.dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.position_time import PositionTime
 
 
 class GraphGeneratorPolar:

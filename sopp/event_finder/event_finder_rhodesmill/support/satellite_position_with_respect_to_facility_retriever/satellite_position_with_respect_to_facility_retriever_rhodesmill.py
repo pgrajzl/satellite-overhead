@@ -3,8 +3,8 @@ from skyfield.sgp4lib import EarthSatellite
 from skyfield.toposlib import wgs84, GeographicPosition
 from skyfield.timelib import Time
 
-from sopp.dataclasses.position import Position
-from sopp.dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever import \
     SatellitePositionWithRespectToFacilityRetriever
 

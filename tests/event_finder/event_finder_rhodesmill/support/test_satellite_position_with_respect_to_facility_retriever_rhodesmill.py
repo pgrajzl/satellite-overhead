@@ -3,13 +3,13 @@ from datetime import datetime
 
 import pytz
 
-from sopp.dataclasses.coordinates import Coordinates
-from sopp.dataclasses.facility import Facility
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.satellite.international_designator import InternationalDesignator
-from sopp.dataclasses.satellite.mean_motion import MeanMotion
-from sopp.dataclasses.satellite.satellite import Satellite
-from sopp.dataclasses.satellite.tle_information import TleInformation
+from sopp.custom_dataclasses.coordinates import Coordinates
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.satellite.international_designator import InternationalDesignator
+from sopp.custom_dataclasses.satellite.mean_motion import MeanMotion
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.satellite.tle_information import TleInformation
 from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever_rhodesmill import \
     SatellitePositionWithRespectToFacilityRetrieverRhodesmill
 

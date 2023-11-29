@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
-from sopp.dataclasses.observation_target import ObservationTarget
-from sopp.dataclasses.position import Position
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.reservation import Reservation
-from sopp.dataclasses.runtime_settings import RuntimeSettings
+from sopp.custom_dataclasses.observation_target import ObservationTarget
+from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 
 
 @dataclass

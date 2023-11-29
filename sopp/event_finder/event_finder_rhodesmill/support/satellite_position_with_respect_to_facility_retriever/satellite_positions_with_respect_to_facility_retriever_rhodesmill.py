@@ -6,10 +6,10 @@ from skyfield.toposlib import wgs84
 
 from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever import \
     SatellitePositionsWithRespectToFacilityRetriever
-from sopp.dataclasses.position import Position
-from sopp.dataclasses.position_time import PositionTime
-from sopp.dataclasses.facility import Facility
-from sopp.dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.satellite.satellite import Satellite
 
 
 RHODESMILL_TIMESCALE = load.timescale()

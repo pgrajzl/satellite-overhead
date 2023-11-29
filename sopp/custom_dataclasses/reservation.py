@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 
-from sopp.dataclasses.facility import Facility
-from sopp.dataclasses.frequency_range.frequency_range import FrequencyRange
-from sopp.dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.custom_dataclasses.time_window import TimeWindow
 
 '''
 The Reservation class stores the Facility, as well as some additional reservation-specific information, such as reservation start and end times.
