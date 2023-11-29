@@ -166,9 +166,9 @@ docker run
   sopp
 ```
 
-## Downloading TLE Files Using TLEFetcher
+## Downloading TLE Files Using TleFetcher
 
-The TLEFetcher can be used to download files from either Space-Track or Celestrak. In the SOPP program itself, a list of active satellites are pulled from
+The TleFetcher can be used to download files from either Space-Track or Celestrak. In the SOPP program itself, a list of active satellites are pulled from
 Celestrak. If you want to provide it your own TLE file, you can comment out
 
 ## SOPP Components

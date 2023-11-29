@@ -5,11 +5,11 @@ from numpy._typing import NDArray
 from skyfield.api import load, wgs84
 from skyfield.timelib import Time, Timescale
 
-from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
-from satellite_determination.custom_dataclasses.satellite.international_designator import InternationalDesignator
-from satellite_determination.custom_dataclasses.satellite.mean_motion import MeanMotion
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
+from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.custom_dataclasses.satellite.international_designator import InternationalDesignator
+from sopp.custom_dataclasses.satellite.mean_motion import MeanMotion
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.satellite.tle_information import TleInformation
 
 
 class TestRhodesmillIntegration:

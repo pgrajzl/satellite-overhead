@@ -4,19 +4,19 @@ from pathlib import Path
 import pytest
 import pytz
 
-from satellite_determination.config_file.config_file_factory import get_config_file_object
-from satellite_determination.config_file.support.config_file_base import ConfigFileBase
-from satellite_determination.custom_dataclasses.configuration import Configuration
-from satellite_determination.custom_dataclasses.coordinates import Coordinates
-from satellite_determination.custom_dataclasses.facility import Facility
-from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
-from satellite_determination.custom_dataclasses.observation_target import ObservationTarget
-from satellite_determination.custom_dataclasses.position import Position
-from satellite_determination.custom_dataclasses.position_time import PositionTime
-from satellite_determination.custom_dataclasses.reservation import Reservation
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.custom_dataclasses.runtime_settings import RuntimeSettings
-from satellite_determination.utilities import get_script_directory
+from sopp.config_file.config_file_factory import get_config_file_object
+from sopp.config_file.support.config_file_base import ConfigFileBase
+from sopp.custom_dataclasses.configuration import Configuration
+from sopp.custom_dataclasses.coordinates import Coordinates
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.custom_dataclasses.observation_target import ObservationTarget
+from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
+from sopp.utilities import get_script_directory
 
 
 class TestConfigFileProvidedArgument:

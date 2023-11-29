@@ -3,18 +3,18 @@ from datetime import datetime
 import pytest
 import pytz
 
-from satellite_determination.variable_initializer.variable_initializer_from_config import VariableInitializerFromConfig
-from satellite_determination.satellites_loader.satellites_loader import SatellitesLoader
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from satellite_determination.custom_dataclasses.configuration import Configuration
-from satellite_determination.custom_dataclasses.reservation import Reservation
-from satellite_determination.custom_dataclasses.facility import Facility
-from satellite_determination.custom_dataclasses.coordinates import Coordinates
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.custom_dataclasses.observation_target import ObservationTarget
-from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
-from satellite_determination.custom_dataclasses.position import Position
-from satellite_determination.custom_dataclasses.position_time import PositionTime
+from sopp.variable_initializer.variable_initializer_from_config import VariableInitializerFromConfig
+from sopp.satellites_loader.satellites_loader import SatellitesLoader
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.configuration import Configuration
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.coordinates import Coordinates
+from sopp.custom_dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.observation_target import ObservationTarget
+from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.position_time import PositionTime
 
 class StubSatellitesLoader(SatellitesLoader):
     def load_satellites(self):

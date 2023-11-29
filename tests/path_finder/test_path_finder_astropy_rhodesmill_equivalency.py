@@ -1,12 +1,12 @@
 import pytest
 
-from satellite_determination.utilities import read_datetime_string_as_utc
-from satellite_determination.custom_dataclasses.facility import Facility
-from satellite_determination.custom_dataclasses.coordinates import Coordinates
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.custom_dataclasses.observation_target import ObservationTarget
-from satellite_determination.path_finder.observation_path_finder_rhodesmill import ObservationPathFinderRhodesMill
-from satellite_determination.path_finder.observation_path_finder_astropy import ObservationPathFinderAstropy
+from sopp.utilities import read_datetime_string_as_utc
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.coordinates import Coordinates
+from sopp.custom_dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.observation_target import ObservationTarget
+from sopp.path_finder.observation_path_finder_rhodesmill import ObservationPathFinderRhodesmill
+from sopp.path_finder.observation_path_finder_astropy import ObservationPathFinderAstropy
 
 
 class TestPathFinderEquivalency:
@@ -32,7 +32,7 @@ class TestPathFinderEquivalency:
         obs_target = ObservationTarget(declination=declination, right_ascension=right_ascension)
 
         astro = ObservationPathFinderAstropy(facility, obs_target, time_window).calculate_path()
-        rhodes = ObservationPathFinderRhodesMill(facility, obs_target, time_window).calculate_path()
+        rhodes = ObservationPathFinderRhodesmill(facility, obs_target, time_window).calculate_path()
 
         self._assert_alt_eq(astro, rhodes)
         self._assert_az_eq(astro, rhodes)

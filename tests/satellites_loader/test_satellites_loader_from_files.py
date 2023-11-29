@@ -1,12 +1,12 @@
 import os
 import pytest
 
-from satellite_determination.satellites_loader.satellites_loader_from_files import SatellitesLoaderFromFiles
-from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
-from satellite_determination.custom_dataclasses.satellite.international_designator import InternationalDesignator
-from satellite_determination.custom_dataclasses.satellite.mean_motion import MeanMotion
-from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
+from sopp.satellites_loader.satellites_loader_from_files import SatellitesLoaderFromFiles
+from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.custom_dataclasses.satellite.international_designator import InternationalDesignator
+from sopp.custom_dataclasses.satellite.mean_motion import MeanMotion
+from sopp.custom_dataclasses.satellite.tle_information import TleInformation
+from sopp.custom_dataclasses.satellite.satellite import Satellite
 
 
 class TestSatellitesLoaderFromFiles:

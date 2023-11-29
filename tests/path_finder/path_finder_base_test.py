@@ -1,10 +1,10 @@
 import pytest
 
-from satellite_determination.utilities import read_datetime_string_as_utc
-from satellite_determination.custom_dataclasses.facility import Facility
-from satellite_determination.custom_dataclasses.coordinates import Coordinates
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.custom_dataclasses.observation_target import ObservationTarget
+from sopp.utilities import read_datetime_string_as_utc
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.coordinates import Coordinates
+from sopp.custom_dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.observation_target import ObservationTarget
 
 
 class PathFinderBaseTest:

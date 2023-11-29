@@ -2,19 +2,19 @@ from datetime import datetime, timezone
 import pytest
 import pytz
 
-from satellite_determination.custom_dataclasses.coordinates import Coordinates
-from satellite_determination.custom_dataclasses.facility import Facility
-from satellite_determination.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
-from satellite_determination.custom_dataclasses.overhead_window import OverheadWindow
-from satellite_determination.custom_dataclasses.position import Position
-from satellite_determination.custom_dataclasses.position_time import PositionTime
-from satellite_determination.custom_dataclasses.reservation import Reservation
-from satellite_determination.custom_dataclasses.satellite.international_designator import InternationalDesignator
-from satellite_determination.custom_dataclasses.satellite.mean_motion import MeanMotion
-from satellite_determination.custom_dataclasses.satellite.satellite import Satellite
-from satellite_determination.custom_dataclasses.satellite.tle_information import TleInformation
-from satellite_determination.custom_dataclasses.time_window import TimeWindow
-from satellite_determination.main import Main, MainResults
+from sopp.custom_dataclasses.coordinates import Coordinates
+from sopp.custom_dataclasses.facility import Facility
+from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.custom_dataclasses.overhead_window import OverheadWindow
+from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.custom_dataclasses.reservation import Reservation
+from sopp.custom_dataclasses.satellite.international_designator import InternationalDesignator
+from sopp.custom_dataclasses.satellite.mean_motion import MeanMotion
+from sopp.custom_dataclasses.satellite.satellite import Satellite
+from sopp.custom_dataclasses.satellite.tle_information import TleInformation
+from sopp.custom_dataclasses.time_window import TimeWindow
+from sopp.main import Main, MainResults
 from tests.event_finder.event_finder_rhodesmill.definitions import create_overhead_window
 
 def assert_overhead_windows_eq(actual: OverheadWindow, expected: OverheadWindow) -> None:
