@@ -20,7 +20,7 @@ from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 
 
-class EventFinderRhodesMill(EventFinder):
+class EventFinderRhodesmill(EventFinder):
     def __init__(self,
                  antenna_direction_path: List[PositionTime],
                  list_of_satellites: List[Satellite],
@@ -45,7 +45,7 @@ class EventFinderRhodesMill(EventFinder):
 
     def get_satellites_above_horizon(self):
         facility_with_beam_width_that_sees_entire_sky = replace(self.reservation.facility, beamwidth=360)
-        event_finder = EventFinderRhodesMill(list_of_satellites=self.list_of_satellites,
+        event_finder = EventFinderRhodesmill(list_of_satellites=self.list_of_satellites,
                                              reservation=replace(self.reservation, facility=facility_with_beam_width_that_sees_entire_sky),
                                              antenna_direction_path=[PositionTime(position=Position(altitude=90, azimuth=0),
                                                                                   time=self.reservation.time.begin)])

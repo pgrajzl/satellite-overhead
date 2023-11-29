@@ -1,12 +1,12 @@
 import pytest
 
 from sopp.custom_dataclasses.observation_target import ObservationTarget
-from sopp.path_finder.observation_path_finder_rhodesmill import ObservationPathFinderRhodesMill
+from sopp.path_finder.observation_path_finder_rhodesmill import ObservationPathFinderRhodesmill
 from path_finder_base_test import PathFinderBaseTest
 
 
 class TestPathFinderRhodesMill(PathFinderBaseTest):
-    PathFinderClass = ObservationPathFinderRhodesMill
+    PathFinderClass = ObservationPathFinderRhodesmill
 
     @pytest.mark.parametrize('declination, right_ascension, expected', [
         ('12d15m18s', '12h15m18s', (12, 15, 18)),
@@ -15,8 +15,8 @@ class TestPathFinderRhodesMill(PathFinderBaseTest):
     ])
     def test_ra_dec_to_rhodesmill(self, declination, right_ascension, expected):
         obs_target = ObservationTarget(declination=declination, right_ascension=right_ascension)
-        actual_ra = ObservationPathFinderRhodesMill.right_ascension_to_rhodesmill(obs_target)
-        actual_dec = ObservationPathFinderRhodesMill.declination_to_rhodesmill(obs_target)
+        actual_ra = ObservationPathFinderRhodesmill.right_ascension_to_rhodesmill(obs_target)
+        actual_dec = ObservationPathFinderRhodesmill.declination_to_rhodesmill(obs_target)
 
         assert actual_ra == expected
         assert actual_dec == expected

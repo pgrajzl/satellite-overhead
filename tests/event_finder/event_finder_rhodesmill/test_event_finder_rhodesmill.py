@@ -10,7 +10,7 @@ from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.custom_dataclasses.reservation import Reservation
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.custom_dataclasses.time_window import TimeWindow
-from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
+from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesmill
 from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever import \
     SatellitePositionWithRespectToFacilityRetriever
 from tests.definitions import SMALL_EPSILON
@@ -42,7 +42,7 @@ class TestEventFinderRhodesmill:
                                            end=arbitrary_datetime + timedelta(seconds=2))
         arbitrary_reservation = Reservation(facility=Facility(coordinates=Coordinates(latitude=0, longitude=0)),
                                             time=arbitrary_time_window)
-        event_finder = EventFinderRhodesMill(list_of_satellites=[arbitrary_satellite],
+        event_finder = EventFinderRhodesmill(list_of_satellites=[arbitrary_satellite],
                                              reservation=arbitrary_reservation,
                                              antenna_direction_path=[PositionTime(position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
                                                                                                     azimuth=ARBITRARY_SATELLITE_AZIMUTH),
@@ -63,7 +63,7 @@ class TestEventFinderRhodesmill:
                                            end=arbitrary_datetime + timedelta(seconds=2))
         arbitrary_reservation = Reservation(facility=Facility(coordinates=Coordinates(latitude=0, longitude=0)),
                                             time=arbitrary_time_window)
-        event_finder = EventFinderRhodesMill(list_of_satellites=arbitrary_satellites,
+        event_finder = EventFinderRhodesmill(list_of_satellites=arbitrary_satellites,
                                              reservation=arbitrary_reservation,
                                              antenna_direction_path=[PositionTime(position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
                                                                                                     azimuth=ARBITRARY_SATELLITE_AZIMUTH),
@@ -93,7 +93,7 @@ class TestEventFinderRhodesmill:
         )
 
         altitude_outside_beamwidth = ARBITRARY_SATELLITE_ALTITUDE + arbitrary_reservation.facility.half_beamwidth + SMALL_EPSILON
-        event_finder = EventFinderRhodesMill(
+        event_finder = EventFinderRhodesmill(
             list_of_satellites=[arbitrary_satellite],
             reservation=arbitrary_reservation,
             antenna_direction_path=[

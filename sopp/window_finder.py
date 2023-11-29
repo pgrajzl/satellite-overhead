@@ -8,7 +8,7 @@ from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.custom_dataclasses.reservation import Reservation
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.custom_dataclasses.time_window import TimeWindow
-from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
+from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesmill
 
 
 @dataclass
@@ -70,7 +70,7 @@ class WindowFinder:
         ]
 
     def _satellites_overhead(self, reservation: Reservation) -> List[OverheadWindow]:
-        return EventFinderRhodesMill(list_of_satellites=self._satellites,
+        return EventFinderRhodesmill(list_of_satellites=self._satellites,
                                      reservation=reservation,
                                      antenna_direction_path=[PositionTime(altitude=0, azimuth=0, time=reservation.time.begin)]).get_satellites_above_horizon()
 

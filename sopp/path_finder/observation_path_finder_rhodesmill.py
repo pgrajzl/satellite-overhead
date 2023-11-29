@@ -14,7 +14,7 @@ from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.path_finder.observation_path_finder import ObservationPathFinder
 
 
-class ObservationPathFinderRhodesMill(ObservationPathFinder):
+class ObservationPathFinderRhodesmill(ObservationPathFinder):
     def __init__(self, facility: Facility, observation_target: ObservationTarget, time_window: TimeWindow) -> List[PositionTime]:
         self._facility = facility
         self._observation_target = observation_target
@@ -33,8 +33,8 @@ class ObservationPathFinderRhodesMill(ObservationPathFinder):
         earth = eph['earth']
 
         target_coordinates = Star(
-            ra_hours=ObservationPathFinderRhodesMill.right_ascension_to_rhodesmill(self._observation_target),
-            dec_degrees=ObservationPathFinderRhodesMill.declination_to_rhodesmill(self._observation_target)
+            ra_hours=ObservationPathFinderRhodesmill.right_ascension_to_rhodesmill(self._observation_target),
+            dec_degrees=ObservationPathFinderRhodesmill.declination_to_rhodesmill(self._observation_target)
         )
         start_time = self._time_window.begin
         end_time = self._time_window.end
@@ -63,8 +63,8 @@ class ObservationPathFinderRhodesMill(ObservationPathFinder):
 
     @staticmethod
     def right_ascension_to_rhodesmill(observation_target: ObservationTarget) -> Tuple[float, float, float]:
-        return ObservationPathFinderRhodesMill._parse_coordinate(observation_target.right_ascension)
+        return ObservationPathFinderRhodesmill._parse_coordinate(observation_target.right_ascension)
 
     @staticmethod
     def declination_to_rhodesmill(observation_target: ObservationTarget) -> Tuple[float, float, float]:
-        return ObservationPathFinderRhodesMill._parse_coordinate(observation_target.declination)
+        return ObservationPathFinderRhodesmill._parse_coordinate(observation_target.declination)

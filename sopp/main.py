@@ -7,7 +7,7 @@ from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.custom_dataclasses.reservation import Reservation
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.event_finder.event_finder import EventFinder
-from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesMill
+from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesmill
 from sopp.frequency_filter.frequency_filter import FrequencyFilter
 
 
@@ -35,7 +35,7 @@ class Main:
             for window in overhead_windows_above_horizon if window.satellite not in satellites_above_horizon
         ]
 
-        event_finder = EventFinderRhodesMill(list_of_satellites=satellites_above_horizon,
+        event_finder = EventFinderRhodesmill(list_of_satellites=satellites_above_horizon,
                                              reservation=self._reservation,
                                              antenna_direction_path=self._antenna_direction_path)
 
@@ -48,7 +48,7 @@ class Main:
 
     @cached_property
     def _event_finder(self) -> EventFinder:
-        return EventFinderRhodesMill(list_of_satellites=self._frequency_filtered_satellites,
+        return EventFinderRhodesmill(list_of_satellites=self._frequency_filtered_satellites,
                                      reservation=self._reservation,
                                      antenna_direction_path=self._antenna_direction_path)
 
