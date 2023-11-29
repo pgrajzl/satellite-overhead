@@ -4,7 +4,7 @@ from typing import List
 from skyfield.api import load
 from skyfield.toposlib import wgs84
 
-from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever import \
+from sopp.event_finder.event_finder_rhodesmill.support.satellite_positions_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever import \
     SatellitePositionsWithRespectToFacilityRetriever
 from sopp.custom_dataclasses.position import Position
 from sopp.custom_dataclasses.position_time import PositionTime

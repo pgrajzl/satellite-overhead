@@ -11,8 +11,8 @@ from sopp.custom_dataclasses.reservation import Reservation
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesmill
-from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_position_with_respect_to_facility_retriever import \
-    SatellitePositionWithRespectToFacilityRetriever
+from sopp.event_finder.event_finder_rhodesmill.support.satellite_positions_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever import \
+    SatellitePositionsWithRespectToFacilityRetriever
 from tests.definitions import SMALL_EPSILON
 from tests.event_finder.event_finder_rhodesmill.definitions import create_overhead_window
 
@@ -47,7 +47,7 @@ class TestEventFinderRhodesmill:
                                              antenna_direction_path=[PositionTime(position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
                                                                                                     azimuth=ARBITRARY_SATELLITE_AZIMUTH),
                                                                                   time=arbitrary_datetime)],
-                                             satellite_position_with_respect_to_facility_retriever_class=SatellitePositionsWithRespectToFacilityRetrieverStub)
+                                             satellite_positions_with_respect_to_facility_retriever_class=SatellitePositionsWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
         expected_windows = [
             create_overhead_window(arbitrary_satellite, 0, 0, arbitrary_time_window.begin, 2)
@@ -68,7 +68,7 @@ class TestEventFinderRhodesmill:
                                              antenna_direction_path=[PositionTime(position=Position(altitude=ARBITRARY_SATELLITE_ALTITUDE,
                                                                                                     azimuth=ARBITRARY_SATELLITE_AZIMUTH),
                                                                                   time=arbitrary_datetime)],
-                                             satellite_position_with_respect_to_facility_retriever_class=SatellitePositionsWithRespectToFacilityRetrieverStub)
+                                             satellite_positions_with_respect_to_facility_retriever_class=SatellitePositionsWithRespectToFacilityRetrieverStub)
         windows = event_finder.get_satellites_crossing_main_beam()
         expected_windows = [
             create_overhead_window(arbitrary_satellites[0], 0, 0, arbitrary_time_window.begin, 2),
@@ -110,7 +110,7 @@ class TestEventFinderRhodesmill:
                     time=arbitrary_datetime + timedelta(seconds=2)
                 ),
             ],
-            satellite_position_with_respect_to_facility_retriever_class=SatellitePositionsWithRespectToFacilityRetrieverStub
+            satellite_positions_with_respect_to_facility_retriever_class=SatellitePositionsWithRespectToFacilityRetrieverStub
         )
 
         windows = event_finder.get_satellites_crossing_main_beam()

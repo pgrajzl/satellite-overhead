@@ -9,9 +9,9 @@ from sopp.custom_dataclasses.reservation import Reservation
 from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.event_finder.event_finder_rhodesmill.support.evenly_spaced_time_intervals_calculator import \
     EvenlySpacedTimeIntervalsCalculator
-from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever import \
+from sopp.event_finder.event_finder_rhodesmill.support.satellite_positions_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever import \
     SatellitePositionsWithRespectToFacilityRetriever
-from sopp.event_finder.event_finder_rhodesmill.support.satellite_position_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever_rhodesmill import \
+from sopp.event_finder.event_finder_rhodesmill.support.satellite_positions_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever_rhodesmill import \
     SatellitePositionsWithRespectToFacilityRetrieverRhodesmill
 from sopp.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import AntennaPosition, \
     SatellitesWithinMainBeamFilter
@@ -25,12 +25,12 @@ class EventFinderRhodesmill(EventFinder):
                  antenna_direction_path: List[PositionTime],
                  list_of_satellites: List[Satellite],
                  reservation: Reservation,
-                 satellite_position_with_respect_to_facility_retriever_class: Type[SatellitePositionsWithRespectToFacilityRetriever] = SatellitePositionsWithRespectToFacilityRetrieverRhodesmill,
+                 satellite_positions_with_respect_to_facility_retriever_class: Type[SatellitePositionsWithRespectToFacilityRetriever] = SatellitePositionsWithRespectToFacilityRetrieverRhodesmill,
                  runtime_settings: RuntimeSettings = RuntimeSettings()):
         super().__init__(antenna_direction_path=antenna_direction_path,
                          list_of_satellites=list_of_satellites,
                          reservation=reservation,
-                         satellite_position_with_respect_to_facility_retriever_class=satellite_position_with_respect_to_facility_retriever_class,
+                         satellite_positions_with_respect_to_facility_retriever_class=satellite_positions_with_respect_to_facility_retriever_class,
                          runtime_settings=runtime_settings)
 
         datetimes = EvenlySpacedTimeIntervalsCalculator(
@@ -38,7 +38,7 @@ class EventFinderRhodesmill(EventFinder):
             resolution=runtime_settings.time_continuity_resolution
         ).run()
 
-        self._satellite_positions_retriever = satellite_position_with_respect_to_facility_retriever_class(
+        self._satellite_positions_retriever = satellite_positions_with_respect_to_facility_retriever_class(
             facility=reservation.facility,
             datetimes=datetimes
         )
