@@ -35,9 +35,9 @@ The primary functionality offered by the package is accessed through the `EventF
 
 ### Define Observation Characteristics
 
-##### Facility
+#### Facility
 
-The Facility class defines the geographical location of the observation. It is initialized with four parameters: `Coordinates`, which includes `latitude` and `longitude`, along with `elevation`, `beamwidth`, and an optional `name`.
+The `Facility` class defines the geographical location of the observation. It is initialized with four parameters: `Coordinates`, which includes `latitude` and `longitude`, along with `elevation`, `beamwidth`, and an optional `name`.
 
 ```python
 facility = Facility(
@@ -51,9 +51,9 @@ facility = Facility(
 )
 ```
 
-##### TimeWindow
+#### TimeWindow
 
-The TimeWindow class defines the observation time window, specifying when the observation will take place. It is initialized with two [datetime](https://docs.python.org/3/library/datetime.html) parameters: `begin` and `end`. `read_datetime_string_as_utc` serves as an utility function to easily construct a datetime.
+The `TimeWindow` class defines the observation time window, specifying when the observation will take place. It is initialized with two [datetime](https://docs.python.org/3/library/datetime.html) parameters: `begin` and `end`. `read_datetime_string_as_utc` serves as an utility function to easily construct a datetime.
 
 ```python
 time_window = TimeWindow(
@@ -62,17 +62,17 @@ time_window = TimeWindow(
 )
 ```
 
-##### FrequencyRange
+#### FrequencyRange
 
-The FrequencyRange class defines the frequency of the observation. It is initialized with two parameters, the frequency and bandwidth:
+The `FrequencyRange` class defines the frequency of the observation. It is initialized with two parameters, the frequency and bandwidth:
 
 ```python
 frequency_range = FrequencyRange(frequency=128, bandwidth=10)
 ```
 
-##### Reservation
+#### Reservation
 
-The Reservation class encapsulates the `Facility`, `TimeWindow` and `FrequencyRange`. 
+The `Reservation` class encapsulates the `Facility`, `TimeWindow` and `FrequencyRange`. 
 
 ```python
 reservation = Reservation(
@@ -82,17 +82,20 @@ reservation = Reservation(
 )
 ```
 
-##### ObservationTarget
+#### ObservationTarget
 
-The ObservationTarget class specifies the target for observation, initialized with two parameters: `declination` and `right_ascension`.
+The `ObservationTarget` class specifies the target for observation, initialized with two parameters: `declination` and `right_ascension`.
 
 ```python
-observation_target = ObservationTarget(declination='7d24m25.426s', right_ascension='5h55m10.3s')
+observation_target = ObservationTarget(
+    declination='7d24m25.426s',
+    right_ascension='5h55m10.3s'
+)
 ```
 
-##### ObservationPathFinder
+#### ObservationPathFinder
 
-The ObservationPathFinder class utilizes the previously created `ObservationTarget`, `Facility`, and `TimeWindow` to generate an antenna direction path. The antenna direction path is a list of `PositionTime` objects, capturing each minute within the observation window with the antenna's current altitude and azimuth coordinates. It is used to determine at any given moment, where the antenna is directed.
+The `ObservationPathFinder` class utilizes the previously created `ObservationTarget`, `Facility`, and `TimeWindow` to generate an antenna direction path. The antenna direction path is a list of `PositionTime` objects, capturing each minute within the observation window with the antenna's current altitude and azimuth coordinates. It is used to determine at any given moment, where the antenna is directed.
 
 ```python
 antenna_direction_path = ObservationPathFinderRhodesmill(
@@ -105,12 +108,15 @@ Instead of specifying an observation target and utilizing the `PathFinder` class
 
 ### Load Satellite Data
 
-##### SatellitesLoaderFromFiles
+#### SatellitesLoaderFromFiles
 
-The SatellitesLoaderFromFiles class loads a list of satellites from files. It is initialized with two parameters, `tle_file`, as the satellite TLE file path and an optional frequency file path in parameter `frequency_file`:
+The `SatellitesLoaderFromFiles` class loads a list of satellites from files. It is initialized with two parameters, `tle_file`, as the satellite TLE file path and an optional frequency file path in parameter `frequency_file`:
 
 ```python
-list_of_satellites = SatellitesLoaderFromFiles(tle_file='./satellites.tle', frequency_file='./frequency_data.csv').load()
+list_of_satellites = SatellitesLoaderFromFiles(
+    tle_file='./satellites.tle',
+    frequency_file='./frequency_data.csv'
+).load()
 ```
 
 The optional frequency file can be provided as a `.csv` file. If frequency data is available, the Satellite class will be populated with the relevant frequency information.
@@ -126,9 +132,9 @@ filtered_satellites = FrequencyFilter(
 
 ### Determine Satellite Interference
 
-##### RuntimeSettings
+#### RuntimeSettings
 
-The RuntimeSettings class serves as an optional parameter for the `EventFinderRhodesmill` class. The parameter `time_continuity_resolution` specifies the time resolution, as a [timedelta](https://docs.python.org/3/library/datetime.html#timedelta-objects), for calculating satellite positions, with a default of 1 second. Additionally, the `concurrency_level` parameter determines the number of parallel jobs during satellite position calculation, optimizing runtime speeds. This value should be approximately equivalent to the number of cores on the machine.
+The `RuntimeSettings` class serves as an optional parameter for the `EventFinderRhodesmill` class. The parameter `time_continuity_resolution` specifies the time resolution, as a [timedelta](https://docs.python.org/3/library/datetime.html#timedelta-objects), for calculating satellite positions, with a default of 1 second. Additionally, the `concurrency_level` parameter determines the number of parallel jobs during satellite position calculation, optimizing runtime speeds. This value should be approximately equivalent to the number of cores on the machine.
 
 ```python
 runtime_settings = RuntimeSettings(
@@ -137,9 +143,9 @@ runtime_settings = RuntimeSettings(
 )
 ```
 
-##### EventFinderRhodesmill
+#### EventFinderRhodesmill
 
-The EventFinderRhodesmill class utilizes the previously created data classes to identify satellite interference. It is initialized with the `list_of_satellites` obtained from `SatellitesLoaderFromFiles`, `reservation`, `antenna_direction_path`, and an optional `runtime_settings`.
+The `EventFinderRhodesmill` class utilizes the previously created data classes to identify satellite interference. It is initialized with the `list_of_satellites` obtained from `SatellitesLoaderFromFiles`, `reservation`, `antenna_direction_path`, and an optional `runtime_settings`.
 
 ```python
 event_finder = EventFinderRhodesmill(
@@ -159,7 +165,7 @@ Finally, obtain the position data of interfering satellites, run either:
 interference_events = event_finder.get_satellites_crossing_main_beam()
 ```
 
-The data is returned as a list of OverheadWindow. Which is defined as: 
+The data is returned as a list of `OverheadWindow`, which is defined as:
 
 ```python
 class OverheadWindow:
