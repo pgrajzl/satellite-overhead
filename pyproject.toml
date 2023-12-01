@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+  "sopp",
+  "tests",
+  "examples",
+]
+exclude = [
+  "sopp/graph_generator",
+  "sopp/main.py",
+  "tests/graph_generator",
+  "tests/test_main.py",
+]
+
+[project]
+name = "sopp"
+version = "0.1.0"
+dependencies = [
+    "pytz~=2022.7",
+    "sgp4~=2.21",
+    "skyfield~=1.45",
+    "astropy~=5.2.2",
+    "requests~=2.31.0",
+]
+requires-python = ">=3.8"
+description = "SOPP is an open-source tool for calculating satellite interference to radio astronomy observations."
+readme = "quickstart.md"
+license = "AGPL-3.0-or-later"
+keywords = ["satellites", "astronomy"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)"
+]
+
+[project.urls]
+Repository = "https://github.com/NSF-Swift/satellite-overhead"
+"Bug Tracker" = "https://github.com/NSF-Swift/satellite-overhead/issues"
