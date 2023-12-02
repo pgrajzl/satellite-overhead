@@ -173,3 +173,9 @@ class OverheadWindow:
     positions: List[PositionTime]
 ```
 The `Satellite` class, containins details about the satellite and a list of PositionTime objects. The `PositionTime` dataclass specifies the satellite's position in altitude and azimuth at a discrete point in time.
+
+#### Example
+
+Example code is available within the package, e.g. if the packaged was installed within a Python virtual environment it would be located:
+
+`./env/lib64/python3.10/site-packages/examples/example.py`
