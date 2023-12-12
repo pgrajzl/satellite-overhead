@@ -47,7 +47,7 @@ class ConfigurationBuilder:
             beamwidth: float,
             bandwidth: float,
             frequency: float,
-        ):
+        ) -> 'ConfigurationBuilder':
         self._facility = Facility(
             Coordinates(latitude=latitude, longitude=longitude),
             elevation=elevation,
@@ -60,7 +60,7 @@ class ConfigurationBuilder:
         )
         return self
 
-    def set_time_window(self, begin: str, end: str):
+    def set_time_window(self, begin: str, end: str) -> 'ConfigurationBuilder':
         begin = read_datetime_string_as_utc(begin)
         end = read_datetime_string_as_utc(end)
 
@@ -77,7 +77,7 @@ class ConfigurationBuilder:
         altitude: Optional[float] = None,
         azimuth: Optional[float] = None,
         custom_path: Optional[List[PositionTime]] = None
-    ):
+    ) -> 'ConfigurationBuilder':
         if custom_path:
             self._custom_observation_path = custom_path
         elif altitude is not None and azimuth is not None:
@@ -98,24 +98,31 @@ class ConfigurationBuilder:
                 "2. altitude and azimuth, or "
                 "3. custom_path."
             )
-
         return self
 
-    def set_satellites(self, tle_file: str, frequency_file: Optional[str] = None):
+    def set_satellites(
+        self,
+        tle_file: str,
+        frequency_file: Optional[str] = None
+    ) -> 'ConfigurationBuilder':
         self._satellites = SatellitesLoaderFromFiles(
             tle_file=tle_file,
             frequency_file=frequency_file,
         ).load_satellites()
         return self
 
-    def set_runtime_settings(self, concurrency_level: int, time_continuity_resolution: int):
+    def set_runtime_settings(
+        self,
+        concurrency_level: int,
+        time_continuity_resolution: int
+    ) -> 'ConfigurationBuilder':
         self._runtime_settings = RuntimeSettings(
             concurrency_level=concurrency_level,
             time_continuity_resolution=time_continuity_resolution,
         )
         return self
 
-    def set_from_config_file(self, config_file: str):
+    def set_from_config_file(self, config_file: str) -> 'ConfigurationBuilder':
         config = get_config_file_object(config_filepath=config_file).configuration
         self._frequency_range = config.reservation.frequency
         self._facility = config.reservation.facility
@@ -128,11 +135,11 @@ class ConfigurationBuilder:
             self._static_observation_target = config.static_antenna_position
         else:
             self._observation_target = config.observation_target
-
         return self
 
-    def set_filter_satellites(self, filter_satellites: bool):
+    def set_filter_satellites(self, filter_satellites: bool) -> 'ConfigurationBuilder':
         self._filter_satellites = filter_satellites
+        return self
 
     def _filter_satellites_by_frequency(self):
         if self._filter_satellites:
@@ -148,7 +155,7 @@ class ConfigurationBuilder:
             frequency=self._frequency_range
         )
 
-    def _build_antenna_direction_path(self):
+    def _build_antenna_direction_path(self) -> 'ConfigurationBuilder':
         if self._custom_observation_path:
             self._antenna_direction_path = self._custom_observation_path
         elif self._static_observation_target:
@@ -186,5 +193,4 @@ class ConfigurationBuilder:
             antenna_direction_path=self._antenna_direction_path,
             runtime_settings=self._runtime_settings
         )
-
         return configuration
