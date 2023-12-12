@@ -9,7 +9,7 @@ from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 
 
 @dataclass
-class Configuration:
+class ConfigurationFile:
     reservation: Reservation
     runtime_settings: Optional[RuntimeSettings] = RuntimeSettings()
     antenna_position_times: Optional[List[PositionTime]] = None

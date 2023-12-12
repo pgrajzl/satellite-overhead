@@ -1,8 +1,8 @@
 from dataclasses import replace
 
 from sopp.tle_fetcher.tle_fetcher import TleFetcher
-from sopp.config_file.config_file_factory import get_config_file_object
-from sopp.custom_dataclasses.configuration import Configuration
+from sopp.config_file_loader.config_file_loader_factory import get_config_file_object
+from sopp.custom_dataclasses.configuration_file import ConfigurationFile
 from sopp.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
 from sopp.custom_dataclasses.position_time import PositionTime

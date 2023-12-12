@@ -4,13 +4,13 @@ from typing import List
 from sopp.path_finder.observation_path_finder_astropy import ObservationPathFinderAstropy
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.custom_dataclasses.reservation import Reservation
-from sopp.custom_dataclasses.configuration import Configuration
+from sopp.custom_dataclasses.configuration_file import ConfigurationFile
 from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.variable_initializer.variable_initializer import VariableInitializer
 from sopp.satellites_loader.satellites_loader import SatellitesLoader
 
 class VariableInitializerFromConfig(VariableInitializer):
-    def __init__(self, config: Configuration, satellites_loader: SatellitesLoader):
+    def __init__(self, config: ConfigurationFile, satellites_loader: SatellitesLoader):
         super().__init__(satellites_loader)
         self.config = config
 

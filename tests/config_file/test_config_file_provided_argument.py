@@ -4,9 +4,9 @@ from pathlib import Path
 import pytest
 import pytz
 
-from sopp.config_file.config_file_factory import get_config_file_object
-from sopp.config_file.support.config_file_base import ConfigFileBase
-from sopp.custom_dataclasses.configuration import Configuration
+from sopp.config_file_loader.config_file_loader_factory import get_config_file_object
+from sopp.config_file_loader.support.config_file_loader_base import ConfigFileLoaderBase
+from sopp.custom_dataclasses.configuration_file import ConfigurationFile
 from sopp.custom_dataclasses.coordinates import Coordinates
 from sopp.custom_dataclasses.facility import Facility
 from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
@@ -25,7 +25,7 @@ class TestConfigFileProvidedArgument:
         yield self._get_config_file_object(config_filename=request.param)
 
     def test_reads_inputs_of_provided_config_file_correctly(self, config_arbitrary):
-        assert config_arbitrary.configuration == Configuration(
+        assert config_arbitrary.configuration == ConfigurationFile(
             reservation=Reservation(
                 facility=Facility(
                     coordinates=Coordinates(latitude=40.8178049,
@@ -91,5 +91,5 @@ class TestConfigFileProvidedArgument:
             _ = config_partial_static_antenna_position.configuration
 
     @staticmethod
-    def _get_config_file_object(config_filename: str) -> ConfigFileBase:
+    def _get_config_file_object(config_filename: str) -> ConfigFileLoaderBase:
         return get_config_file_object(config_filepath=Path(get_script_directory(__file__), config_filename))

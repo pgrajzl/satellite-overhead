@@ -6,7 +6,7 @@ import pytz
 from sopp.variable_initializer.variable_initializer_from_config import VariableInitializerFromConfig
 from sopp.satellites_loader.satellites_loader import SatellitesLoader
 from sopp.custom_dataclasses.satellite.satellite import Satellite
-from sopp.custom_dataclasses.configuration import Configuration
+from sopp.custom_dataclasses.configuration_file import ConfigurationFile
 from sopp.custom_dataclasses.reservation import Reservation
 from sopp.custom_dataclasses.facility import Facility
 from sopp.custom_dataclasses.coordinates import Coordinates
@@ -26,7 +26,7 @@ class StubSatellitesLoader(SatellitesLoader):
 class TestVariableInitializerFromConfig:
     @property
     def common_config(self):
-        return Configuration(
+        return ConfigurationFile(
             reservation=Reservation(
                 facility=Facility(
                     coordinates=Coordinates(latitude=40.8178049, longitude=-121.4695413),

@@ -9,7 +9,7 @@ from uuid import uuid4
 
 import pytz
 
-from sopp.config_file.support.utilities import TIME_FORMAT
+from sopp.config_file_loader.support.utilities import TIME_FORMAT
 
 
 def read_json_file(filepath: Path) -> dict:
