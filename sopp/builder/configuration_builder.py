@@ -16,6 +16,7 @@ from sopp.config_file_loader.config_file_loader_factory import get_config_file_o
 from sopp.utilities import read_datetime_string_as_utc
 
 from typing import Optional, List, Type
+from pathlib import Path
 from datetime import datetime, timedelta
 
 
@@ -122,7 +123,7 @@ class ConfigurationBuilder:
         )
         return self
 
-    def set_from_config_file(self, config_file: str) -> 'ConfigurationBuilder':
+    def set_from_config_file(self, config_file: Optional[Path] = None) -> 'ConfigurationBuilder':
         config = get_config_file_object(config_filepath=config_file).configuration
         self._frequency_range = config.reservation.frequency
         self._facility = config.reservation.facility
