@@ -13,6 +13,8 @@ from sopp.path_finder.observation_path_finder import ObservationPathFinder
 from sopp.frequency_filter.frequency_filter import FrequencyFilter
 from sopp.satellites_loader.satellites_loader_from_files import SatellitesLoaderFromFiles
 from sopp.config_file_loader.config_file_loader_factory import get_config_file_object
+from sopp.config_file_loader.support.config_file_loader_json import ConfigFileLoaderJson
+from sopp.config_file_loader.support.config_file_loader_base import ConfigFileLoaderBase
 from sopp.utilities import read_datetime_string_as_utc
 
 from typing import Optional, List, Type
@@ -23,7 +25,8 @@ from datetime import datetime, timedelta
 class ConfigurationBuilder:
     def __init__(
         self,
-        path_finder_class: Type[ObservationPathFinder] = ObservationPathFinderRhodesmill
+        path_finder_class: Type[ObservationPathFinder] = ObservationPathFinderRhodesmill,
+        config_file_loader_class: Type[ConfigFileLoaderBase] = ConfigFileLoaderJson,
     ):
         self._facility: Optional[Facility] = None
         self._time_window: Optional[TimeWindow] = None
@@ -31,6 +34,8 @@ class ConfigurationBuilder:
         self._filter_satellites: bool = True
 
         self._path_finder_class = path_finder_class
+        self._config_file_loader_class = config_file_loader_class
+
         self._observation_target: Optional[ObservationTarget] = None
         self._static_observation_target: Optional[Position] = None
         self._custom_observation_path: Optional[List[PositionTime]] = None
@@ -124,7 +129,7 @@ class ConfigurationBuilder:
         return self
 
     def set_from_config_file(self, config_file: Optional[Path] = None) -> 'ConfigurationBuilder':
-        config = get_config_file_object(config_filepath=config_file).configuration
+        config = self._config_file_loader_class(filepath=config_file).configuration
         self._frequency_range = config.reservation.frequency
         self._facility = config.reservation.facility
         self._time_window = config.reservation.time
