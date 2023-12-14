@@ -3,7 +3,8 @@ from dataclasses import replace
 from sopp.main import Main
 from sopp.tle_fetcher.tle_fetcher import TleFetcher
 from sopp.builder.configuration_builder import ConfigurationBuilder
-from sopp.utilities import get_frequencies_filepath, get_satellites_filepath
+from sopp.utilities import get_frequencies_filepath, get_satellites_filepath, \
+    get_default_config_file_filepath
 from sopp.graph_generator.graph_generator import GraphGenerator
 
 
@@ -16,10 +17,11 @@ def main():
     print('Loading reservation parameters from config file...\n')  # make flag to specify config file, default .config
     tle_file = get_satellites_filepath()
     frequency_file = get_frequencies_filepath()
+    config_file = get_default_config_file_filepath()
 
     configuration = (
         ConfigurationBuilder()
-        .set_from_config_file()
+        .set_from_config_file(config_file=config_file)
         .set_satellites(tle_file=tle_file, frequency_file=frequency_file)
         .build()
     )
