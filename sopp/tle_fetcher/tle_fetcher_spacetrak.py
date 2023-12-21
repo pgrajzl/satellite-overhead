@@ -10,12 +10,8 @@ PASSWORD = os.getenv("PASSWORD")
 
 
 class TleFetcherSpaceTrak(TleFetcherBase):
-    def __init__(self, tle_file_path: str = None):
-        super().__init__(tle_file_path=tle_file_path)
-
     def _fetch_content(self):
         url = 'https://www.space-track.org/ajaxauth/login'
         query = 'https://www.space-track.org/basicspacedata/query/class/gp/decay_date/null-val/epoch/%3Enow-30/orderby/norad_cat_id/format/3le'
         data = {'identity': IDENTITY, 'password': PASSWORD, 'query': query}
-
         return requests.post(url=url, data=data)
