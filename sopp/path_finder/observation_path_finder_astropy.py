@@ -7,7 +7,7 @@ from astropy import units
 from typing import List
 from datetime import timedelta
 
-from sopp.config_file.support.utilities import TIME_FORMAT
+from sopp.config_file_loader.support.utilities import TIME_FORMAT
 from sopp.custom_dataclasses.facility import Facility
 from sopp.custom_dataclasses.observation_target import ObservationTarget
 from sopp.custom_dataclasses.position import Position

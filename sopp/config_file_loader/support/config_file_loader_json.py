@@ -2,8 +2,8 @@ import json
 from functools import cached_property
 from typing import List
 
-from sopp.config_file.support.config_file_base import ConfigFileBase
-from sopp.custom_dataclasses.configuration import Configuration
+from sopp.config_file_loader.support.config_file_loader_base import ConfigFileLoaderBase
+from sopp.custom_dataclasses.configuration_file import ConfigurationFile
 from sopp.custom_dataclasses.coordinates import Coordinates
 from sopp.custom_dataclasses.facility import Facility
 from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
@@ -16,10 +16,10 @@ from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 from sopp.utilities import read_datetime_string_as_utc
 
 
-class ConfigFileJson(ConfigFileBase):
+class ConfigFileLoaderJson(ConfigFileLoaderBase):
     @cached_property
-    def configuration(self) -> Configuration:
-        return Configuration(
+    def configuration(self) -> ConfigurationFile:
+        return ConfigurationFile(
             reservation=self._reservation,
             runtime_settings=self._runtime_settings,
             antenna_position_times=self._antenna_position_times,

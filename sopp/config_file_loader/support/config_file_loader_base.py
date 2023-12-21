@@ -2,16 +2,16 @@ from abc import ABC, abstractmethod
 from functools import cached_property
 from pathlib import Path
 
-from sopp.custom_dataclasses.configuration import Configuration
+from sopp.custom_dataclasses.configuration_file import ConfigurationFile
 
 
-class ConfigFileBase(ABC):
+class ConfigFileLoaderBase(ABC):
     def __init__(self, filepath: Path):
         self._filepath = filepath
 
     @cached_property
     @abstractmethod
-    def configuration(self) -> Configuration:
+    def configuration(self) -> ConfigurationFile:
         pass
 
     @classmethod
