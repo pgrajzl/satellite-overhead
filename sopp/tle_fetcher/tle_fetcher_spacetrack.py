@@ -9,7 +9,7 @@ IDENTITY = os.getenv("IDENTITY")
 PASSWORD = os.getenv("PASSWORD")
 
 
-class TleFetcherSpaceTrak(TleFetcherBase):
+class TleFetcherSpacetrack(TleFetcherBase):
     def _fetch_content(self):
         url = 'https://www.space-track.org/ajaxauth/login'
         query = 'https://www.space-track.org/basicspacedata/query/class/gp/decay_date/null-val/epoch/%3Enow-30/orderby/norad_cat_id/format/3le'
