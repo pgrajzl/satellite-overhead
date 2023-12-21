@@ -12,3 +12,7 @@ The RuntimeSettings class stores the run time settings used in EventFinderRhodes
 class RuntimeSettings:
     time_continuity_resolution: timedelta = field(default=timedelta(seconds=1))
     concurrency_level: int = field(default=1)
+
+    def __post_init__(self):
+        if isinstance(self.time_continuity_resolution, int):
+            self.time_continuity_resolution = timedelta(seconds=self.time_continuity_resolution)
