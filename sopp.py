@@ -1,7 +1,5 @@
-from dataclasses import replace
-
 from sopp.main import Main
-from sopp.tle_fetcher.tle_fetcher import TleFetcher
+from sopp.tle_fetcher.tle_fetcher_celestrak import TleFetcherCelestrak
 from sopp.builder.configuration_builder import ConfigurationBuilder
 from sopp.utilities import get_frequencies_filepath, get_satellites_filepath, \
     get_default_config_file_filepath
@@ -58,12 +56,12 @@ def main():
 
 
 if __name__ == '__main__':
-    frequencies_filepath = get_satellites_filepath()
-    if frequencies_filepath.exists():
+    satellites_filepath = get_satellites_filepath()
+    if satellites_filepath.exists():
         main()
     else:
-        TleFetcher().get_tles_celestrak()
+        TleFetcherCelestrak(satellites_filepath).fetch_tles()
         try:
             main()
         finally:
-            frequencies_filepath.unlink(missing_ok=True)
+            satellites_filepath.unlink(missing_ok=True)
