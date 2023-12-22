@@ -6,9 +6,9 @@ from pathlib import Path
 import pytest
 import pytz
 
-from sopp.config_file.config_file_factory import get_config_file_object
-from sopp.config_file.support.config_file_base import ConfigFileBase
-from sopp.custom_dataclasses.configuration import Configuration
+from sopp.config_file_loader.config_file_loader_factory import get_config_file_object
+from sopp.config_file_loader.support.config_file_loader_base import ConfigFileLoaderBase
+from sopp.custom_dataclasses.configuration_file import ConfigurationFile
 from sopp.custom_dataclasses.coordinates import Coordinates
 from sopp.custom_dataclasses.facility import Facility
 from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
@@ -51,7 +51,7 @@ class TestConfigFileDefaultArgument:
         target_filepath.unlink(missing_ok=True)
 
     def test_reads_inputs_of_provided_config_file_correctly(self, config_file):
-        assert config_file.configuration == Configuration(
+        assert config_file.configuration == ConfigurationFile(
             reservation=Reservation(
                 facility=Facility(
                     coordinates=Coordinates(latitude=40.8178049,

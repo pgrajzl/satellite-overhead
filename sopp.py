@@ -1,18 +1,11 @@
 from dataclasses import replace
 
-from sopp.tle_fetcher.tle_fetcher import TleFetcher
-from sopp.config_file.config_file_factory import get_config_file_object
-from sopp.custom_dataclasses.configuration import Configuration
-from sopp.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
-    GetFrequencyDataFromCsv
-from sopp.custom_dataclasses.position_time import PositionTime
-from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.main import Main
-from sopp.path_finder.observation_path_finder import ObservationPathFinder
-from sopp.utilities import get_frequencies_filepath, get_satellites_filepath
+from sopp.tle_fetcher.tle_fetcher import TleFetcher
+from sopp.builder.configuration_builder import ConfigurationBuilder
+from sopp.utilities import get_frequencies_filepath, get_satellites_filepath, \
+    get_default_config_file_filepath
 from sopp.graph_generator.graph_generator import GraphGenerator
-from sopp.variable_initializer.variable_initializer_from_config import VariableInitializerFromConfig
-from sopp.satellites_loader.satellites_loader_from_files import SatellitesLoaderFromFiles
 
 
 def main():
@@ -22,12 +15,17 @@ def main():
     print('|                                                                    |')
     print('----------------------------------------------------------------------')
     print('Loading reservation parameters from config file...\n')  # make flag to specify config file, default .config
-    config_file = get_config_file_object()
     tle_file = get_satellites_filepath()
     frequency_file = get_frequencies_filepath()
-    satellites_loader = SatellitesLoaderFromFiles(tle_file=tle_file, frequency_file=frequency_file)
-    var_initializer = VariableInitializerFromConfig(satellites_loader=satellites_loader, config=config_file.configuration)
-    reservation = var_initializer.get_reservation()
+    config_file = get_default_config_file_filepath()
+
+    configuration = (
+        ConfigurationBuilder()
+        .set_from_config_file(config_file=config_file)
+        .set_satellites(tle_file=tle_file, frequency_file=frequency_file)
+        .build()
+    )
+    reservation = configuration.reservation
 
     print('Finding satellite interference events for:\n')
     print('Facility: ', reservation.facility.name, ' at ', reservation.facility.coordinates)
@@ -36,9 +34,9 @@ def main():
     print('Observation frequency: ', reservation.frequency.frequency, ' MHz')
     print('\n----------------------------------------------------------------------')
 
-    results = Main(antenna_direction_path=var_initializer.get_antenna_direction_path(),
-                   reservation=var_initializer.get_reservation(),
-                   satellites=var_initializer.get_satellite_list()).run()
+    results = Main(antenna_direction_path=configuration.antenna_direction_path,
+                   reservation=configuration.reservation,
+                   satellites=configuration.satellites).run()
 
     print("=======================================================================================\n")
     print('       Found ', len(results.interference_windows), ' instances of satellites crossing the main beam.')
