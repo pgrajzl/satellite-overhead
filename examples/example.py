@@ -28,7 +28,7 @@ def main():
             time_continuity_resolution=1
         )
         # Alternatively set all of the above settings from a config file
-        #.set_from_config_file(config_file_loader='./supplements/config.json')
+        #.set_from_config_file(config_file='./supplements/config.json')
         .set_satellites(tle_file='./supplements/satellites.tle')
         .build()
     )
