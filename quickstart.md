@@ -247,6 +247,15 @@ fetcher = TleFetcherCelestrak(tle_file_path='path/to/save/satellites.tle')
 fetcher.fetch_tles()
 ```
 
+SpaceTrack is called identically, however you must have set the environment variable `IDENTITY` with you username and `PASSWORD` with your password:
+
+```python
+from sopp.tle_fetcher.tle_fetcher_spacetrack import TleFetcherSpacetrack
+
+fetcher = TleFetcherSpacetrack(tle_file_path='path/to/save/satellites.tle')
+fetcher.fetch_tles()
+```
+
 #### Providing Custom Path for Observation
 
 Instead of specifying an observation target or static observation with altitude and azimuth a custom path can be provided as a list of `PositionTime` objects.
