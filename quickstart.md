@@ -94,7 +94,7 @@ configuration.set_facility(
 
 #### `set_time_window()`
 
-The `set_time_window()` method defines the observation time window in UTC, specifying when the observation will take place. The date format follows the ISO 8601 datetime format: `Y-m-dTH:M:S.f`.
+The `set_time_window()` method defines the observation time window in UTC, specifying when the observation will take place. The date format follows the ISO 8601 datetime format: `Y-m-dTH:M:S.f`. The provided datetime string can include microseconds or not. It additionally accepts a time zone, for example, `2023-11-15T08:00:00-7:00`. All times are converted to UTC.
 
 ```python
 configuration.set_time_window(
@@ -234,7 +234,7 @@ class OverheadWindow:
     satellite: Satellite
     positions: List[PositionTime]
 ```
-The `Satellite` class, containins details about the satellite and a list of PositionTime objects. The `PositionTime` dataclass specifies the satellite's position in altitude and azimuth at a discrete point in time.
+The `Satellite` class, containins details about the satellite and a list of PositionTime objects. The `PositionTime` dataclass specifies the satellite's position in altitude and azimuth at a discrete point in time. All times are in UTC.
 
 #### Using TleFetcher to Obtain TLE File
 
