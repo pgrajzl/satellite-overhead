@@ -8,8 +8,7 @@ from typing import ContextManager, List, Optional
 from uuid import uuid4
 
 import pytz
-
-from sopp.config_file_loader.support.utilities import TIME_FORMAT
+from dateutil import parser
 
 
 def read_json_file(filepath: Path) -> dict:
@@ -35,8 +34,11 @@ def convert_datetime_to_utc(localtime: datetime) -> datetime:
 
 
 def read_datetime_string_as_utc(string_value: str) -> datetime:
-    without_timezone = datetime.strptime(string_value, TIME_FORMAT)
-    return convert_datetime_to_utc(without_timezone)
+    try:
+        time = parser.parse(string_value)
+    except ValueError:
+        raise ValueError(f"Unable to parse datetime string: {string_value}")
+    return convert_datetime_to_utc(time)
 
 
 def get_script_directory(module) -> Path:
@@ -62,5 +64,7 @@ CONFIG_FILE_FILENAME = '.config'
 CONFIG_FILE_FILENAME_JSON = 'config.json'
 def default_config_filepaths() -> List[Path]:
     return [Path(get_supplements_directory(), CONFIG_FILE_FILENAME), Path(get_supplements_directory(), CONFIG_FILE_FILENAME_JSON)]
+
+
 def get_default_config_file_filepath() -> Optional[Path]:
     return next((path for path in default_config_filepaths() if path.exists()), None)
