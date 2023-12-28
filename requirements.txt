@@ -5,3 +5,4 @@ sgp4~=2.21
 skyfield~=1.45
 astropy~=5.2.2
 requests~=2.31.0
+python-dateutil~=2.8.2
