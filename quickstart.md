@@ -245,7 +245,7 @@ fetcher = TleFetcherCelestrak(tle_file_path='path/to/save/satellites.tle')
 fetcher.fetch_tles()
 ```
 
-SpaceTrack is called identically, however you must have set the environment variable `IDENTITY` with you username and `PASSWORD` with your password:
+SpaceTrack is called identically, however you must set the environment variable `IDENTITY` with your username and `PASSWORD` with your password:
 
 ```python
 from sopp.tle_fetcher.tle_fetcher_spacetrack import TleFetcherSpacetrack
