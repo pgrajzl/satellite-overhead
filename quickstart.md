@@ -213,9 +213,7 @@ The JSON config file follows the following format:
 The `Sopp` class utilizes the previously created configuration object to identify satellite interference. It is initialized with the `Configuration` obtained from `ConfigurationBuilder`.
 
 ```python
-event_finder = Sopp(
-    configuration=configuration
-)
+event_finder = Sopp(configuration=configuration)
 ```
 
 Finally, obtain the position data of interfering satellites, run either:
@@ -236,7 +234,7 @@ class OverheadWindow:
 ```
 The `Satellite` class, containins details about the satellite and a list of PositionTime objects. The `PositionTime` dataclass specifies the satellite's position in altitude and azimuth at a discrete point in time. All times are in UTC.
 
-#### Using TleFetcher to Obtain TLE File
+### Using TleFetcher to Obtain TLE File
 
 A TleFetcher class exists that will automatically fetch the latest TLEs from Celestrak or SpaceTrack:
 
@@ -256,7 +254,7 @@ fetcher = TleFetcherSpacetrack(tle_file_path='path/to/save/satellites.tle')
 fetcher.fetch_tles()
 ```
 
-#### Providing Custom Path for Observation
+### Providing Custom Path for Observation
 
 Instead of specifying an observation target or static observation with altitude and azimuth a custom path can be provided as a list of `PositionTime` objects.
 
@@ -277,7 +275,7 @@ custom_path = [
 ]
 ```
 
-#### Example Code
+### Example Code
 
 Example code is available within the package, e.g. if the packaged was installed within a Python virtual environment it would be located:
 
