@@ -36,9 +36,9 @@ def convert_datetime_to_utc(localtime: datetime) -> datetime:
 def read_datetime_string_as_utc(string_value: str) -> datetime:
     try:
         time = parser.parse(string_value)
+        return convert_datetime_to_utc(time)
     except ValueError:
         raise ValueError(f"Unable to parse datetime string: {string_value}")
-    return convert_datetime_to_utc(time)
 
 
 def get_script_directory(module) -> Path:
