@@ -24,6 +24,7 @@ dependencies = [
     "skyfield~=1.45",
     "astropy~=5.2.2",
     "requests~=2.31.0",
+    "python-dateutil~=2.8.2"
 ]
 requires-python = ">=3.8"
 description = "SOPP is an open-source tool for calculating satellite interference to radio astronomy observations."
