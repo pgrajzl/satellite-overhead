@@ -35,8 +35,12 @@ Then edit this file using your preferred text editor to contain the following in
     IDENTITY=<Space-Track.org username>
     PASSWORD=<Space-Track.org password>
 
-where the identity value is the Space-Track username you just registered with and the password value is your password. You should now be able to use the
-get_tles_spacetrack() function to pull TLE files.
+where the identity value is the Space-Track username you just registered with and the password value is your password. You should now be able to use the TleFetcher class as follows:
+```python
+TleFetcherCelestrak('path/to/save/satellites.tle).fetch_tles()
+# or with Space-Track
+TleFetcherSpacetrack('path/to/save/satellites.tle).fetch_tles()
+```
 
 #### Formatting Frequency File
 
