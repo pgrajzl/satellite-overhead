@@ -1,0 +1,44 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: ['completed']
+    branches: main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Install Hatch
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch
+      - name: Build Package
+        run: hatch build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifacts
+          path: dist
+      - name: Publish build artifacts to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
