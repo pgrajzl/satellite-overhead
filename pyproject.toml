@@ -17,7 +17,7 @@ exclude = [
 
 [project]
 name = "sopp"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
     "pytz~=2022.7",
     "sgp4~=2.21",

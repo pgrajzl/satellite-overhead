@@ -1,9 +1,8 @@
-from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesmill
+from sopp.sopp import Sopp
 from sopp.builder.configuration_builder import ConfigurationBuilder
 
 
 def main():
-
     configuration = (
         ConfigurationBuilder()
         .set_facility(
@@ -28,29 +27,23 @@ def main():
             time_continuity_resolution=1
         )
         # Alternatively set all of the above settings from a config file
-        #.set_from_config_file(config_file_loader='./supplements/config.json')
+        #.set_from_config_file(config_file='./supplements/config.json')
         .set_satellites(tle_file='./supplements/satellites.tle')
         .build()
     )
 
-    reservation = configuration.reservation
-
     # Display configuration
     print('\nFinding satellite interference events for:\n')
-    print(f'Facility: {reservation.facility.name}')
-    print(f'Location: {reservation.facility.coordinates} at elevation '
-          f'{reservation.facility.elevation}')
-    print(f'Reservation start time: {reservation.time.begin}')
-    print(f'Reservation end time: {reservation.time.end}')
-    print(f'Observation frequency: {reservation.frequency.frequency} MHz')
+    print(f'Facility: {configuration.reservation.facility.name}')
+    print(f'Location: {configuration.reservation.facility.coordinates} at elevation '
+          f'{configuration.reservation.facility.elevation}')
+    print(f'Reservation start time: {configuration.reservation.time.begin}')
+    print(f'Reservation end time: {configuration.reservation.time.end}')
+    print(f'Observation frequency: {configuration.reservation.frequency.frequency} MHz')
 
     # Determine Satellite Interference
-    interference_events = EventFinderRhodesmill(
-        list_of_satellites=configuration.satellites,
-        reservation=configuration.reservation,
-        antenna_direction_path=configuration.antenna_direction_path,
-        runtime_settings=configuration.runtime_settings,
-    ).get_satellites_crossing_main_beam()
+    event_finder = Sopp(configuration=configuration)
+    interference_events = event_finder.get_satellites_crossing_main_beam()
 
     print('\n==============================================================\n')
     print(f'There are {len(interference_events)} satellite interference\n'
