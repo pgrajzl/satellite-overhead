@@ -61,5 +61,5 @@ jobs:
         with:
           name: artifacts
           path: dist
-      - name: Publish build artifacts to TestPyPI
+      - name: Publish build artifacts to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
