@@ -1,4 +1,12 @@
 # S.O.P.P. - Satellite Orbit Prediction Processor
+<div align="left">
+
+| | |
+| --- | --- |
+| CI/CD | [![CI - Test](https://github.com/NSF-Swift/satellite-overhead/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/NSF-Swift/satellite-overhead/actions/workflows/ci.yml) [![CD - Build](https://github.com/NSF-Swift/satellite-overhead/actions/workflows/cd.yml/badge.svg)](https://github.com/NSF-Swift/satellite-overhead/actions/workflows/cd.yml) |
+| Package | [![PyPI - Version](https://img.shields.io/pypi/v/sopp.svg?logo=pypi&label=PyPI&logoColor=gold)](https://pypi.org/project/sopp/) [![PyPI - Downloads](https://img.shields.io/pypi/dm/sopp.svg?color=blue&label=Downloads&logo=pypi&logoColor=gold)](https://pypi.org/project/sopp/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/sopp.svg?logo=python&label=Python&logoColor=gold)](https://pypi.org/project/sopp/) |
+
+</div>
 
 SOPP is an open-source tool for calculating satellite interference to radio astronomy observations.
 
