@@ -8,7 +8,7 @@ from sopp.custom_dataclasses.reservation import Reservation
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.event_finder.event_finder import EventFinder
 from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesmill
-from sopp.frequency_filter.frequency_filter import FrequencyFilter
+from sopp.satellite_filters.filters import frequency_filter
 
 
 @dataclass
@@ -31,7 +31,7 @@ class Main:
 
         satellites_above_horizon = []
         [
-            satellites_above_horizon.append(window.satellite) 
+            satellites_above_horizon.append(window.satellite)
             for window in overhead_windows_above_horizon if window.satellite not in satellites_above_horizon
         ]
 
@@ -40,7 +40,7 @@ class Main:
                                              antenna_direction_path=self._antenna_direction_path)
 
         interference_windows = event_finder.get_satellites_crossing_main_beam()
-        
+
         return MainResults(
             satellites_above_horizon=overhead_windows_above_horizon,
             interference_windows=interference_windows
@@ -54,5 +54,4 @@ class Main:
 
     @property
     def _frequency_filtered_satellites(self) -> List[Satellite]:
-        return FrequencyFilter(satellites=self._satellites,
-                               observation_frequency=self._reservation.frequency).filter_frequencies()
+        return list(filter(frequency_filter(self._reservation.frequency), self._satellites))
