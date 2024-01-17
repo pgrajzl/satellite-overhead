@@ -16,6 +16,7 @@ from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.custom_dataclasses.position_time import PositionTime
+from sopp.satellites_filter.filterer import Filterer
 
 
 class TestConfigurationBuilder:
@@ -104,27 +105,18 @@ class TestConfigurationBuilder:
 
         assert builder._satellites == [ Satellite(name='TestSatellite') ]
 
-    def test_filter_satellties_by_frequency_false(self):
+    def test_set_satellites_filter(self, monkeypatch):
+        mock_satellite_loader(monkeypatch)
         builder = ConfigurationBuilder()
-        expected = [ Satellite(name='ToFilterSatellite'), Satellite(name='Satellite') ]
-        builder._satellites = expected
-        builder.set_filter_satellites(False)
-        builder._filter_satellites_by_frequency()
-
-        assert builder._satellites == expected
-
-    def test_filter_satellties_by_frequency_true(self, monkeypatch):
-        def mock_frequency_filter(mock):
-            return [ Satellite(name='Satellite') ]
-
-        monkeypatch.setattr(
-            'sopp.frequency_filter.frequency_filter.FrequencyFilter.filter_frequencies',
-            mock_frequency_filter
+        builder._satellites = [ Satellite(name='TestSatellite') ]
+        filterer = (
+            Filterer()
+            .add_filter(lambda sat: 'Test' not in sat.name)
         )
-        builder = ConfigurationBuilder()
-        builder._filter_satellites_by_frequency()
+        builder.set_satellites_filter(filterer)
+        builder._filter_satellites()
 
-        assert builder._satellites == [ Satellite(name='Satellite') ]
+        assert builder._satellites == []
 
     def test_build_antenna_direction_path_target(self):
         builder = ConfigurationBuilder(path_finder_class=StubPathFinder)
