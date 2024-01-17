@@ -8,7 +8,7 @@ from sopp.custom_dataclasses.reservation import Reservation
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.event_finder.event_finder import EventFinder
 from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesmill
-from sopp.satellite_filters.filters import frequency_filter
+from sopp.satellites_filter.filters import frequency_filter
 
 
 @dataclass

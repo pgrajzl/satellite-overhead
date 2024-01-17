@@ -1,7 +1,7 @@
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.custom_dataclasses.satellite.mean_motion import MeanMotion
 from sopp.custom_dataclasses.satellite.tle_information import TleInformation
-from sopp.satellite_filters.filters import (
+from sopp.satellites_filter.filters import (
     name_contains_filter,
     name_does_not_contain_filter,
     name_is_filter,
