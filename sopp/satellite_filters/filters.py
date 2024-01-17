@@ -63,9 +63,9 @@ def name_is_filter(substring):
     """
     return lambda sat: substring == sat.name
 
-def leo_filter():
+def is_leo_filter():
     """
-    leo_filter returns a lambda function to filter Low Earth Orbit (LEO) satellites based on their orbital period.
+    is_leo_filter returns a lambda function to filter Low Earth Orbit (LEO) satellites based on their orbital period.
 
     The filter checks if the satellite's orbital period is less than or equal to 128.0 minutes.
 
@@ -74,9 +74,9 @@ def leo_filter():
     """
     return lambda sat: sat.orbital_period <= 128.0
 
-def meo_filter():
+def is_meo_filter():
     """
-    meo_filter returns a lambda function to filter Medium Earth Orbit (MEO) satellites based on their orbital period.
+    is_meo_filter returns a lambda function to filter Medium Earth Orbit (MEO) satellites based on their orbital period.
 
     The filter checks if the satellite's orbital period is greater than 128.0 and less than 1430.0 minutes.
 
@@ -85,9 +85,9 @@ def meo_filter():
     """
     return lambda sat: sat.orbital_period > 128.0 and sat.orbital_period < 1430.0
 
-def geo_filter():
+def is_geo_filter():
     """
-    geo_filter returns a lambda function to filter Geostationary Orbit (GEO) satellites based on their orbital period.
+    is_geo_filter returns a lambda function to filter Geostationary Orbit (GEO) satellites based on their orbital period.
 
     The filter checks if the absolute difference between the satellite's orbital period and 1436.0 minutes
     is less than or equal to 1.0 minute, providing a tolerance for geostationary orbital periods.

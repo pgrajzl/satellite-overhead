@@ -5,9 +5,9 @@ from sopp.satellite_filters.filters import (
     name_contains_filter,
     name_does_not_contain_filter,
     name_is_filter,
-    leo_filter,
-    meo_filter,
-    geo_filter,
+    is_leo_filter,
+    is_meo_filter,
+    is_geo_filter,
 )
 
 
@@ -31,19 +31,19 @@ class TestFilters:
         actual = list(filter(name_is_filter('ISS'), self.satellites))
         assert actual == expected
 
-    def test_leo_filter(self):
+    def test_is_leo_filter(self):
         expected = [self.sat1, self.sat2]
-        actual = list(filter(leo_filter(), self.satellites))
+        actual = list(filter(is_leo_filter(), self.satellites))
         assert actual == expected
 
-    def test_meo_filter(self):
+    def test_is_meo_filter(self):
         expected = [self.sat0]
-        actual = list(filter(meo_filter(), self.satellites))
+        actual = list(filter(is_meo_filter(), self.satellites))
         assert actual == expected
 
-    def test_geo_filter(self):
+    def test_is_geo_filter(self):
         expected = [self.sat3]
-        actual = list(filter(geo_filter(), self.satellites))
+        actual = list(filter(is_geo_filter(), self.satellites))
         assert actual == expected
 
     @property
