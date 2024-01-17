@@ -35,9 +35,9 @@ def name_contains_filter(substring):
     """
     return lambda sat: substring in sat.name
 
-def not_name_contains_filter(substring):
+def name_does_not_contain_filter(substring):
     """
-    not_name_contains_filter returns a lambda function that checks if a given substring
+    name_does_not_contain_filter returns a lambda function that checks if a given substring
     is not present in the name of a Satellite.
 
     Parameters:
