@@ -60,7 +60,6 @@ class TestFilters:
         sat1.tle_information.mean_motion=MeanMotion(0, 0, self.MEO_MEAN_MOTION)
         return sat1
 
-
     @property
     def sat2(self):
         sat2 = Satellite(name='ISS')
