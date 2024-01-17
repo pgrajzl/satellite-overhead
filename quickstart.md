@@ -22,6 +22,7 @@ The primary functionality offered by the package is accessed through the `Sopp` 
      - Antenna Frequency and Bandwidth
      - Antenna observation path
      - Satellite TLE data
+     - Satellite Filtering (optional)
      - Runtime settings
 
 2. **Determine Satellite Interference:**
@@ -135,13 +136,23 @@ configuration.set_observation_target(
 
 #### `set_satellites()`
 
-The `set_satellites()` method takes the file path of the satellite TLE data and an optional frequency file. The frequency data can be utilized to filter out satellites whose downlink frequency does not overlap with the observation frequency. This filtering can be disabled if desired.
+The `set_satellites()` method takes the file path of the satellite TLE data and an optional frequency file. The frequency data can be utilized to filter out satellites whose downlink frequency does not overlap with the observation frequency.
 
 
 ```python
 configuration.set_satellites(
     tle_file='path/to/satellites.tle',
     frequency_file='/path/to/frequency.csv'
+)
+```
+
+#### `set_satellites_filter()`
+
+There is optionally the ability to filter the satellites list. To do this call the `set_satellites_filter()` method with a `Filterer` object. The `Filterer` object is explained in more detail in the 'Filtering Satellites' section.
+
+```python
+configuration.set_satellites_filter(
+    filterer=filterer
 )
 ```
 
@@ -213,7 +224,7 @@ The JSON config file follows the following format:
 The `Sopp` class utilizes the previously created configuration object to identify satellite interference. It is initialized with the `Configuration` obtained from `ConfigurationBuilder`.
 
 ```python
-event_finder = Sopp(configuration=configuration)
+sopp = Sopp(configuration=configuration)
 ```
 
 Finally, obtain the position data of interfering satellites, run either:
@@ -222,7 +233,7 @@ Finally, obtain the position data of interfering satellites, run either:
 - `get_satellites_above_horizon`: Returns all satellites that are above the horizon during the observation.
 
 ```python
-interference_events = event_finder.get_satellites_crossing_main_beam()
+interference_events = sopp.get_satellites_crossing_main_beam()
 ```
 
 The data is returned as a list of `OverheadWindow`, which is defined as:
@@ -233,6 +244,71 @@ class OverheadWindow:
     positions: List[PositionTime]
 ```
 The `Satellite` class, containins details about the satellite and a list of PositionTime objects. The `PositionTime` dataclass specifies the satellite's position in altitude and azimuth at a discrete point in time. All times are in UTC.
+
+### Filtering Satellites
+
+The list of satellites can be filtered by using a `Filterer` object, adding filters to it and then passing the `Filterer` object to a `ConfigurationBuilder`. The user can define any filtering logic wanted, however a few built in filters are provided. If the filtering condition evaluates to `True` the Satellite will be included in the final list.
+
+The provided filters accessible from `sopp.satellites_filter.filters` include:
+
+`frequency_filter`:
+
+returns `True` if a satellite's downlink transmission frequency
+overlaps with the desired observation frequency. If there is no information
+on the satellite frequency, it will return True to err on the side of caution
+for potential interference. Accepts a `FrequencyRange` object.
+
+`name_contains_fitler`
+
+returns `True` if a given substring is present in the name of a Satellite.
+
+`name_does_not_contain_filter`:
+
+returns `True` if a given substring is not present in the name of a Satellite.
+
+`name_is_filter`
+
+returns `True` if a given substring matches exactly the name of a Satellite.
+
+`is_leo_filter`:
+
+returns Low Earth Orbit (LEO) satellites based on their orbital period.
+The filter checks if the satellite's orbital period is less than or equal to 128.0 minutes.
+
+`is_meo_filter`:
+
+returns Medium Earth Orbit (MEO) satellites based on their orbital period.
+The filter checks if the satellite's orbital period is greater than 128.0 and less than 1430.0 minutes.
+
+`is_geo_filter`:
+
+returns Geostationary Orbit (GEO) satellites based on their orbital period.
+
+The filter checks if the absolute difference between the satellite's orbital period and 1436.0 minutes
+is less than or equal to 1.0 minute, providing a tolerance for geostationary orbital periods.
+
+
+For example, to find all Satellites that are not Starlink, but are in LEO and that have overlapping downlink transmission frequency:
+
+```python
+from sopp.satellites_filter.filterer import Filterer
+
+filterer = (
+    Filterer()
+    .add_filter(name_does_not_contain_filter('STARLINK'))
+    .add_filter(is_leo_filter())
+    .add_filter(frequency_filter(FrequencyRange(135.5, 10)))
+)
+```
+
+User defined filters can be defined as well. The `add_filter` method takes a lambda. For example, if the user would prefer to define LEO satellites differently than the provided filtering function:
+
+```python
+filterer = (
+    Filterer()
+    .add_filter(lambda satellite: satellite.orbital_period <= 100.0)
+)
+```
 
 ### Using TleFetcher to Obtain TLE File
 
