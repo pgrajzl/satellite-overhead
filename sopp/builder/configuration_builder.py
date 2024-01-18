@@ -10,11 +10,11 @@ from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.custom_dataclasses.position import Position
 from sopp.path_finder.observation_path_finder_rhodesmill import ObservationPathFinderRhodesmill
 from sopp.path_finder.observation_path_finder import ObservationPathFinder
-from sopp.frequency_filter.frequency_filter import FrequencyFilter
 from sopp.satellites_loader.satellites_loader_from_files import SatellitesLoaderFromFiles
 from sopp.config_file_loader.config_file_loader_factory import get_config_file_object
 from sopp.config_file_loader.support.config_file_loader_json import ConfigFileLoaderJson
 from sopp.config_file_loader.support.config_file_loader_base import ConfigFileLoaderBase
+from sopp.satellites_filter.filterer import Filterer
 from sopp.utilities import read_datetime_string_as_utc
 
 from typing import Optional, List, Type
@@ -31,10 +31,11 @@ class ConfigurationBuilder:
         self._facility: Optional[Facility] = None
         self._time_window: Optional[TimeWindow] = None
         self._frequency_range: Optional[FrequencyRange] = None
-        self._filter_satellites: bool = True
 
         self._path_finder_class = path_finder_class
         self._config_file_loader_class = config_file_loader_class
+
+        self._filterer: Optional[Filterer] = None
 
         self._observation_target: Optional[ObservationTarget] = None
         self._static_observation_target: Optional[Position] = None
@@ -143,16 +144,13 @@ class ConfigurationBuilder:
             self._observation_target = config.observation_target
         return self
 
-    def set_filter_satellites(self, filter_satellites: bool) -> 'ConfigurationBuilder':
-        self._filter_satellites = filter_satellites
+    def set_satellites_filter(self, filterer: Type[Filterer]) -> 'ConfigurationBuilder':
+        self._filterer = filterer
         return self
 
-    def _filter_satellites_by_frequency(self):
-        if self._filter_satellites:
-            self._satellites = FrequencyFilter(
-                satellites=self._satellites,
-                observation_frequency=self._frequency_range
-            ).filter_frequencies()
+    def _filter_satellites(self):
+        if self._filterer:
+            self._satellites = self._filterer.apply_filters(self._satellites)
 
     def _build_reservation(self):
         self._reservation = Reservation(
@@ -189,7 +187,7 @@ class ConfigurationBuilder:
                 "set_from_config_file"
             )
 
-        self._filter_satellites_by_frequency()
+        self._filter_satellites()
         self._build_antenna_direction_path()
         self._build_reservation()
 

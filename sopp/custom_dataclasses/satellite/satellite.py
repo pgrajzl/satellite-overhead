@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from os.path import realpath
 from pathlib import Path
 from typing import List, Optional
+import math
 
 from skyfield.api import load
 from skyfield.sgp4lib import EarthSatellite
@@ -37,6 +38,10 @@ class Satellite:
     def to_rhodesmill(self) -> EarthSatellite:
         line1, line2 = self.tle_information.to_tle_lines()
         return EarthSatellite(line1=line1, line2=line2, name=self.name)
+
+    @property
+    def orbital_period(self) -> float:
+        return 2 * math.pi / self.tle_information.mean_motion.value
 
     @classmethod
     def from_tle_file(cls, tlefilepath: Path) -> List['Satellite']:
