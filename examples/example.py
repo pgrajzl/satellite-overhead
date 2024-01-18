@@ -1,8 +1,19 @@
 from sopp.sopp import Sopp
 from sopp.builder.configuration_builder import ConfigurationBuilder
+from sopp.satellites_filter.filterer import Filterer
+from sopp.satellites_filter.filters import (
+    filter_name_does_not_contain,
+    filter_is_leo,
+)
 
 
 def main():
+    filterer = (
+        Filterer()
+        .add_filter(filter_name_does_not_contain('STARLINK'))
+        .add_filter(filter_is_leo())
+    )
+
     configuration = (
         ConfigurationBuilder()
         .set_facility(
@@ -15,8 +26,8 @@ def main():
             frequency=135
         )
         .set_time_window(
-            begin='2023-11-15T08:00:00.0',
-            end='2023-11-15T08:30:00.0'
+            begin='2024-01-18T08:00:00.0',
+            end='2024-01-18T08:30:00.0'
         )
         .set_observation_target(
             declination='7d24m25.426s',
@@ -29,6 +40,7 @@ def main():
         # Alternatively set all of the above settings from a config file
         #.set_from_config_file(config_file='./supplements/config.json')
         .set_satellites(tle_file='./supplements/satellites.tle')
+        .set_satellites_filter(filterer)
         .build()
     )
 
@@ -42,8 +54,8 @@ def main():
     print(f'Observation frequency: {configuration.reservation.frequency.frequency} MHz')
 
     # Determine Satellite Interference
-    event_finder = Sopp(configuration=configuration)
-    interference_events = event_finder.get_satellites_crossing_main_beam()
+    sopp = Sopp(configuration=configuration)
+    interference_events = sopp.get_satellites_crossing_main_beam()
 
     print('\n==============================================================\n')
     print(f'There are {len(interference_events)} satellite interference\n'
