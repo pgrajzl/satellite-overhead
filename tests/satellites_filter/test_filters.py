@@ -2,12 +2,12 @@ from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.custom_dataclasses.satellite.mean_motion import MeanMotion
 from sopp.custom_dataclasses.satellite.tle_information import TleInformation
 from sopp.satellites_filter.filters import (
-    name_contains_filter,
-    name_does_not_contain_filter,
-    name_is_filter,
-    is_leo_filter,
-    is_meo_filter,
-    is_geo_filter,
+    filter_name_contains,
+    filter_name_does_not_contain,
+    filter_name_is,
+    filter_is_leo,
+    filter_is_meo,
+    filter_is_geo,
 )
 
 
@@ -18,32 +18,32 @@ class TestFilters:
 
     def test_name_contains_filter(self):
         expected = [self.sat0, self.sat1]
-        actual = list(filter(name_contains_filter('TestSatellite'), self.satellites))
+        actual = list(filter(filter_name_contains('TestSatellite'), self.satellites))
         assert actual == expected
 
     def test_name_does_not_contain_filter(self):
         expected = [self.sat2, self.sat3]
-        actual = list(filter(name_does_not_contain_filter('TestSatellite'), self.satellites))
+        actual = list(filter(filter_name_does_not_contain('TestSatellite'), self.satellites))
         assert actual == expected
 
     def test_name_is_filter(self):
         expected =  [self.sat2]
-        actual = list(filter(name_is_filter('ISS'), self.satellites))
+        actual = list(filter(filter_name_is('ISS'), self.satellites))
         assert actual == expected
 
     def test_is_leo_filter(self):
         expected = [self.sat1, self.sat2]
-        actual = list(filter(is_leo_filter(), self.satellites))
+        actual = list(filter(filter_is_leo(), self.satellites))
         assert actual == expected
 
     def test_is_meo_filter(self):
         expected = [self.sat0]
-        actual = list(filter(is_meo_filter(), self.satellites))
+        actual = list(filter(filter_is_meo(), self.satellites))
         assert actual == expected
 
     def test_is_geo_filter(self):
         expected = [self.sat3]
-        actual = list(filter(is_geo_filter(), self.satellites))
+        actual = list(filter(filter_is_geo(), self.satellites))
         assert actual == expected
 
     @property

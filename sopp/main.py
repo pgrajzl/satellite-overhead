@@ -8,7 +8,7 @@ from sopp.custom_dataclasses.reservation import Reservation
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.event_finder.event_finder import EventFinder
 from sopp.event_finder.event_finder_rhodesmill.event_finder_rhodesmill import EventFinderRhodesmill
-from sopp.satellites_filter.filters import frequency_filter
+from sopp.satellites_filter.filters import filter_frequency
 
 
 @dataclass
@@ -54,4 +54,4 @@ class Main:
 
     @property
     def _frequency_filtered_satellites(self) -> List[Satellite]:
-        return list(filter(frequency_filter(self._reservation.frequency), self._satellites))
+        return list(filter(filter_frequency(self._reservation.frequency), self._satellites))

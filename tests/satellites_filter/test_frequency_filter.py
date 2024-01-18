@@ -1,12 +1,12 @@
 from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from sopp.custom_dataclasses.satellite.satellite import Satellite
-from sopp.satellites_filter.filters import frequency_filter
+from sopp.satellites_filter.filters import filter_frequency
 
 
 class TestFrequencyFilter:
 
     def test_single_sat_no_bandwidth(self):
-        frequency_filtered_sats = list(filter(frequency_filter(self._arbitrary_frequency), [self._arbitrary_satellite_in_band]))
+        frequency_filtered_sats = list(filter(filter_frequency(self._arbitrary_frequency), [self._arbitrary_satellite_in_band]))
         assert frequency_filtered_sats == [
             Satellite(
                 name='name',
@@ -18,7 +18,7 @@ class TestFrequencyFilter:
         ]
 
     def test_two_sats_no_bandwidth(self):
-        frequency_filtered_sats = list(filter(frequency_filter(self._arbitrary_frequency), [self._arbitrary_satellite_in_band, self._arbitrary_satellite_out_of_band()]))
+        frequency_filtered_sats = list(filter(filter_frequency(self._arbitrary_frequency), [self._arbitrary_satellite_in_band, self._arbitrary_satellite_out_of_band()]))
         assert frequency_filtered_sats == [
             Satellite(
                 name='name',
@@ -30,7 +30,7 @@ class TestFrequencyFilter:
         ]
 
     def test_single_sat_with_bandwidth(self):
-        frequency_filtered_sats = list(filter(frequency_filter(self._arbitrary_frequency), [self._arbitrary_satellite_with_bandwidth]))
+        frequency_filtered_sats = list(filter(filter_frequency(self._arbitrary_frequency), [self._arbitrary_satellite_with_bandwidth]))
         assert frequency_filtered_sats == [
             Satellite(
                 name='name',
@@ -42,11 +42,11 @@ class TestFrequencyFilter:
         ]
 
     def test_inactive_sat(self):
-        frequency_filtered_sats = list(filter(frequency_filter(self._arbitrary_frequency), [self._arbitrary_inactive_satellite()]))
+        frequency_filtered_sats = list(filter(filter_frequency(self._arbitrary_frequency), [self._arbitrary_inactive_satellite()]))
         assert frequency_filtered_sats == []
 
     def test_active_and_inactive_sat(self):
-        frequency_filtered_sats = list(filter(frequency_filter(self._arbitrary_frequency), [self._arbitrary_satellite_with_bandwidth, self._arbitrary_inactive_satellite()]))
+        frequency_filtered_sats = list(filter(filter_frequency(self._arbitrary_frequency), [self._arbitrary_satellite_with_bandwidth, self._arbitrary_inactive_satellite()]))
         assert frequency_filtered_sats == [
             Satellite(
                 name='name',
@@ -61,7 +61,7 @@ class TestFrequencyFilter:
         no_freq_data_sat = self._arbitrary_satellite_in_band
         no_freq_data_sat.frequency = []
 
-        frequency_filtered_sats = list(filter(frequency_filter(self._arbitrary_frequency), [no_freq_data_sat]))
+        frequency_filtered_sats = list(filter(filter_frequency(self._arbitrary_frequency), [no_freq_data_sat]))
         assert frequency_filtered_sats == [
             Satellite(
                 name='name',
@@ -70,7 +70,7 @@ class TestFrequencyFilter:
         ]
 
     def test_frequency_data_none(self):
-        frequency_filtered_sats = list(filter(frequency_filter(self._arbitrary_frequency), [self._arbitrary_satellite_freq_is_none]))
+        frequency_filtered_sats = list(filter(filter_frequency(self._arbitrary_frequency), [self._arbitrary_satellite_freq_is_none]))
 
         assert frequency_filtered_sats == [
             Satellite(
