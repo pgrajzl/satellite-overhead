@@ -2,6 +2,10 @@
 
 
 
+## v0.3.0 (2024-01-18)
+
+
+
 ## v0.2.0 (2024-01-18)
 
 
@@ -20,7 +24,16 @@
 * build: use psr to automatically version releases. ([`8e57945`](https://github.com/NSF-Swift/satellite-overhead/commit/8e5794544c7dad5aadfba67d909867872087d8da))
 
 
+### Documentation
+
+* docs: Update documentation to include information on satellite filtering. ([`65c8ddc`](https://github.com/NSF-Swift/satellite-overhead/commit/65c8ddcfe66634b3774dc8ce23aaa8bebe001434))
+
+
 ### Feature
+
+* feat: Add set_satellites_filter function which takes a Filterer class with filters to later filter the list of satellites based on the applied filters. ([`bbbcf67`](https://github.com/NSF-Swift/satellite-overhead/commit/bbbcf672affb24fb777b51e9df5c6f24dc037bc6))
+
+* feat: Add orbital_period property to Satellite class which provides the orbital period in minutes. ([`f8fb8f2`](https://github.com/NSF-Swift/satellite-overhead/commit/f8fb8f2c294c928af72269cc369b7ad59697c059))
 
 * feat: add ConfigurationBuilder to easily create Configuration objects ([`8301e30`](https://github.com/NSF-Swift/satellite-overhead/commit/8301e30475d5084a69f27ef81e49bece8b03bb42))
 
@@ -28,6 +41,35 @@
 ### Fix
 
 * fix: resolve error where datetime strings without microsencs caused an error ([`fe65b13`](https://github.com/NSF-Swift/satellite-overhead/commit/fe65b135c7e5d55d392670e4b2ff7baec5e07e8f))
+
+
+### Refactor
+
+* refactor: Rename dir to satellites_filter. ([`a4851b5`](https://github.com/NSF-Swift/satellite-overhead/commit/a4851b52aaa67995cb630e26a82b60b120265bf2))
+
+* refactor: Rename geo/leo/meo filters to be clearer. ([`d5c380f`](https://github.com/NSF-Swift/satellite-overhead/commit/d5c380f4098de1c1ee923f9570eaabfbffaad4fc))
+
+* refactor: Change filter name to name_does_not_contain_filter for clarity. ([`df2dac6`](https://github.com/NSF-Swift/satellite-overhead/commit/df2dac69fa7dda9031dda39bdb1cc29bc49552c4))
+
+* refactor: Use a generic filtering strategy. ([`2bdb59f`](https://github.com/NSF-Swift/satellite-overhead/commit/2bdb59fb871163bb9b55e4adb8cf01038a1cb86b))
+
+* refactor: Update Main() to use refactored frequency filter. ([`01e92d9`](https://github.com/NSF-Swift/satellite-overhead/commit/01e92d9d708a55fabe0f267c27227954b5cc38a0))
+
+
+### Style
+
+* style: fix whitespace. ([`0624af9`](https://github.com/NSF-Swift/satellite-overhead/commit/0624af98efc88bdc10658bfa2efd9e0ace4395ab))
+
+
+### Test
+
+* test: Add tests for satellites filtering ([`51432b0`](https://github.com/NSF-Swift/satellite-overhead/commit/51432b061b20ae95c76b695ddf879a637625daa9))
+
+* test: Add tests for refactored filtering strategy. ([`eec6b83`](https://github.com/NSF-Swift/satellite-overhead/commit/eec6b83306f030ec926778d14f50456e0817d5de))
+
+* test: Update tests to use refactored frequency filter. ([`3b47f7c`](https://github.com/NSF-Swift/satellite-overhead/commit/3b47f7c8d70aa2a86976bf60964d83085205590a))
+
+* test: Update tests to account for filtering refactor. ([`edeede3`](https://github.com/NSF-Swift/satellite-overhead/commit/edeede30ef6f160dfc75c044df98b35889dd312d))
 
 
 
