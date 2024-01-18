@@ -251,36 +251,36 @@ The list of satellites can be filtered by using a `Filterer` object, adding filt
 
 The provided filters accessible from `sopp.satellites_filter.filters` include:
 
-`frequency_filter`:
+`filter_frequency`:
 
 returns `True` if a satellite's downlink transmission frequency
 overlaps with the desired observation frequency. If there is no information
 on the satellite frequency, it will return True to err on the side of caution
 for potential interference. Accepts a `FrequencyRange` object.
 
-`name_contains_fitler`
+`filter_name_contains`
 
 returns `True` if a given substring is present in the name of a Satellite.
 
-`name_does_not_contain_filter`:
+`filter_name_does_not_contain`:
 
 returns `True` if a given substring is not present in the name of a Satellite.
 
-`name_is_filter`
+`filter_name_is`
 
 returns `True` if a given substring matches exactly the name of a Satellite.
 
-`is_leo_filter`:
+`filter_is_leo`:
 
 returns Low Earth Orbit (LEO) satellites based on their orbital period.
 The filter checks if the satellite's orbital period is less than or equal to 128.0 minutes.
 
-`is_meo_filter`:
+`filter_is_meo`:
 
 returns Medium Earth Orbit (MEO) satellites based on their orbital period.
 The filter checks if the satellite's orbital period is greater than 128.0 and less than 1430.0 minutes.
 
-`is_geo_filter`:
+`filter_is_geo`:
 
 returns Geostationary Orbit (GEO) satellites based on their orbital period.
 
@@ -295,9 +295,9 @@ from sopp.satellites_filter.filterer import Filterer
 
 filterer = (
     Filterer()
-    .add_filter(name_does_not_contain_filter('STARLINK'))
-    .add_filter(is_leo_filter())
-    .add_filter(frequency_filter(FrequencyRange(135.5, 10)))
+    .add_filter(filter_name_does_not_contain('STARLINK'))
+    .add_filter(filter_is_leo())
+    .add_filter(filter_frequency(FrequencyRange(135.5, 10)))
 )
 ```
 
@@ -356,9 +356,20 @@ custom_path = [
 ```python
 from sopp.sopp import Sopp
 from sopp.builder.configuration_builder import ConfigurationBuilder
+from sopp.satellites_filter.filterer import Filterer
+from sopp.satellites_filter.filters import (
+    filter_name_does_not_contain,
+    filter_is_leo,
+)
 
 
 def main():
+    filterer = (
+        Filterer()
+        .add_filter(filter_name_does_not_contain('STARLINK'))
+        .add_filter(filter_is_leo())
+    )
+
     configuration = (
         ConfigurationBuilder()
         .set_facility(
@@ -371,8 +382,8 @@ def main():
             frequency=135
         )
         .set_time_window(
-            begin='2023-11-15T08:00:00.0',
-            end='2023-11-15T08:30:00.0'
+            begin='2024-01-18T08:00:00.0',
+            end='2024-01-18T08:30:00.0'
         )
         .set_observation_target(
             declination='7d24m25.426s',
@@ -385,6 +396,7 @@ def main():
         # Alternatively set all of the above settings from a config file
         #.set_from_config_file(config_file='./supplements/config.json')
         .set_satellites(tle_file='./supplements/satellites.tle')
+        .set_satellites_filter(filterer)
         .build()
     )
 
