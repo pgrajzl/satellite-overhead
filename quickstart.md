@@ -251,36 +251,36 @@ The list of satellites can be filtered by using a `Filterer` object, adding filt
 
 The provided filters accessible from `sopp.satellites_filter.filters` include:
 
-#### `filter_frequency`:
+##### `filter_frequency`:
 
 returns `True` if a satellite's downlink transmission frequency
 overlaps with the desired observation frequency. If there is no information
 on the satellite frequency, it will return True to err on the side of caution
 for potential interference. Accepts a `FrequencyRange` object.
 
-##### `filter_name_contains`
+##### `filter_name_contains`:
 
 returns `True` if a given substring is present in the name of a Satellite.
 
-`filter_name_does_not_contain`:
+##### `filter_name_does_not_contain`:
 
 returns `True` if a given substring is not present in the name of a Satellite.
 
-`filter_name_is`
+##### `filter_name_is`:
 
 returns `True` if a given substring matches exactly the name of a Satellite.
 
-`filter_is_leo`:
+##### `filter_is_leo`:
 
 returns Low Earth Orbit (LEO) satellites based on their orbital period.
 The filter checks if the satellite's orbits per day is >= 5.0
 
-`filter_is_meo`:
+##### `filter_is_meo`:
 
 returns Medium Earth Orbit (MEO) satellites based on their orbital period.
 The filter checks if the satellite's orbits per day is >= 1.5 and < 5.0
 
-`filter_is_geo`:
+##### `filter_is_geo`:
 
 returns Geostationary Orbit (GEO) satellites based on their orbital period.
 
