@@ -29,10 +29,10 @@ class SatellitePositionsWithRespectToFacilityRetrieverRhodesmill(SatellitePositi
 
         return [
             PositionTime(
-                Position(altitude=altitude, azimuth=azimuth, distance=distance),
+                Position(altitude=altitude, azimuth=azimuth, distance_km=distance_km),
                 time=time
             )
-            for altitude, azimuth, distance, time in zip(altitude.degrees, azimuth.degrees, distance.km, self._datetimes)
+            for altitude, azimuth, distance_km, time in zip(altitude.degrees, azimuth.degrees, distance.km, self._datetimes)
         ]
 
     def _calculate_facility_latlon(self):
