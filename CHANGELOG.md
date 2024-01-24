@@ -2,6 +2,20 @@
 
 
 
+## v0.3.1 (2024-01-24)
+
+
+### Fix
+
+* fix: Calculate orbits per day instead of orbital period and update filters to reflect for leo/meo/geo. ([`5ba4d45`](https://github.com/NSF-Swift/satellite-overhead/commit/5ba4d45a074d0484e70e35b14b858a9ddfeadaf5))
+
+
+### Test
+
+* test: Add test for orbits_per_day property on Satellite class. ([`ee60d1f`](https://github.com/NSF-Swift/satellite-overhead/commit/ee60d1ff4e1c533438e0c2d5567f3412608b9d56))
+
+
+
 ## v0.3.0 (2024-01-18)
 
 
