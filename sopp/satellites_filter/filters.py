@@ -73,32 +73,31 @@ def filter_is_leo() -> Callable[[Satellite], bool]:
     """
     filter_is_leo returns a lambda function to filter Low Earth Orbit (LEO) satellites based on their orbital period.
 
-    The filter checks if the satellite's orbital period is less than or equal to 128.0 minutes.
+    The filter checks if the satellite's orbits per day is >= 5.0
 
     Returns:
     - A lambda function that takes a Satellite object and returns True if it is in LEO, False otherwise.
     """
-    return lambda satellite: satellite.orbital_period <= 128.0
+    return lambda satellite: satellite.orbits_per_day >= 5.0
 
 def filter_is_meo() -> Callable[[Satellite], bool]:
     """
     filter_is_meo returns a lambda function to filter Medium Earth Orbit (MEO) satellites based on their orbital period.
 
-    The filter checks if the satellite's orbital period is greater than 128.0 and less than 1430.0 minutes.
+    The filter checks if the satellite's orbits per day is >= 1.5 and < 5.0
 
     Returns:
     - A lambda function that takes a Satellite object and returns True if it is in MEO, False otherwise.
     """
-    return lambda satellite: satellite.orbital_period > 128.0 and satellite.orbital_period < 1430.0
+    return lambda satellite: satellite.orbits_per_day >= 1.5 and satellite.orbits_per_day < 5.0
 
 def filter_is_geo() -> Callable[[Satellite], bool]:
     """
     filter_is_geo returns a lambda function to filter Geostationary Orbit (GEO) satellites based on their orbital period.
 
-    The filter checks if the absolute difference between the satellite's orbital period and 1436.0 minutes
-    is less than or equal to 1.0 minute, providing a tolerance for geostationary orbital periods.
+    The filter checks if the satellite's orbits per day is >= 0.85 and < 1.5
 
     Returns:
     - A lambda function that takes a Satellite object and returns True if it is in GEO, False otherwise.
     """
-    return lambda satellite: abs(satellite.orbital_period - 1436.0) <= 1.0
+    return lambda satellite: satellite.orbits_per_day >= 0.85 and satellite.orbits_per_day < 1.5
