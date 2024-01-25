@@ -243,7 +243,7 @@ class OverheadWindow:
     satellite: Satellite
     positions: List[PositionTime]
 ```
-The `Satellite` class, containins details about the satellite and a list of PositionTime objects. The `PositionTime` dataclass specifies the satellite's position in altitude and azimuth at a discrete point in time. All times are in UTC.
+The `Satellite` class, containins details about the satellite and a list of PositionTime objects. The `PositionTime` dataclass specifies the satellite's position in altitude, azimuth and distance in km at a discrete point in time. All times are in UTC.
 
 ### Filtering Satellites
 
@@ -408,8 +408,8 @@ def main():
     print(f'Observation frequency: {configuration.reservation.frequency.frequency} MHz')
 
     # Determine Satellite Interference
-    event_finder = Sopp(configuration=configuration)
-    interference_events = event_finder.get_satellites_crossing_main_beam()
+    sopp = Sopp(configuration=configuration)
+    interference_events = sopp.get_satellites_crossing_main_beam()
 
     print('\n==============================================================\n')
     print(f'There are {len(interference_events)} satellite interference\n'
@@ -422,9 +422,11 @@ def main():
         print(f'Satellite interference event #{i}:')
         print(f'Satellite: {window.satellite.name}')
         print(f'Satellite enters view: {window.overhead_time.begin} at '
-              f'{window.positions[0].position.azimuth:.2f}')
+              f'{window.positions[0].position.azimuth:.2f} '
+              f'Distance: {window.positions[0].position.distance_km:.2f} km')
         print(f'Satellite leaves view: {window.overhead_time.end} at '
-              f'{window.positions[-1].position.azimuth:.2f}')
+              f'{window.positions[-1].position.azimuth:.2f} '
+              f'Distance: {window.positions[-1].position.distance_km:.2f} km')
         print(f'Satellite maximum altitude: {max_alt.position.altitude:.2f}')
         print('__________________________________________________\n')
 

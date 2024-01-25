@@ -25,14 +25,14 @@ class SatellitePositionsWithRespectToFacilityRetrieverRhodesmill(SatellitePositi
         satellite_rhodesmill_with_respect_to_facility = satellite.to_rhodesmill() - self._facility_latlon
 
         topocentric = satellite_rhodesmill_with_respect_to_facility.at(self._timescales)
-        altitude, azimuth, _ = topocentric.altaz()
+        altitude, azimuth, distance = topocentric.altaz()
 
         return [
             PositionTime(
-                Position(altitude=altitude, azimuth=azimuth),
+                Position(altitude=altitude, azimuth=azimuth, distance_km=distance_km),
                 time=time
             )
-            for altitude, azimuth, time in zip(altitude.degrees, azimuth.degrees, self._datetimes)
+            for altitude, azimuth, distance_km, time in zip(altitude.degrees, azimuth.degrees, distance.km, self._datetimes)
         ]
 
     def _calculate_facility_latlon(self):

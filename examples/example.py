@@ -68,9 +68,11 @@ def main():
         print(f'Satellite interference event #{i}:')
         print(f'Satellite: {window.satellite.name}')
         print(f'Satellite enters view: {window.overhead_time.begin} at '
-              f'{window.positions[0].position.azimuth:.2f}')
+              f'{window.positions[0].position.azimuth:.2f} '
+              f'Distance: {window.positions[0].position.distance_km:.2f} km')
         print(f'Satellite leaves view: {window.overhead_time.end} at '
-              f'{window.positions[-1].position.azimuth:.2f}')
+              f'{window.positions[-1].position.azimuth:.2f} '
+              f'Distance: {window.positions[-1].position.distance_km:.2f} km')
         print(f'Satellite maximum altitude: {max_alt.position.altitude:.2f}')
         print('__________________________________________________\n')
 
