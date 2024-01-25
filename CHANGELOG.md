@@ -2,7 +2,21 @@
 
 
 
+## v0.4.0 (2024-01-25)
+
+
+
 ## v0.3.1 (2024-01-24)
+
+
+### Build
+
+* build: Bump Skyfield dependency from 1.45 to 1.47. ([`55e4df0`](https://github.com/NSF-Swift/satellite-overhead/commit/55e4df0776f9660342ad281d8d321ad7d8108dc6))
+
+
+### Feature
+
+* feat: Include distance, represented in km, for satellite positions. ([`5d5a5b4`](https://github.com/NSF-Swift/satellite-overhead/commit/5d5a5b4e58b29a6918bbc92414172cca769f812b))
 
 
 ### Fix
