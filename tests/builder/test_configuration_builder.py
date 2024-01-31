@@ -28,8 +28,6 @@ class TestConfigurationBuilder:
             elevation=100,
             name='HCRO',
             beamwidth=3,
-            bandwidth=10,
-            frequency=135,
         )
         assert builder._facility == Facility(
             Coordinates(latitude=40, longitude=-121),
@@ -37,6 +35,10 @@ class TestConfigurationBuilder:
             beamwidth=3,
             name='HCRO',
         )
+
+    def test_set_frequency_range(self):
+        builder = ConfigurationBuilder()
+        builder.set_frequency_range(bandwidth=10, frequency=135)
         assert builder._frequency_range == FrequencyRange(
             bandwidth=10,
             frequency=135,
@@ -190,9 +192,8 @@ class TestConfigurationBuilder:
                 elevation=1,
                 name='HCRO',
                 beamwidth=3,
-                bandwidth=10,
-                frequency=135
             )
+            .set_frequency_range(bandwidth=10, frequency=135)
             .set_time_window(
                 begin='2023-11-15T08:00:00.0',
                 end='2023-11-15T08:30:00.0'

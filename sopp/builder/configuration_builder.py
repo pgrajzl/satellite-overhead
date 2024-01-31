@@ -53,8 +53,6 @@ class ConfigurationBuilder:
         elevation: float,
         name: str,
         beamwidth: float,
-        bandwidth: float,
-        frequency: float,
     ) -> 'ConfigurationBuilder':
         self._facility = Facility(
             Coordinates(latitude=latitude, longitude=longitude),
@@ -62,6 +60,9 @@ class ConfigurationBuilder:
             beamwidth=beamwidth,
             name=name,
         )
+        return self
+
+    def set_frequency_range(self, bandwidth: float, frequency: float):
         self._frequency_range = FrequencyRange(
             bandwidth=bandwidth,
             frequency=frequency,
@@ -190,8 +191,8 @@ class ConfigurationBuilder:
         ):
             raise ValueError(
                 "Incomplete configuration. Ensure that the following are called: "
-                "set_facility, set_time_window, set_satellites, and set_observation_target. Or "
-                "set_from_config_file"
+                "set_facility, set_time_window, set_frequency_range, "
+                "set_satellites, set_obseravtion_target. Or set_from_config_file."
             )
 
         self._filter_satellites()
