@@ -15,9 +15,9 @@ from sopp.config_file_loader.config_file_loader_factory import get_config_file_o
 from sopp.config_file_loader.support.config_file_loader_json import ConfigFileLoaderJson
 from sopp.config_file_loader.support.config_file_loader_base import ConfigFileLoaderBase
 from sopp.satellites_filter.filterer import Filterer
-from sopp.utilities import read_datetime_string_as_utc
+from sopp.utilities import read_datetime_string_as_utc, convert_datetime_to_utc
 
-from typing import Optional, List, Type
+from typing import Optional, List, Type, Union
 from pathlib import Path
 from datetime import datetime, timedelta
 
@@ -46,15 +46,16 @@ class ConfigurationBuilder:
         self._reservation: Optional[Reservation] = None
         self._runtime_settings: RuntimeSettings = RuntimeSettings()
 
-    def set_facility(self,
-            latitude: float,
-            longitude: float,
-            elevation: float,
-            name: str,
-            beamwidth: float,
-            bandwidth: float,
-            frequency: float,
-        ) -> 'ConfigurationBuilder':
+    def set_facility(
+        self,
+        latitude: float,
+        longitude: float,
+        elevation: float,
+        name: str,
+        beamwidth: float,
+        bandwidth: float,
+        frequency: float,
+    ) -> 'ConfigurationBuilder':
         self._facility = Facility(
             Coordinates(latitude=latitude, longitude=longitude),
             elevation=elevation,
@@ -67,13 +68,19 @@ class ConfigurationBuilder:
         )
         return self
 
-    def set_time_window(self, begin: str, end: str) -> 'ConfigurationBuilder':
-        begin = read_datetime_string_as_utc(begin)
-        end = read_datetime_string_as_utc(end)
+    def set_time_window(
+        self,
+        begin: Union[str, datetime],
+        end: Union[str, datetime],
+    ) -> 'ConfigurationBuilder':
+        if isinstance(begin, str):
+            begin = read_datetime_string_as_utc(begin)
+        if isinstance(end, str):
+            end = read_datetime_string_as_utc(end)
 
         self._time_window = TimeWindow(
-            begin=begin,
-            end=end,
+            begin=convert_datetime_to_utc(begin),
+            end=convert_datetime_to_utc(end),
         )
         return self
 

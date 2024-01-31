@@ -86,7 +86,7 @@ class TestConfigurationBuilder:
             time_continuity_resolution=1,
         )
 
-    def test_set_time_window(self):
+    def test_set_time_window_str(self):
         builder = ConfigurationBuilder()
         builder.set_time_window(
             begin='2023-11-15T08:00:00.0',
@@ -97,6 +97,19 @@ class TestConfigurationBuilder:
             begin=datetime(2023, 11, 15, 8, 0, tzinfo=pytz.UTC),
             end=datetime(2023, 11, 15, 8, 30, tzinfo=pytz.UTC),
         )
+
+    def test_set_time_window_datetime(self):
+        builder = ConfigurationBuilder()
+        builder.set_time_window(
+            begin=datetime(2023, 11, 15, 8, 0, tzinfo=pytz.UTC),
+            end=datetime(2023, 11, 15, 8, 30, tzinfo=pytz.UTC),
+        )
+
+        assert builder._time_window == TimeWindow(
+            begin=datetime(2023, 11, 15, 8, 0, tzinfo=pytz.UTC),
+            end=datetime(2023, 11, 15, 8, 30, tzinfo=pytz.UTC),
+        )
+
 
     def test_set_satellites(self, monkeypatch):
         mock_satellite_loader(monkeypatch)
