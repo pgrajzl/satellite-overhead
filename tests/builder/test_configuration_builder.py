@@ -112,7 +112,6 @@ class TestConfigurationBuilder:
             end=datetime(2023, 11, 15, 8, 30, tzinfo=pytz.UTC),
         )
 
-
     def test_set_satellites(self, monkeypatch):
         mock_satellite_loader(monkeypatch)
         builder = ConfigurationBuilder()
@@ -135,6 +134,7 @@ class TestConfigurationBuilder:
 
     def test_build_antenna_direction_path_target(self):
         builder = ConfigurationBuilder(path_finder_class=StubPathFinder)
+        builder._observation_target = 'mock'
         builder._build_antenna_direction_path()
 
         assert builder._antenna_direction_path == [expected_position_time()]

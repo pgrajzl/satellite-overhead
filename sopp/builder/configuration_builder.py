@@ -177,7 +177,7 @@ class ConfigurationBuilder:
                     time=self._time_window.begin
                 )
             ]
-        else:
+        elif self._observation_target:
             self._antenna_direction_path = self._path_finder_class(
                 self._facility,
                 self._observation_target,
@@ -186,13 +186,12 @@ class ConfigurationBuilder:
 
     def build(self) -> 'Configuration':
         if not (
-            all([self._facility, self._time_window, self._frequency_range, self._satellites]) and
-            any([self._observation_target, self._custom_observation_path, self._static_observation_target])
+            all([self._facility, self._time_window, self._frequency_range, self._satellites])
         ):
             raise ValueError(
                 "Incomplete configuration. Ensure that the following are called: "
                 "set_facility, set_time_window, set_frequency_range, "
-                "set_satellites, set_obseravtion_target. Or set_from_config_file."
+                "set_satellites, or set_from_config_file."
             )
 
         self._filter_satellites()
