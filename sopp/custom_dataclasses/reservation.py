@@ -17,3 +17,11 @@ class Reservation:
     facility: Facility
     time: TimeWindow
     frequency: FrequencyRange = field(default_factory=FrequencyRange)
+
+    def __str__(self):
+        return (
+            f'{self.__class__.__name__}:\n'
+            f'{self.facility}\n'
+            f'{self.time}\n'
+            f'{self.frequency}'
+        )

@@ -17,3 +17,10 @@ class TimeWindow:
 
     def overlaps(self, time_window: 'TimeWindow'):
         return self.begin < time_window.end and self.end > time_window.begin
+
+    def __str__(self):
+        return (
+            f'{self.__class__.__name__}:\n'
+            f'  Begin:              {self.begin}\n'
+            f'  End:                {self.end}'
+        )

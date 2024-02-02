@@ -16,3 +16,10 @@ class RuntimeSettings:
     def __post_init__(self):
         if isinstance(self.time_continuity_resolution, int):
             self.time_continuity_resolution = timedelta(seconds=self.time_continuity_resolution)
+
+    def __str__(self):
+        return (
+            f'{self.__class__.__name__}:\n'
+            f'  Time Interval:      {self.time_continuity_resolution}\n'
+            f'  Concurrency:        {self.concurrency_level}'
+        )

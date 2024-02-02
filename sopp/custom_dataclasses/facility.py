@@ -24,3 +24,13 @@ class Facility:
     @property
     def half_beamwidth(self) -> float:
         return self.beamwidth / 2
+
+    def __str__(self):
+        return (
+            f'{self.__class__.__name__}:\n'
+            f'  Name:               {self.name}\n'
+            f'  Latitude:           {self.coordinates.latitude}\n'
+            f'  Longitude:          {self.coordinates.longitude}\n'
+            f'  Elevation:          {self.elevation} meters\n'
+            f'  Beamwidth:          {self.beamwidth} degrees'
+        )
