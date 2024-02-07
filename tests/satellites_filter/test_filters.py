@@ -21,14 +21,29 @@ class TestFilters:
         actual = list(filter(filter_name_contains('TestSatellite'), self.satellites))
         assert actual == expected
 
+    def test_name_is_none(self):
+        expected = [self.sat0, self.sat1, self.sat2, self.sat3]
+        actual = list(filter(filter_name_contains(substring=None), self.satellites))
+        assert actual == expected
+
     def test_name_does_not_contain_filter(self):
         expected = [self.sat2, self.sat3]
         actual = list(filter(filter_name_does_not_contain('TestSatellite'), self.satellites))
         assert actual == expected
 
+    def test_name_does_not_contain_is_none(self):
+        expected = [self.sat0, self.sat1, self.sat2, self.sat3]
+        actual = list(filter(filter_name_does_not_contain(substring=None), self.satellites))
+        assert actual == expected
+
     def test_name_is_filter(self):
         expected =  [self.sat2]
         actual = list(filter(filter_name_is('ISS'), self.satellites))
+        assert actual == expected
+
+    def test_name_is_none(self):
+        expected = [self.sat0, self.sat1, self.sat2, self.sat3]
+        actual = list(filter(filter_name_is(substring=None), self.satellites))
         assert actual == expected
 
     def test_orbit_is_leo_filter(self):
@@ -44,6 +59,11 @@ class TestFilters:
     def test_orbit_is_geo_filter(self):
         expected = [self.sat3]
         actual = list(filter(filter_orbit_is(orbit_type='geo'), self.satellites))
+        assert actual == expected
+
+    def test_orbit_is_none(self):
+        expected = [self.sat0, self.sat1, self.sat2, self.sat3]
+        actual = list(filter(filter_orbit_is(orbit_type=None), self.satellites))
         assert actual == expected
 
     def test_orbit_is_type_invalid(self):

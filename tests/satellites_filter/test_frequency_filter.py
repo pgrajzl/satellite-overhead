@@ -82,6 +82,19 @@ class TestFrequencyFilter:
             )
         ]
 
+    def test_observation_frequency_is_none(self):
+        frequency_filtered_sats = list(filter(filter_frequency(None), [self._arbitrary_satellite_freq_is_none]))
+
+        assert frequency_filtered_sats == [
+            Satellite(
+                name='name',
+                frequency=[FrequencyRange(
+                    frequency=None,
+                    bandwidth=None
+                )]
+            )
+        ]
+
     @property
     def _arbitrary_satellite_in_band(self) -> Satellite:
         return Satellite(

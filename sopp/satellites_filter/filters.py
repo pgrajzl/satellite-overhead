@@ -18,14 +18,17 @@ def filter_frequency(observation_frequency: FrequencyRange) -> Callable[[Satelli
     - A lambda function that takes a Satellite object and returns True if the conditions
       for frequency filtering are met, False otherwise.
     """
-    return lambda satellite: (
-        not satellite.frequency or any(sf.frequency is None for sf in satellite.frequency)
-    ) or (
-        any(
-            sf.status != 'inactive' and observation_frequency.overlaps(sf)
-            for sf in satellite.frequency
+    if observation_frequency:
+        return lambda satellite: (
+            not satellite.frequency or any(sf.frequency is None for sf in satellite.frequency)
+        ) or (
+            any(
+                sf.status != 'inactive' and observation_frequency.overlaps(sf)
+                for sf in satellite.frequency
+            )
         )
-    )
+    else:
+        return lambda satellite: True
 
 def filter_name_contains(substring: str) -> Callable[[Satellite], bool]:
     """
@@ -39,7 +42,10 @@ def filter_name_contains(substring: str) -> Callable[[Satellite], bool]:
     - A lambda function that takes a Satellite object and returns True if the name
       contains the specified substring, False otherwise.
     """
-    return lambda satellite: substring in satellite.name
+    if substring:
+        return lambda satellite: substring in satellite.name
+    else:
+        return lambda satellite: True
 
 def filter_name_does_not_contain(substring: str) -> Callable[[Satellite], bool]:
     """
@@ -53,7 +59,10 @@ def filter_name_does_not_contain(substring: str) -> Callable[[Satellite], bool]:
     - A lambda function that takes a Satellite object and returns True if the name
       does not contain the specified substring, False otherwise.
     """
-    return lambda satellite: substring not in satellite.name
+    if substring:
+        return lambda satellite: substring not in satellite.name
+    else:
+        return lambda satellite: True
 
 def filter_name_is(substring: str) -> Callable[[Satellite], bool]:
     """
@@ -67,7 +76,11 @@ def filter_name_is(substring: str) -> Callable[[Satellite], bool]:
     - A lambda function that takes a Satellite object and returns True if the name
       matches the specified substring exactly, False otherwise.
     """
-    return lambda satellite: substring == satellite.name
+    if substring:
+        return lambda satellite: substring == satellite.name
+    else:
+        return lambda satellite: True
+
 
 def filter_orbit_is(orbit_type: str) -> Callable[[Satellite], bool]:
     """
@@ -79,11 +92,14 @@ def filter_orbit_is(orbit_type: str) -> Callable[[Satellite], bool]:
     Returns:
     - A lambda function that takes a Satellite object and returns True if it is in the specified orbit type, False otherwise.
     """
-    if orbit_type == 'leo':
-        return lambda satellite: satellite.orbits_per_day >= 5.0
-    elif orbit_type == 'meo':
-        return lambda satellite: satellite.orbits_per_day >= 1.5 and satellite.orbits_per_day < 5.0
-    elif orbit_type == 'geo':
-        return lambda satellite: satellite.orbits_per_day >= 0.85 and satellite.orbits_per_day < 1.5
+    if orbit_type:
+        if orbit_type == 'leo':
+            return lambda satellite: satellite.orbits_per_day >= 5.0
+        elif orbit_type == 'meo':
+            return lambda satellite: satellite.orbits_per_day >= 1.5 and satellite.orbits_per_day < 5.0
+        elif orbit_type == 'geo':
+            return lambda satellite: satellite.orbits_per_day >= 0.85 and satellite.orbits_per_day < 1.5
+        else:
+            raise ValueError("Invalid orbit type. Provide 'leo', 'meo', or 'geo'.")
     else:
-        raise ValueError("Invalid orbit type. Provide 'leo', 'meo', or 'geo'.")
+        return lambda satellite: True
