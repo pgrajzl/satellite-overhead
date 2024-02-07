@@ -3,7 +3,7 @@ from sopp.builder.configuration_builder import ConfigurationBuilder
 from sopp.satellites_filter.filterer import Filterer
 from sopp.satellites_filter.filters import (
     filter_name_does_not_contain,
-    filter_is_leo,
+    filter_orbit_is,
 )
 
 
@@ -11,7 +11,7 @@ def main():
     filterer = (
         Filterer()
         .add_filter(filter_name_does_not_contain('STARLINK'))
-        .add_filter(filter_is_leo())
+        .add_filter(filter_orbit_is(orbit_type='leo'))
     )
 
     configuration = (
@@ -22,6 +22,8 @@ def main():
             elevation=986,
             name='HCRO',
             beamwidth=3,
+        )
+        .set_frequency_range(
             bandwidth=10,
             frequency=135
         )

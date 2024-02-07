@@ -47,6 +47,8 @@ configuration = (
         elevation=986,
         name='HCRO',
         beamwidth=3,
+    )
+    .set_frequency_range(
         bandwidth=10,
         frequency=135
     )
@@ -72,6 +74,7 @@ configuration = (
 The `ConfigurationBuilder` must call the following methods with the necessary arguments:
 
 - `set_facility()`
+- `set_frequency_range()`
 - `set_time_window()`
 - `set_observation_target()`
 - `set_satellites()`
@@ -88,6 +91,15 @@ configuration.set_facility(
     elevation=986,
     name='HCRO',
     beamwidth=3,
+    bandwidth=10,
+    frequency=135
+)
+```
+
+The `set_frequency_range()` method specifies bandwidth, and frequency of the observation:
+
+```python
+configuration.set_frequency_range(
     bandwidth=10,
     frequency=135
 )
@@ -247,7 +259,7 @@ The `Satellite` class, containins details about the satellite and a list of Posi
 
 ### Filtering Satellites
 
-The list of satellites can be filtered by using a `Filterer` object, adding filters to it and then passing the `Filterer` object to a `ConfigurationBuilder`. The user can define any filtering logic wanted, however a few built in filters are provided. If the filtering condition evaluates to `True` the Satellite will be included in the final list.
+The list of satellites can be filtered by using a `Filterer` object, adding filters to it and then passing the `Filterer` object to a `ConfigurationBuilder`. The user can define any filtering logic wanted, however a few built in filters are provided. If the filtering condition evaluates to `True` the Satellite will be included in the final list. If None is passed to any of the filters, no filtering for that specific filter will be applied.
 
 The provided filters accessible from `sopp.satellites_filter.filters` include:
 
@@ -260,19 +272,29 @@ for potential interference. Accepts a `FrequencyRange` object.
 
 #### `filter_name_contains()`:
 
+Parameters:
+    - substring (str): The substring to check for in the satellite names.
+
 returns `True` if a given substring is present in the name of a Satellite.
 
 #### `filter_name_does_not_contain`:
+
+Parameters:
+    - substring (str): The substring to check for absence for in the satellite names.
 
 returns `True` if a given substring is not present in the name of a Satellite.
 
 #### `filter_name_is()`:
 
+Parameters:
+    - substring (str): The substring to match for in the satellite names.
+
 returns `True` if a given substring matches exactly the name of a Satellite.
 
 #### `filter_orbit_is(orbit_type)`:
 
-Parameter orbit_type (str): The type of orbit ('leo', 'meo', or 'geo').
+Parameters:
+    - orbit_type (str): The type of orbit ('leo', 'meo', or 'geo').
 
 if orbit_type='leo' returns Low Earth Orbit (LEO) satellites based on their orbital period.
 The filter checks if the satellite's orbits per day is >= 5.0
@@ -293,6 +315,7 @@ filterer = (
     .add_filter(filter_name_does_not_contain('STARLINK'))
     .add_filter(filter_orbit_is(orbit_type='leo'))
     .add_filter(filter_frequency(FrequencyRange(135.5, 10)))
+    .add_filter(filter_name_is(None)) # this filter will do nothing
 )
 ```
 
@@ -354,7 +377,7 @@ from sopp.builder.configuration_builder import ConfigurationBuilder
 from sopp.satellites_filter.filterer import Filterer
 from sopp.satellites_filter.filters import (
     filter_name_does_not_contain,
-    filter_is_leo,
+    filter_orbit_is,
 )
 
 
@@ -362,7 +385,7 @@ def main():
     filterer = (
         Filterer()
         .add_filter(filter_name_does_not_contain('STARLINK'))
-        .add_filter(filter_is_leo())
+        .add_filter(filter_orbit_is(orbit_type='leo'))
     )
 
     configuration = (
@@ -373,6 +396,8 @@ def main():
             elevation=986,
             name='HCRO',
             beamwidth=3,
+        )
+        .set_frequency_range(
             bandwidth=10,
             frequency=135
         )
