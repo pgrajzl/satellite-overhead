@@ -21,5 +21,5 @@ class Configuration:
             f'{self.__class__.__name__}:\n'
             f'{self.reservation}\n'
             f'{self.runtime_settings}\n'
-            f'Satellites:           {len(self.satellites)} total\n'
+            f'Satellites:           {len(self.satellites)} total'
         )
