@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from datetime import datetime
 from io import TextIOWrapper
 from pathlib import Path
-from typing import ContextManager, List, Optional
+from typing import ContextManager, List, Optional, Union
 from uuid import uuid4
 
 import pytz
@@ -39,6 +39,13 @@ def read_datetime_string_as_utc(string_value: str) -> datetime:
         return convert_datetime_to_utc(time)
     except ValueError:
         raise ValueError(f"Unable to parse datetime string: {string_value}")
+
+
+def parse_time_and_convert_to_utc(time: Union[str, datetime]) -> datetime:
+    try:
+        return read_datetime_string_as_utc(time)
+    except:
+        return convert_datetime_to_utc(time)
 
 
 def get_script_directory(module) -> Path:

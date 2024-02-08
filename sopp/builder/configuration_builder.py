@@ -15,7 +15,7 @@ from sopp.config_file_loader.config_file_loader_factory import get_config_file_o
 from sopp.config_file_loader.support.config_file_loader_json import ConfigFileLoaderJson
 from sopp.config_file_loader.support.config_file_loader_base import ConfigFileLoaderBase
 from sopp.satellites_filter.filterer import Filterer
-from sopp.utilities import read_datetime_string_as_utc, convert_datetime_to_utc
+from sopp.utilities import parse_time_and_convert_to_utc
 
 from typing import Optional, List, Type, Union
 from pathlib import Path
@@ -74,14 +74,9 @@ class ConfigurationBuilder:
         begin: Union[str, datetime],
         end: Union[str, datetime],
     ) -> 'ConfigurationBuilder':
-        if isinstance(begin, str):
-            begin = read_datetime_string_as_utc(begin)
-        if isinstance(end, str):
-            end = read_datetime_string_as_utc(end)
-
         self._time_window = TimeWindow(
-            begin=convert_datetime_to_utc(begin),
-            end=convert_datetime_to_utc(end),
+            begin = parse_time_and_convert_to_utc(begin),
+            end = parse_time_and_convert_to_utc(end)
         )
         return self
 
