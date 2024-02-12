@@ -22,7 +22,7 @@ class TestCustomDataclassStr:
         expected = (
             'FrequencyRange:\n'
             '  Frequency:          10 MHz\n'
-            '  Bandwidth:          10 kHz'
+            '  Bandwidth:          10 MHz'
         )
         assert str(self.frequency_range) == expected
 
