@@ -25,6 +25,10 @@ class TestDatetimeUtilities:
         with pytest.raises(ValueError) as _:
             read_datetime_string_as_utc('20223-12-27-T5:00:00')
 
+    def test_read_datetime_with_datetime_raises_type_error(self):
+        with pytest.raises(TypeError) as _:
+            read_datetime_string_as_utc(datetime(2023, 12, 27, 12, 0, 0, 0, tzinfo=pytz.UTC))
+
     def test_parse_time_and_convert_to_utc_with_datetime(self):
         expected_datetime = datetime(2023, 12, 27, 12, 0, 0, 0, tzinfo=pytz.UTC)
 
