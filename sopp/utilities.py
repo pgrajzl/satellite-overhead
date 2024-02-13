@@ -34,14 +34,17 @@ def convert_datetime_to_utc(localtime: datetime) -> datetime:
 
 
 def read_datetime_string_as_utc(string_value: str) -> datetime:
-    time = parser.parse(string_value)
-    return convert_datetime_to_utc(time)
+    try:
+        time = parser.parse(string_value)
+        return convert_datetime_to_utc(time)
+    except ValueError:
+        raise ValueError(f"Unable to parse datetime string: {string_value}")
 
 
 def parse_time_and_convert_to_utc(time: Union[str, datetime]) -> datetime:
     try:
         return read_datetime_string_as_utc(time)
-    except:
+    except TypeError:
         return convert_datetime_to_utc(time)
 
 
