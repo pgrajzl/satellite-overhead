@@ -15,3 +15,11 @@ class Configuration:
     satellites: List[Satellite]
     antenna_direction_path: List[PositionTime]
     runtime_settings: Optional[RuntimeSettings] = RuntimeSettings()
+
+    def __str__(self):
+        return (
+            f'{self.__class__.__name__}:\n'
+            f'{self.reservation}\n'
+            f'{self.runtime_settings}\n'
+            f'Satellites:           {len(self.satellites)} total'
+        )

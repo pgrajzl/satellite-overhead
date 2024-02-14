@@ -34,7 +34,8 @@ class Filterer:
         self._filters: List[T] = []
 
     def add_filter(self, filter_lambda: Callable[[T], bool]):
-        self._filters.append(filter_lambda)
+        if filter_lambda:
+            self._filters.append(filter_lambda)
         return self
 
     def apply_filters(self, elements: List[T]):

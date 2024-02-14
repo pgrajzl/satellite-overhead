@@ -20,17 +20,28 @@ class FrequencyRange:
     bandwidth: Optional[float] = None
     status: Optional[str] = None
 
+    @property
+    def low_mhz(self):
+        return self.frequency - self._half_bandwidth
+
+    @property
+    def high_mhz(self):
+        return self.frequency + self._half_bandwidth
+
+    @property
+    def _half_bandwidth(self):
+        return self.bandwidth / 2
+
     def overlaps(self, satellite_frequency: 'FrequencyRange'):
-        half_bandwidth_res = self.bandwidth/2
-        if satellite_frequency.bandwidth is None:
-            low_in_mghz_sat = satellite_frequency.frequency - (DEFAULT_BANDWIDTH/2)
-            high_in_mghz_sat = satellite_frequency.frequency + (DEFAULT_BANDWIDTH/2)
-            low_in_mghz_res = self.frequency - half_bandwidth_res
-            high_in_mghz_res = self.frequency + half_bandwidth_res
-        else:
-            half_bandwidth_sat = satellite_frequency.bandwidth / 2
-            low_in_mghz_res = self.frequency - half_bandwidth_res
-            high_in_mghz_res = self.frequency + half_bandwidth_res
-            low_in_mghz_sat = satellite_frequency.frequency - half_bandwidth_sat
-            high_in_mghz_sat = satellite_frequency.frequency + half_bandwidth_sat
-        return low_in_mghz_sat < high_in_mghz_res and high_in_mghz_sat > low_in_mghz_res
+        half_bandwidth_sat = DEFAULT_BANDWIDTH / 2 if satellite_frequency.bandwidth is None else satellite_frequency.bandwidth
+        low_mhz_sat = satellite_frequency.frequency - half_bandwidth_sat
+        high_mhz_sat = satellite_frequency.frequency + half_bandwidth_sat
+
+        return low_mhz_sat < self.high_mhz and high_mhz_sat > self.low_mhz
+
+    def __str__(self):
+        return (
+            f'{self.__class__.__name__}:\n'
+            f'  Frequency:          {self.frequency} MHz\n'
+            f'  Bandwidth:          {self.bandwidth} MHz'
+        )

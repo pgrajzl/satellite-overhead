@@ -47,6 +47,8 @@ configuration = (
         elevation=986,
         name='HCRO',
         beamwidth=3,
+    )
+    .set_frequency_range(
         bandwidth=10,
         frequency=135
     )
@@ -72,6 +74,7 @@ configuration = (
 The `ConfigurationBuilder` must call the following methods with the necessary arguments:
 
 - `set_facility()`
+- `set_frequency_range()`
 - `set_time_window()`
 - `set_observation_target()`
 - `set_satellites()`
@@ -93,9 +96,18 @@ configuration.set_facility(
 )
 ```
 
+The `set_frequency_range()` method specifies bandwidth, and frequency of the observation:
+
+```python
+configuration.set_frequency_range(
+    bandwidth=10,
+    frequency=135
+)
+```
+
 #### `set_time_window()`
 
-The `set_time_window()` method defines the observation time window in UTC, specifying when the observation will take place. The date format follows the ISO 8601 datetime format: `Y-m-dTH:M:S.f`. The provided datetime string can include microseconds or not. It additionally accepts a time zone, for example, `2023-11-15T08:00:00-7:00`. All times are converted to UTC.
+The `set_time_window()` method defines the observation time window in UTC, specifying when the observation will take place. The date format follows the ISO 8601 datetime format: `Y-m-dTH:M:S.f`. The provided datetime string can include microseconds or not. It additionally accepts a time zone, for example, `2023-11-15T08:00:00-7:00`. Alternatively, `begin` and `end` can be provided as datetimes. All times are converted to UTC.
 
 ```python
 configuration.set_time_window(
@@ -122,7 +134,7 @@ configuration.set_observation_target(
 ```python
 configuration.set_observation_target(
     azimuth=24.2,
-    right_ascension=78.1
+    altitude=78.1
 )
 ```
 
@@ -142,7 +154,7 @@ The `set_satellites()` method takes the file path of the satellite TLE data and 
 ```python
 configuration.set_satellites(
     tle_file='path/to/satellites.tle',
-    frequency_file='/path/to/frequency.csv'
+    frequency_file='/path/to/frequency.csv' # optional
 )
 ```
 
@@ -247,43 +259,50 @@ The `Satellite` class, containins details about the satellite and a list of Posi
 
 ### Filtering Satellites
 
-The list of satellites can be filtered by using a `Filterer` object, adding filters to it and then passing the `Filterer` object to a `ConfigurationBuilder`. The user can define any filtering logic wanted, however a few built in filters are provided. If the filtering condition evaluates to `True` the Satellite will be included in the final list.
+The list of satellites can be filtered by using a `Filterer` object, adding filters to it and then passing the `Filterer` object to a `ConfigurationBuilder`. The user can define any filtering logic wanted, however a few built in filters are provided. If the filtering condition evaluates to `True` the Satellite will be included in the final list. If None is passed to any of the filters, no filtering for that specific filter will be applied.
 
 The provided filters accessible from `sopp.satellites_filter.filters` include:
 
-##### `filter_frequency`:
+#### `filter_frequency()`:
 
 returns `True` if a satellite's downlink transmission frequency
 overlaps with the desired observation frequency. If there is no information
 on the satellite frequency, it will return True to err on the side of caution
 for potential interference. Accepts a `FrequencyRange` object.
 
-##### `filter_name_contains`:
+#### `filter_name_contains()`:
+
+Parameters:
+    - substring (str): The substring to check for in the satellite names.
 
 returns `True` if a given substring is present in the name of a Satellite.
 
-##### `filter_name_does_not_contain`:
+#### `filter_name_does_not_contain`:
+
+Parameters:
+    - substring (str): The substring to check for absence for in the satellite names.
 
 returns `True` if a given substring is not present in the name of a Satellite.
 
-##### `filter_name_is`:
+#### `filter_name_is()`:
+
+Parameters:
+    - substring (str): The substring to match for in the satellite names.
 
 returns `True` if a given substring matches exactly the name of a Satellite.
 
-##### `filter_is_leo`:
+#### `filter_orbit_is(orbit_type)`:
 
-returns Low Earth Orbit (LEO) satellites based on their orbital period.
+Parameters:
+    - orbit_type (str): The type of orbit ('leo', 'meo', or 'geo').
+
+if orbit_type='leo' returns Low Earth Orbit (LEO) satellites based on their orbital period.
 The filter checks if the satellite's orbits per day is >= 5.0
 
-##### `filter_is_meo`:
-
-returns Medium Earth Orbit (MEO) satellites based on their orbital period.
+if orbit_type='meo' returns Medium Earth Orbit (MEO) satellites based on their orbital period.
 The filter checks if the satellite's orbits per day is >= 1.5 and < 5.0
 
-##### `filter_is_geo`:
-
-returns Geostationary Orbit (GEO) satellites based on their orbital period.
-
+if orbit_type='geo' returns Geostationary Orbit (GEO) satellites based on their orbital period.
 The filter checks if the satellite's orbits per day is >= 0.85 and < 1.5
 
 For example, to find all Satellites that are not Starlink, but are in LEO and that have overlapping downlink transmission frequency:
@@ -294,8 +313,9 @@ from sopp.satellites_filter.filterer import Filterer
 filterer = (
     Filterer()
     .add_filter(filter_name_does_not_contain('STARLINK'))
-    .add_filter(filter_is_leo())
+    .add_filter(filter_orbit_is(orbit_type='leo'))
     .add_filter(filter_frequency(FrequencyRange(135.5, 10)))
+    .add_filter(filter_name_is(None)) # this filter will do nothing
 )
 ```
 
@@ -357,7 +377,7 @@ from sopp.builder.configuration_builder import ConfigurationBuilder
 from sopp.satellites_filter.filterer import Filterer
 from sopp.satellites_filter.filters import (
     filter_name_does_not_contain,
-    filter_is_leo,
+    filter_orbit_is,
 )
 
 
@@ -365,7 +385,7 @@ def main():
     filterer = (
         Filterer()
         .add_filter(filter_name_does_not_contain('STARLINK'))
-        .add_filter(filter_is_leo())
+        .add_filter(filter_orbit_is(orbit_type='leo'))
     )
 
     configuration = (
@@ -376,6 +396,8 @@ def main():
             elevation=986,
             name='HCRO',
             beamwidth=3,
+        )
+        .set_frequency_range(
             bandwidth=10,
             frequency=135
         )

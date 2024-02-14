@@ -28,8 +28,6 @@ class TestConfigurationBuilder:
             elevation=100,
             name='HCRO',
             beamwidth=3,
-            bandwidth=10,
-            frequency=135,
         )
         assert builder._facility == Facility(
             Coordinates(latitude=40, longitude=-121),
@@ -37,6 +35,10 @@ class TestConfigurationBuilder:
             beamwidth=3,
             name='HCRO',
         )
+
+    def test_set_frequency_range(self):
+        builder = ConfigurationBuilder()
+        builder.set_frequency_range(bandwidth=10, frequency=135)
         assert builder._frequency_range == FrequencyRange(
             bandwidth=10,
             frequency=135,
@@ -86,11 +88,23 @@ class TestConfigurationBuilder:
             time_continuity_resolution=1,
         )
 
-    def test_set_time_window(self):
+    def test_set_time_window_str(self):
         builder = ConfigurationBuilder()
         builder.set_time_window(
             begin='2023-11-15T08:00:00.0',
             end='2023-11-15T08:30:00.0',
+        )
+
+        assert builder._time_window == TimeWindow(
+            begin=datetime(2023, 11, 15, 8, 0, tzinfo=pytz.UTC),
+            end=datetime(2023, 11, 15, 8, 30, tzinfo=pytz.UTC),
+        )
+
+    def test_set_time_window_datetime(self):
+        builder = ConfigurationBuilder()
+        builder.set_time_window(
+            begin=datetime(2023, 11, 15, 8, 0, tzinfo=pytz.UTC),
+            end=datetime(2023, 11, 15, 8, 30, tzinfo=pytz.UTC),
         )
 
         assert builder._time_window == TimeWindow(
@@ -120,6 +134,7 @@ class TestConfigurationBuilder:
 
     def test_build_antenna_direction_path_target(self):
         builder = ConfigurationBuilder(path_finder_class=StubPathFinder)
+        builder._observation_target = 'mock'
         builder._build_antenna_direction_path()
 
         assert builder._antenna_direction_path == [expected_position_time()]
@@ -177,9 +192,8 @@ class TestConfigurationBuilder:
                 elevation=1,
                 name='HCRO',
                 beamwidth=3,
-                bandwidth=10,
-                frequency=135
             )
+            .set_frequency_range(bandwidth=10, frequency=135)
             .set_time_window(
                 begin='2023-11-15T08:00:00.0',
                 end='2023-11-15T08:30:00.0'

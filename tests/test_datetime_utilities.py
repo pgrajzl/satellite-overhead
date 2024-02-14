@@ -1,7 +1,8 @@
 import pytz
 from datetime import datetime
+import pytest
 
-from sopp.utilities import read_datetime_string_as_utc
+from sopp.utilities import read_datetime_string_as_utc, parse_time_and_convert_to_utc
 
 
 class TestDatetimeUtilities:
@@ -19,3 +20,27 @@ class TestDatetimeUtilities:
         expected_datetime = datetime(2023, 12, 27, 12, 0, 0, 0, tzinfo=pytz.UTC)
 
         assert read_datetime_string_as_utc('2023-12-27T5:00:00-07:00') == expected_datetime
+
+    def test_read_datetime_with_invalid_string(self):
+        with pytest.raises(ValueError) as _:
+            read_datetime_string_as_utc('20223-12-27-T5:00:00')
+
+    def test_read_datetime_with_datetime_raises_type_error(self):
+        with pytest.raises(TypeError) as _:
+            read_datetime_string_as_utc(datetime(2023, 12, 27, 12, 0, 0, 0, tzinfo=pytz.UTC))
+
+    def test_parse_time_and_convert_to_utc_with_datetime(self):
+        expected_datetime = datetime(2023, 12, 27, 12, 0, 0, 0, tzinfo=pytz.UTC)
+
+        assert parse_time_and_convert_to_utc(expected_datetime) == expected_datetime
+
+    def test_parse_time_and_convert_to_utc_with_string(self):
+        expected_datetime = datetime(2023, 12, 27, 12, 0, 0, 0, tzinfo=pytz.UTC)
+
+        assert parse_time_and_convert_to_utc('2023-12-27T5:00:00-07:00') == expected_datetime
+
+    def test_parse_time_and_convert_to_utc_with_invalid_string(self):
+        with pytest.raises(ValueError) as _:
+            parse_time_and_convert_to_utc('20223-12-27-T5:00:00')
+
+

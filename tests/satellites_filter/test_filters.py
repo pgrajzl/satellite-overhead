@@ -1,3 +1,5 @@
+import pytest
+
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.custom_dataclasses.satellite.mean_motion import MeanMotion
 from sopp.custom_dataclasses.satellite.tle_information import TleInformation
@@ -5,9 +7,7 @@ from sopp.satellites_filter.filters import (
     filter_name_contains,
     filter_name_does_not_contain,
     filter_name_is,
-    filter_is_leo,
-    filter_is_meo,
-    filter_is_geo,
+    filter_orbit_is,
 )
 
 
@@ -21,9 +21,19 @@ class TestFilters:
         actual = list(filter(filter_name_contains('TestSatellite'), self.satellites))
         assert actual == expected
 
+    def test_name_is_none(self):
+        expected = [self.sat0, self.sat1, self.sat2, self.sat3]
+        actual = list(filter(filter_name_contains(substring=None), self.satellites))
+        assert actual == expected
+
     def test_name_does_not_contain_filter(self):
         expected = [self.sat2, self.sat3]
         actual = list(filter(filter_name_does_not_contain('TestSatellite'), self.satellites))
+        assert actual == expected
+
+    def test_name_does_not_contain_is_none(self):
+        expected = [self.sat0, self.sat1, self.sat2, self.sat3]
+        actual = list(filter(filter_name_does_not_contain(substring=None), self.satellites))
         assert actual == expected
 
     def test_name_is_filter(self):
@@ -31,20 +41,34 @@ class TestFilters:
         actual = list(filter(filter_name_is('ISS'), self.satellites))
         assert actual == expected
 
-    def test_is_leo_filter(self):
+    def test_name_is_none(self):
+        expected = [self.sat0, self.sat1, self.sat2, self.sat3]
+        actual = list(filter(filter_name_is(substring=None), self.satellites))
+        assert actual == expected
+
+    def test_orbit_is_leo_filter(self):
         expected = [self.sat1, self.sat2]
-        actual = list(filter(filter_is_leo(), self.satellites))
+        actual = list(filter(filter_orbit_is(orbit_type='leo'), self.satellites))
         assert actual == expected
 
-    def test_is_meo_filter(self):
+    def test_orbit_is_meo_filter(self):
         expected = [self.sat0]
-        actual = list(filter(filter_is_meo(), self.satellites))
+        actual = list(filter(filter_orbit_is(orbit_type='meo'), self.satellites))
         assert actual == expected
 
-    def test_is_geo_filter(self):
+    def test_orbit_is_geo_filter(self):
         expected = [self.sat3]
-        actual = list(filter(filter_is_geo(), self.satellites))
+        actual = list(filter(filter_orbit_is(orbit_type='geo'), self.satellites))
         assert actual == expected
+
+    def test_orbit_is_none(self):
+        expected = [self.sat0, self.sat1, self.sat2, self.sat3]
+        actual = list(filter(filter_orbit_is(orbit_type=None), self.satellites))
+        assert actual == expected
+
+    def test_orbit_is_type_invalid(self):
+        with pytest.raises(ValueError) as _:
+            filter_orbit_is(orbit_type='error')
 
     @property
     def sat0(self):

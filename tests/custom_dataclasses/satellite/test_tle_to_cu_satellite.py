@@ -4,7 +4,7 @@ from pathlib import Path
 from sopp.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
     GetFrequencyDataFromCsv
 from sopp.custom_dataclasses.satellite.satellite import Satellite
-from tests.dataclasses.satellite.utilities import expected_international_space_station_tle_as_satellite_cu
+from tests.custom_dataclasses.satellite.utilities import expected_international_space_station_tle_as_satellite_cu
 from sopp.utilities import get_script_directory
 
 
