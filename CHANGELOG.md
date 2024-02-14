@@ -2,6 +2,31 @@
 
 
 
+## v0.5.0 (2024-02-14)
+
+
+### Feature
+
+* feat: Add __str__ impl for Configuration, Reservation, FrequencyRange, Facility and TimeWindow classes. ([`e9806dc`](https://github.com/NSF-Swift/satellite-overhead/commit/e9806dc0a7699d904893db1a1fecf78432cdc73e))
+
+* feat: set_time_window() now accepts datetimes as well as datetime strings. ([`5bf9196`](https://github.com/NSF-Swift/satellite-overhead/commit/5bf9196695d69db64c0b1716f01c9bd90e493e16))
+
+
+### Fix
+
+* fix: Resolve the requirement for an observation target to be set when building a configuration as an observation target is not necessary if checking for satellites above horizon. ([`b610c19`](https://github.com/NSF-Swift/satellite-overhead/commit/b610c197f0172f5c985c0180de303bd1bc796dea))
+
+
+### Refactor
+
+* refactor: When None is passed to any filtering function they now return a lambda that always evaluates to True instead of failing. ([`fda8d2f`](https://github.com/NSF-Swift/satellite-overhead/commit/fda8d2fd2103c4977db395e5180a1fa3917a3399))
+
+* refactor: Extract bandwidth and frequency from set_facility and move to seperate method set_frequency_range. ([`8c51e69`](https://github.com/NSF-Swift/satellite-overhead/commit/8c51e699fb15aef547e69143b45fdaaf36cf2fd2))
+
+* refactor: Use a single orbit_is function instead of a seperate function for leo/meo/geo. ([`9c57292`](https://github.com/NSF-Swift/satellite-overhead/commit/9c57292c37934af5b34f4a9218798440767bd0af))
+
+
+
 ## v0.4.0 (2024-01-25)
 
 
