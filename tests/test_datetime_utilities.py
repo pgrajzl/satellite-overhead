@@ -32,7 +32,7 @@ class TestDatetimeUtilities:
     def test_parse_time_and_convert_to_utc_with_datetime(self):
         expected_datetime = datetime(2023, 12, 27, 12, 0, 0, 0, tzinfo=pytz.UTC)
 
-        assert parse_time_and_convert_to_utc(datetime(2023, 12, 27, 12, 0, 0, 0, tzinfo=pytz.UTC)) == expected_datetime
+        assert parse_time_and_convert_to_utc(expected_datetime) == expected_datetime
 
     def test_parse_time_and_convert_to_utc_with_string(self):
         expected_datetime = datetime(2023, 12, 27, 12, 0, 0, 0, tzinfo=pytz.UTC)
