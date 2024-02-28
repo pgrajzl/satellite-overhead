@@ -5,8 +5,8 @@ from typing import List
 
 from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.custom_dataclasses.time_window import TimeWindow
-from sopp.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import AntennaPosition, \
-    SatellitesWithinMainBeamFilter
+from sopp.event_finder.event_finder_rhodesmill.support.satellites_interference_filter import SatellitesWithinMainBeamFilter, \
+    AntennaPosition, SatellitesInterferenceFilter
 from tests.definitions import SMALL_EPSILON
 from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY, create_expected_windows, assert_windows_eq
 
@@ -20,10 +20,11 @@ class TestSatellitesWithinMainBeamOneAntennaPositionMultipleSatellitePositions:
 
     def _run_multiple_positions(self, satellite_positions: List[PositionTime]):
         cutoff_time = ARBITRARY_ANTENNA_POSITION.time + timedelta(minutes=len(self._satellite_positions_by_time_ascending))
-        slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
+        slew = SatellitesInterferenceFilter(facility=ARBITRARY_FACILITY,
                                               antenna_positions=[AntennaPosition(satellite_positions=satellite_positions,
                                                                                  antenna_direction=ARBITRARY_ANTENNA_POSITION)],
-                                              cutoff_time=cutoff_time)
+                                              cutoff_time=cutoff_time
+                                              filter_strategy=SatellitesWithinMainBeam)
         windows = slew.run()
         expected_positions = [
             self._satellite_positions_by_time_ascending[0],

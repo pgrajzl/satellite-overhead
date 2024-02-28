@@ -8,8 +8,8 @@ import pytz
 from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.custom_dataclasses.position import Position
 from sopp.custom_dataclasses.time_window import TimeWindow
-from sopp.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import SatellitesWithinMainBeamFilter, \
-    AntennaPosition
+from sopp.event_finder.event_finder_rhodesmill.support.satellites_interference_filter import SatellitesWithinMainBeamFilter, \
+    AntennaPosition, SatellitesInterferenceFilter
 from tests.definitions import SMALL_EPSILON
 from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY
 
@@ -37,11 +37,12 @@ class TestSatellitesWithinMainBeamAltitude:
             replace(ARBITRARY_ANTENNA_POSITION,
                     position=replace(ARBITRARY_ANTENNA_POSITION.position, altitude=altitude))
         ]
-        slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
+        slew = SatellitesInterferenceFilter(facility=ARBITRARY_FACILITY,
                                               antenna_positions=[
                                                   AntennaPosition(satellite_positions=satellite_positions,
                                                                   antenna_direction=ARBITRARY_ANTENNA_POSITION)],
-                                              cutoff_time=self._arbitrary_cutoff_time)
+                                              cutoff_time=self._arbitrary_cutoff_time,
+                                              filter_strategy=SatellitesWithinMainBeamFilter)
         windows = slew.run()
         assert windows == expected_windows
 
