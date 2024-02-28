@@ -23,8 +23,8 @@ class TestSatellitesWithinMainBeamOneAntennaPositionMultipleSatellitePositions:
         slew = SatellitesInterferenceFilter(facility=ARBITRARY_FACILITY,
                                               antenna_positions=[AntennaPosition(satellite_positions=satellite_positions,
                                                                                  antenna_direction=ARBITRARY_ANTENNA_POSITION)],
-                                              cutoff_time=cutoff_time
-                                              filter_strategy=SatellitesWithinMainBeam)
+                                              cutoff_time=cutoff_time,
+                                              filter_strategy=SatellitesWithinMainBeamFilter)
         windows = slew.run()
         expected_positions = [
             self._satellite_positions_by_time_ascending[0],
