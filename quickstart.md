@@ -39,6 +39,8 @@ The observation characteristics must be provided to the `ConfigurationBuilder` c
 
 An example using `ConfigurationBuilder`:
 ```python
+from sopp.builder.configuration_builder import ConfigurationBuilder
+
 configuration = (
     ConfigurationBuilder()
     .set_facility(
@@ -236,6 +238,8 @@ The JSON config file follows the following format:
 The `Sopp` class utilizes the previously created configuration object to identify satellite interference. It is initialized with the `Configuration` obtained from `ConfigurationBuilder`.
 
 ```python
+from sopp.sopp import Sopp
+
 sopp = Sopp(configuration=configuration)
 ```
 
@@ -309,6 +313,12 @@ For example, to find all Satellites that are not Starlink, but are in LEO and th
 
 ```python
 from sopp.satellites_filter.filterer import Filterer
+from sopp.satellites_filter.filters import (
+    filter_name_does_not_contain,
+    filter_orbit_is,
+    filter_frequency,
+    filter_name_is,
+)
 
 filterer = (
     Filterer()

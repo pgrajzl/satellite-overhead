@@ -6,18 +6,19 @@ import pytz
 
 from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.custom_dataclasses.time_window import TimeWindow
-from sopp.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import SatellitesWithinMainBeamFilter, \
-    AntennaPosition
+from sopp.event_finder.event_finder_rhodesmill.support.satellites_interference_filter import SatellitesWithinMainBeamFilter, \
+    AntennaPosition, SatellitesInterferenceFilter
 from tests.definitions import SMALL_EPSILON
 from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY, create_expected_windows, assert_windows_eq
 
 
 class TestSatellitesWithinMainBeam:
     def test_no_satellite_positions(self):
-        slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
+        slew = SatellitesInterferenceFilter(facility=ARBITRARY_FACILITY,
                                               antenna_positions=[AntennaPosition(satellite_positions=[],
                                                                                  antenna_direction=ARBITRARY_ANTENNA_POSITION)],
-                                              cutoff_time=self._arbitrary_cutoff_time)
+                                              cutoff_time=self._arbitrary_cutoff_time,
+                                              filter_strategy=SatellitesWithinMainBeamFilter)
         windows = slew.run()
         assert windows == []
 
@@ -26,10 +27,11 @@ class TestSatellitesWithinMainBeam:
             ARBITRARY_ANTENNA_POSITION
         ]
         cutoff_time = ARBITRARY_ANTENNA_POSITION.time + timedelta(minutes=1)
-        slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
+        slew = SatellitesInterferenceFilter(facility=ARBITRARY_FACILITY,
                                               antenna_positions=[AntennaPosition(satellite_positions=satellite_positions,
                                                                                  antenna_direction=ARBITRARY_ANTENNA_POSITION)],
-                                              cutoff_time=cutoff_time)
+                                              cutoff_time=cutoff_time,
+                                              filter_strategy=SatellitesWithinMainBeamFilter)
         windows = slew.run()
         expected_positions = [ARBITRARY_ANTENNA_POSITION]
         expected_windows = create_expected_windows(expected_positions)
@@ -42,10 +44,11 @@ class TestSatellitesWithinMainBeam:
             self._replace_antenna_position(antenna_position=ARBITRARY_ANTENNA_POSITION,
                                            azimuth=ARBITRARY_ANTENNA_POSITION.position.azimuth - self._value_slightly_larger_than_half_beamwidth)
         ]
-        slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
+        slew = SatellitesInterferenceFilter(facility=ARBITRARY_FACILITY,
                                               antenna_positions=[AntennaPosition(satellite_positions=satellite_positions,
                                                                                  antenna_direction=ARBITRARY_ANTENNA_POSITION)],
-                                              cutoff_time=self._arbitrary_cutoff_time)
+                                              cutoff_time=self._arbitrary_cutoff_time,
+                                              filter_strategy=SatellitesWithinMainBeamFilter)
         windows = slew.run()
         assert windows == []
 
@@ -58,11 +61,12 @@ class TestSatellitesWithinMainBeam:
             for i in range(3)
         ]
         cutoff_time = ARBITRARY_ANTENNA_POSITION.time + timedelta(minutes=len(satellite_positions))
-        slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
+        slew = SatellitesInterferenceFilter(facility=ARBITRARY_FACILITY,
                                               antenna_positions=[
                                                   AntennaPosition(satellite_positions=satellite_positions,
                                                                   antenna_direction=ARBITRARY_ANTENNA_POSITION)],
-                                              cutoff_time=cutoff_time)
+                                              cutoff_time=cutoff_time,
+                                              filter_strategy=SatellitesWithinMainBeamFilter)
         windows = slew.run()
         expected_positions = [[satellite_positions[0], satellite_positions[1]]]
         expected_windows = create_expected_windows(expected_positions)
@@ -79,11 +83,12 @@ class TestSatellitesWithinMainBeam:
             for i in range(6)
         ]
         cutoff_time = ARBITRARY_ANTENNA_POSITION.time + timedelta(minutes=len(satellite_positions))
-        slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
+        slew = SatellitesInterferenceFilter(facility=ARBITRARY_FACILITY,
                                               antenna_positions=[
                                                   AntennaPosition(satellite_positions=satellite_positions,
                                                                   antenna_direction=ARBITRARY_ANTENNA_POSITION)],
-                                              cutoff_time=cutoff_time)
+                                              cutoff_time=cutoff_time,
+                                              filter_strategy=SatellitesWithinMainBeamFilter)
         windows = slew.run()
         expected_positions = [
             satellite_positions[0],
@@ -105,11 +110,12 @@ class TestSatellitesWithinMainBeam:
             self._replace_antenna_position(antenna_position=antenna_position_at_horizon,
                                            altitude=-SMALL_EPSILON)
         ]
-        slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
+        slew = SatellitesInterferenceFilter(facility=ARBITRARY_FACILITY,
                                               antenna_positions=[
                                                   AntennaPosition(satellite_positions=satellite_positions,
                                                                   antenna_direction=antenna_position_at_horizon)],
-                                              cutoff_time=self._arbitrary_cutoff_time)
+                                              cutoff_time=self._arbitrary_cutoff_time,
+                                              filter_strategy=SatellitesWithinMainBeamFilter)
         windows = slew.run()
         assert windows == []
 
@@ -125,11 +131,12 @@ class TestSatellitesWithinMainBeam:
             satellite_position_inside_main_beam_but_past_cutoff_time
         ]
         cutoff_time = ARBITRARY_ANTENNA_POSITION.time + timedelta(seconds=1)
-        slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
+        slew = SatellitesInterferenceFilter(facility=ARBITRARY_FACILITY,
                                               antenna_positions=[
                                                   AntennaPosition(satellite_positions=satellite_positions,
                                                                   antenna_direction=ARBITRARY_ANTENNA_POSITION)],
-                                              cutoff_time=cutoff_time)
+                                              cutoff_time=cutoff_time,
+                                              filter_strategy=SatellitesWithinMainBeamFilter)
         windows = slew.run()
         assert windows == []
 
@@ -143,11 +150,12 @@ class TestSatellitesWithinMainBeam:
         satellite_positions = [replace(position, time=ARBITRARY_ANTENNA_POSITION.time + timedelta(seconds=i))
                                for i, position in enumerate(satellite_positions_without_time)]
         cutoff_time = ARBITRARY_ANTENNA_POSITION.time + timedelta(seconds=len(satellite_positions))
-        slew = SatellitesWithinMainBeamFilter(facility=facility_with_beam_width_that_sees_entire_sky,
+        slew = SatellitesInterferenceFilter(facility=facility_with_beam_width_that_sees_entire_sky,
                                               antenna_positions=[
                                                   AntennaPosition(satellite_positions=satellite_positions,
                                                                   antenna_direction=ARBITRARY_ANTENNA_POSITION)],
-                                              cutoff_time=cutoff_time)
+                                              cutoff_time=cutoff_time,
+                                              filter_strategy=SatellitesWithinMainBeamFilter)
         windows = slew.run()
         expected_positions = [satellite_positions[0], satellite_positions[2]]
         expected_windows = create_expected_windows(expected_positions)

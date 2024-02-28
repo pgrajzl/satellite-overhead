@@ -4,13 +4,13 @@ from datetime import datetime
 from functools import cached_property
 from math import isclose
 from typing import List
+from abc import ABC, abstractmethod
 
 import numpy
 
 from sopp.custom_dataclasses.facility import Facility
 from sopp.custom_dataclasses.position_time import PositionTime
-from sopp.custom_dataclasses.time_window import TimeWindow
-from sopp.utilities import convert_datetime_to_utc
+from sopp.custom_dataclasses.position import Position
 
 
 DEGREES_IN_A_CIRCLE = 360
@@ -21,16 +21,26 @@ class AntennaPosition:
     satellite_positions: List[PositionTime]
     antenna_direction: PositionTime
 
+class SatellitesFilterStrategy(ABC):
+    def __init__(self, facility: Facility):
+        self._facility = facility
 
-class SatellitesWithinMainBeamFilter:
-    def __init__(self,
-                 facility: Facility,
-                 antenna_positions: List[AntennaPosition],
-                 cutoff_time: datetime):
+    @abstractmethod
+    def is_in_view(self, satellite_position: Position, antenna_position: Position) -> bool:
+        pass
+
+class SatellitesInterferenceFilter:
+    def __init__(
+        self,
+        facility: Facility,
+        antenna_positions: List[AntennaPosition],
+        cutoff_time: datetime,
+        filter_strategy: SatellitesFilterStrategy,
+    ):
         self._cutoff_time = cutoff_time
         self._facility = facility
         self._antenna_positions = antenna_positions
-        self._previously_in_view = False
+        self._filter_strategy = filter_strategy(facility)
 
     def run(self) -> List[List[PositionTime]]:
         segments_of_satellite_positions = []
@@ -38,22 +48,17 @@ class SatellitesWithinMainBeamFilter:
 
         for antenna_position in self._antenna_positions_by_time:
             for satellite_position in self._sort_satellite_positions_by_time(satellite_positions=antenna_position.satellite_positions):
+
                 if satellite_position.time >= self._cutoff_time:
                     break
-                timestamp = convert_datetime_to_utc(satellite_position.time)
-                now_in_view = self._is_within_beam_width_altitude(satellite_altitude=satellite_position.position.altitude,
-                                                                  antenna_altitude=antenna_position.antenna_direction.position.altitude) \
-                              and self._is_within_beam_with_azimuth(satellite_azimuth=satellite_position.position.azimuth,
-                                                                    antenna_azimuth=antenna_position.antenna_direction.position.azimuth)
-                if now_in_view:
-                    if not self._previously_in_view:
-                        self._previously_in_view = True
+
+                in_view = self._filter_strategy.is_in_view(satellite_position.position, antenna_position.antenna_direction.position)
+
+                if in_view:
                     satellite_positions_in_view.append(satellite_position)
-                elif not now_in_view and self._previously_in_view:
-                    self._previously_in_view = False
-                    if satellite_positions_in_view:
-                        segments_of_satellite_positions.append(satellite_positions_in_view)
-                        satellite_positions_in_view = []
+                elif satellite_positions_in_view:
+                    segments_of_satellite_positions.append(satellite_positions_in_view)
+                    satellite_positions_in_view = []
 
         if satellite_positions_in_view:
             segments_of_satellite_positions.append(satellite_positions_in_view)
@@ -67,6 +72,19 @@ class SatellitesWithinMainBeamFilter:
     @staticmethod
     def _sort_satellite_positions_by_time(satellite_positions: List[PositionTime]) -> List[PositionTime]:
         return sorted(satellite_positions, key=lambda x: x.time)
+
+
+class SatellitesAboveHorizonFilter(SatellitesFilterStrategy):
+    def is_in_view(self, satellite_position: Position, antenna_position: Position) -> bool:
+        return satellite_position.altitude >= 0
+
+
+class SatellitesWithinMainBeamFilter(SatellitesFilterStrategy):
+    def is_in_view(self, satellite_position: Position, antenna_position: Position) -> bool:
+        return (
+            self._is_within_beam_width_altitude(satellite_position.altitude, antenna_position.altitude)
+            and self._is_within_beam_with_azimuth(satellite_position.azimuth, antenna_position.azimuth)
+        )
 
     def _is_within_beam_width_altitude(self, satellite_altitude: float, antenna_altitude: float) -> bool:
         is_above_horizon = satellite_altitude >= 0

@@ -2,8 +2,8 @@ from dataclasses import replace
 from datetime import timedelta
 
 from sopp.custom_dataclasses.time_window import TimeWindow
-from sopp.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import AntennaPosition, \
-    SatellitesWithinMainBeamFilter
+from sopp.event_finder.event_finder_rhodesmill.support.satellites_interference_filter import SatellitesAboveHorizonFilter, \
+    AntennaPosition, SatellitesInterferenceFilter, SatellitesWithinMainBeamFilter
 from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY, create_expected_windows, assert_windows_eq
 
 
@@ -26,11 +26,12 @@ class TestSatellitesWithinMainBeamModulo360:
             replace(antenna_position_at_horizon, position=replace(antenna_position_at_horizon.position, azimuth=satellite_azimuth))
         ]
         cutoff_time = ARBITRARY_ANTENNA_POSITION.time + timedelta(minutes=1)
-        slew = SatellitesWithinMainBeamFilter(facility=ARBITRARY_FACILITY,
+        slew = SatellitesInterferenceFilter(facility=ARBITRARY_FACILITY,
                                               antenna_positions=[
                                                   AntennaPosition(satellite_positions=satellite_positions,
                                                                   antenna_direction=antenna_position_at_horizon)],
-                                              cutoff_time=cutoff_time)
+                                              cutoff_time=cutoff_time,
+                                              filter_strategy=SatellitesWithinMainBeamFilter)
         windows = slew.run()
         expected_positions = satellite_positions
         expected_windows = create_expected_windows(expected_positions)

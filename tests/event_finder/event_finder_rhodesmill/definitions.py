@@ -12,6 +12,8 @@ ARBITRARY_FACILITY = Facility(coordinates=Coordinates(latitude=0, longitude=0))
 
 ARBITRARY_ANTENNA_POSITION = PositionTime(position=Position(altitude=100, azimuth=100), time=datetime.now(tz=pytz.UTC))
 
+ARBITRARY_SATELLITE_POSITION = PositionTime(position=Position(altitude=100, azimuth=100), time=datetime.now(tz=pytz.UTC))
+
 def create_overhead_window(satellite, altitude, azimuth, start_time, num_positions):
     positions = [
         PositionTime(
