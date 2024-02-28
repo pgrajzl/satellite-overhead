@@ -13,8 +13,12 @@ from sopp.event_finder.event_finder_rhodesmill.support.satellite_positions_with_
     SatellitePositionsWithRespectToFacilityRetriever
 from sopp.event_finder.event_finder_rhodesmill.support.satellite_positions_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever_rhodesmill import \
     SatellitePositionsWithRespectToFacilityRetrieverRhodesmill
-from sopp.event_finder.event_finder_rhodesmill.support.satellites_within_main_beam_filter import AntennaPosition, \
-    SatellitesWithinMainBeamFilter
+from sopp.event_finder.event_finder_rhodesmill.support.satellites_interference_filter import (
+    SatellitesInterferenceFilter,
+    SatellitesWithinMainBeamFilter,
+    SatellitesAboveHorizonFilter,
+    AntennaPosition
+)
 from sopp.event_finder.event_finder import EventFinder
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
@@ -43,15 +47,17 @@ class EventFinderRhodesmill(EventFinder):
             datetimes=datetimes
         )
 
+        self._filter_strategy = None
+
     def get_satellites_above_horizon(self):
-        facility_with_beam_width_that_sees_entire_sky = replace(self.reservation.facility, beamwidth=360)
-        event_finder = EventFinderRhodesmill(list_of_satellites=self.list_of_satellites,
-                                             reservation=replace(self.reservation, facility=facility_with_beam_width_that_sees_entire_sky),
-                                             antenna_direction_path=[PositionTime(position=Position(altitude=90, azimuth=0),
-                                                                                  time=self.reservation.time.begin)])
-        return event_finder.get_satellites_crossing_main_beam()
+        self._filter_strategy = SatellitesAboveHorizonFilter
+        return self._get_satellites_interference()
 
     def get_satellites_crossing_main_beam(self) -> List[OverheadWindow]:
+        self._filter_strategy = SatellitesWithinMainBeamFilter
+        return self._get_satellites_interference()
+
+    def _get_satellites_interference(self) -> List[OverheadWindow]:
         processes = int(self.runtime_settings.concurrency_level) if self.runtime_settings.concurrency_level > 1 else 1
         pool = multiprocessing.Pool(processes=processes)
         results = pool.map(self._get_satellite_overhead_windows, self.list_of_satellites)
@@ -80,9 +86,12 @@ class EventFinderRhodesmill(EventFinder):
             for antenna_direction, end_time in zip(self.antenna_direction_path, antenna_direction_end_times)
             if end_time > self.reservation.time.begin
         ]
-        time_windows = SatellitesWithinMainBeamFilter(facility=self.reservation.facility,
-                                                      antenna_positions=antenna_positions,
-                                                      cutoff_time=self.reservation.time.end).run()
+        time_windows = SatellitesInterferenceFilter(
+            facility=self.reservation.facility,
+            antenna_positions=antenna_positions,
+            cutoff_time=self.reservation.time.end,
+            filter_strategy=self._filter_strategy,
+        ).run()
 
         return [OverheadWindow(satellite=satellite, positions=positions) for positions in time_windows]
 
