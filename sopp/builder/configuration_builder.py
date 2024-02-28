@@ -178,6 +178,11 @@ class ConfigurationBuilder:
                 self._observation_target,
                 self._time_window
             ).calculate_path()
+        else:
+            self._antenna_direction_path = [
+                PositionTime(position=Position(altitude=90, azimuth=0),
+                time=self._reservation.time.begin),
+            ]
 
     def build(self) -> 'Configuration':
         if not (
@@ -190,8 +195,8 @@ class ConfigurationBuilder:
             )
 
         self._filter_satellites()
-        self._build_antenna_direction_path()
         self._build_reservation()
+        self._build_antenna_direction_path()
 
         configuration = Configuration(
             reservation=self._reservation,
