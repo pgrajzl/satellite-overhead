@@ -121,29 +121,3 @@ class TestSatellitesAboveHorizon:
     def satellite_below_horizon(self, time_offset=0):
         time_offset = timedelta(minutes=time_offset)
         return PositionTime(position=Position(altitude=-100, azimuth=100), time=datetime.now(tz=pytz.UTC) + time_offset)
-
-
-    #def test_satellite_is_below_horizon(self):
-    #    self._run_close_azimuth_due_to_modulus(antenna_azimuth=self._HIGH_DEGREES, satellite_azimuth=self._LOW_DEGREES)
-
-    #@staticmethod
-    #def _run_close_azimuth_due_to_modulus(antenna_azimuth: float, satellite_azimuth: float):
-    #    antenna_position_at_horizon = replace(ARBITRARY_ANTENNA_POSITION,
-    #                                          position=replace(ARBITRARY_ANTENNA_POSITION.position,
-    #                                                           azimuth=antenna_azimuth))
-    #    satellite_positions = [
-    #        replace(antenna_position_at_horizon, position=replace(antenna_position_at_horizon.position, azimuth=satellite_azimuth))
-    #    ]
-    #    cutoff_time = ARBITRARY_ANTENNA_POSITION.time + timedelta(minutes=1)
-    #    slew = SatellitesInterferenceFilter(facility=ARBITRARY_FACILITY,
-    #                                          antenna_positions=[
-    #                                              AntennaPosition(satellite_positions=satellite_positions,
-    #                                                              antenna_direction=None)],
-    #                                          cutoff_time=cutoff_time,
-    #                                          filter_strategy=SatellitesWithinMainBeamFilter)
-    #    windows = slew.run()
-    #    expected_positions = satellite_positions
-    #    expected_windows = create_expected_windows(expected_positions)
-
-    #    assert len(windows) == 1
-    #    assert_windows_eq(windows, expected_windows)
