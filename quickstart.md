@@ -178,7 +178,7 @@ The `set_runtime_settings()` method specifies the time resolution for calculatin
 ```python
 configuration.set_runtime_settings(
     concurrency_level=8,
-    time_continuity_resolution=1
+    time_continuity_resolution=1,
     min_altitude=0.0,
 )
 ```
