@@ -11,6 +11,7 @@ import numpy
 from sopp.custom_dataclasses.facility import Facility
 from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.custom_dataclasses.position import Position
+from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 
 
 DEGREES_IN_A_CIRCLE = 360
@@ -22,8 +23,9 @@ class AntennaPosition:
     antenna_direction: PositionTime
 
 class SatellitesFilterStrategy(ABC):
-    def __init__(self, facility: Facility):
+    def __init__(self, facility: Facility, runtime_settings: RuntimeSettings):
         self._facility = facility
+        self._runtime_settings = runtime_settings
 
     @abstractmethod
     def is_in_view(self, satellite_position: Position, antenna_position: Position) -> bool:
@@ -36,11 +38,12 @@ class SatellitesInterferenceFilter:
         antenna_positions: List[AntennaPosition],
         cutoff_time: datetime,
         filter_strategy: SatellitesFilterStrategy,
+        runtime_settings: RuntimeSettings = RuntimeSettings(),
     ):
         self._cutoff_time = cutoff_time
         self._facility = facility
         self._antenna_positions = antenna_positions
-        self._filter_strategy = filter_strategy(facility)
+        self._filter_strategy = filter_strategy(facility=facility, runtime_settings=runtime_settings)
 
     def run(self) -> List[List[PositionTime]]:
         segments_of_satellite_positions = []
@@ -76,7 +79,7 @@ class SatellitesInterferenceFilter:
 
 class SatellitesAboveHorizonFilter(SatellitesFilterStrategy):
     def is_in_view(self, satellite_position: Position, antenna_position: Position) -> bool:
-        return satellite_position.altitude >= 0
+        return satellite_position.altitude >= self._runtime_settings.min_altitude
 
 
 class SatellitesWithinMainBeamFilter(SatellitesFilterStrategy):
@@ -87,7 +90,7 @@ class SatellitesWithinMainBeamFilter(SatellitesFilterStrategy):
         )
 
     def _is_within_beam_width_altitude(self, satellite_altitude: float, antenna_altitude: float) -> bool:
-        is_above_horizon = satellite_altitude >= 0
+        is_above_horizon = satellite_altitude >= self._runtime_settings.min_altitude
         lowest_main_beam_altitude = antenna_altitude - self._facility.half_beamwidth
         is_above_main_beam_altitude = satellite_altitude >= lowest_main_beam_altitude
         return is_above_horizon and is_above_main_beam_altitude
