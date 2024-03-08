@@ -6,7 +6,6 @@ from sopp.utilities import (
     get_satellites_filepath,
     get_default_config_file_filepath,
 )
-from sopp.satellites_filter.filterer import Filterer
 from sopp.satellites_filter.filters import filter_frequency
 from sopp.graph_generator.graph_generator import GraphGenerator
 
