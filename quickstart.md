@@ -173,7 +173,11 @@ configuration.set_satellites_filter(
 
 #### `set_runtime_settings()`
 
-The `set_runtime_settings()` method specifies the time resolution for calculating satellite positions in seconds via the `time_continuity_resolution` parameter. Additionally, the `concurrency_level` parameter determines the number of parallel jobs during satellite position calculation, optimizing runtime speeds. This value should be not exceed the number of cores on the machine. The `min_altitude` specifies the minimum altitude a satellite must be to be considered above the horizon. Useful for locations with obstructed horizons. Runtime settings are optional, the defaults are: concurrency_level = 1, time_continuity_resolution = 1 and min_altitude = 0.0.
+The `set_runtime_settings()` method:
+- Specifies the time resolution for calculating satellite positions in seconds via the `time_continuity_resolution` parameter.
+- Specifies the `concurrency_level` parameter determines the number of parallel jobs during satellite position calculation, optimizing runtime speeds. This value should be not exceed the number of cores on the machine.
+- The `min_altitude` specifies the minimum altitude a satellite must be to be considered above the horizon. Useful for locations with obstructed horizons.
+- Runtime settings are optional, the defaults are: concurrency_level = 1, time_continuity_resolution = 1 and min_altitude = 0.0.
 
 ```python
 configuration.set_runtime_settings(
