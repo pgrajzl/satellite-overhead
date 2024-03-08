@@ -22,18 +22,13 @@ def main():
     frequency_file = get_frequencies_filepath()
     config_file = get_default_config_file_filepath()
 
-    config_builder = (
+    configuration = (
         ConfigurationBuilder()
         .set_from_config_file(config_file=config_file)
         .set_satellites(tle_file=tle_file, frequency_file=frequency_file)
+        .add_filter(filter_frequency())
+        .build()
     )
-
-    filterer = (
-        Filterer()
-        .add_filter(filter_frequency(config_builder._frequency_range))
-    )
-
-    configuration = config_builder.set_satellites_filter(filterer).build()
 
     reservation = configuration.reservation
 
