@@ -130,6 +130,13 @@ class TestConfigurationBuilder:
         builder.set_satellites_filter(filterer)
         builder._filter_satellites()
 
+    def test_add_satellites_filter(self, monkeypatch):
+        mock_satellite_loader(monkeypatch)
+        builder = ConfigurationBuilder()
+        builder.satellites = [ Satellite(name='TestSatellite') ]
+        builder.add_filter(lambda sat, ctx: 'Test' not in sat.name)
+        builder._filter_satellites()
+
         assert builder.satellites == []
 
     def test_build_antenna_direction_path_target(self):
