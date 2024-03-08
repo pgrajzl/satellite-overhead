@@ -36,7 +36,6 @@ only-include = [
 ]
 exclude = [
   "sopp/graph_generator",
-  "sopp/main.py",
 ]
 
 [tool.hatch.version]
