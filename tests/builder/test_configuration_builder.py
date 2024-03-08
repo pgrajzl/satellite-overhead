@@ -125,7 +125,7 @@ class TestConfigurationBuilder:
         builder._satellites = [ Satellite(name='TestSatellite') ]
         filterer = (
             Filterer()
-            .add_filter(lambda sat: 'Test' not in sat.name)
+            .add_filter(lambda sat, ctx: 'Test' not in sat.name)
         )
         builder.set_satellites_filter(filterer)
         builder._filter_satellites()

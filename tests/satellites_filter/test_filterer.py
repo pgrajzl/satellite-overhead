@@ -5,7 +5,7 @@ class TestFilterer:
     def test_add_filter(self):
         filterer = (
             Filterer()
-            .add_filter(lambda x: x % 2)
+            .add_filter(lambda x, ctx: x % 2)
         )
 
         assert len(filterer._filters) == 1
@@ -34,10 +34,10 @@ class TestFilterer:
         actual = (
             Filterer()
             .add_filter(None)
-            .add_filter(lambda x: x % 2 == 0)
-            .add_filter(lambda x: x > 40)
+            .add_filter(lambda x, ctx: x % 2 == 0)
+            .add_filter(lambda x, ctx: x > 40)
             .add_filter(None)
-            .add_filter(lambda x: x < 47)
+            .add_filter(lambda x, ctx: x < 47)
             .apply_filters(values)
         )
 
@@ -47,9 +47,9 @@ class TestFilterer:
         values = [1, 12, 16, 40, 42, 43, 44, 45, 47, 48, 50]
         actual = (
             Filterer()
-            .add_filter(lambda x: x % 2 == 0)
-            .add_filter(lambda x: x > 40)
-            .add_filter(lambda x: x < 47)
+            .add_filter(lambda x, ctx: x % 2 == 0)
+            .add_filter(lambda x, ctx: x > 40)
+            .add_filter(lambda x, ctx: x < 47)
             .apply_filters(values)
         )
 
