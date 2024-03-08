@@ -1,4 +1,4 @@
-from typing import Callable, List, TypeVar
+from typing import Callable, List, TypeVar, Any, Optional
 
 T = TypeVar('T')
 
@@ -38,5 +38,5 @@ class Filterer:
             self._filters.append(filter_lambda)
         return self
 
-    def apply_filters(self, elements: List[T]):
-        return list(filter(lambda element: all(f(element) for f in self._filters), elements))
+    def apply_filters(self, elements: List[T], context: Optional[Any] = None):
+        return [element for element in elements if all(f(element, context) for f in self._filters)]
