@@ -2,6 +2,38 @@
 
 
 
+## v0.6.0 (2024-03-14)
+
+
+### Build
+
+* build: Remove exclusion of main.py from package construction as it was removed. ([`b9d2fd7`](https://github.com/NSF-Swift/satellite-overhead/commit/b9d2fd7e66391cf300728d7a4c9fa1e48c4db921))
+
+
+### Feature
+
+* feat: Refactor filters to use fns instead of lambdas for more flexibility. Add ability to add filters with add_filter versus making filters. Add additional optional context parameter to filter functions for more complex filtering cases. ([`78f96c0`](https://github.com/NSF-Swift/satellite-overhead/commit/78f96c0b53f00350f0cbb0dfcc93d89c634e420e))
+
+* feat: Add min_altitude field in RuntimeSettings which allows setting a minimum altitude for satellites to be considered visible. Useful for when 0 degrees does not represent the visible horizon. ([`51d12f5`](https://github.com/NSF-Swift/satellite-overhead/commit/51d12f5edc84d4d6cf738258beeb76e1138a353b))
+
+
+### Refactor
+
+* refactor: Use Sopp instead of Main in sopp.py ([`0646ccf`](https://github.com/NSF-Swift/satellite-overhead/commit/0646ccfb9b7f38b25f3c8003f282517bf9e2a07f))
+
+* refactor: Remove Main and replace with Sopp. ([`78eb60b`](https://github.com/NSF-Swift/satellite-overhead/commit/78eb60be2151f1ec2b397d31e369a190390f9fc1))
+
+* refactor: Remove Astropy code/dependencies as it is no longer used. ([`cb6b5ff`](https://github.com/NSF-Swift/satellite-overhead/commit/cb6b5fff497d8c9a6781a4a6fa059e0e796f45de))
+
+
+### Test
+
+* test: Add test for new add_filter() method in ConfigurationBuilder. ([`2d1daa3`](https://github.com/NSF-Swift/satellite-overhead/commit/2d1daa303956b57cdd51a39ccef43e80ddcf21a6))
+
+* test: Add tests for minimum_alt runtime setting. ([`5ebbd57`](https://github.com/NSF-Swift/satellite-overhead/commit/5ebbd57e1363471cf434ccefe055df640cdf5c7c))
+
+
+
 ## v0.5.1 (2024-02-28)
 
 
