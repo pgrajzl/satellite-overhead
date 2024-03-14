@@ -29,7 +29,7 @@ class TestConfigurationBuilder:
             name='HCRO',
             beamwidth=3,
         )
-        assert builder._facility == Facility(
+        assert builder.facility == Facility(
             Coordinates(latitude=40, longitude=-121),
             elevation=100,
             beamwidth=3,
@@ -39,7 +39,7 @@ class TestConfigurationBuilder:
     def test_set_frequency_range(self):
         builder = ConfigurationBuilder()
         builder.set_frequency_range(bandwidth=10, frequency=135)
-        assert builder._frequency_range == FrequencyRange(
+        assert builder.frequency_range == FrequencyRange(
             bandwidth=10,
             frequency=135,
         )
@@ -83,7 +83,7 @@ class TestConfigurationBuilder:
             time_continuity_resolution=1
         )
 
-        assert builder._runtime_settings == RuntimeSettings(
+        assert builder.runtime_settings == RuntimeSettings(
             concurrency_level=1,
             time_continuity_resolution=1,
         )
@@ -95,7 +95,7 @@ class TestConfigurationBuilder:
             end='2023-11-15T08:30:00.0',
         )
 
-        assert builder._time_window == TimeWindow(
+        assert builder.time_window == TimeWindow(
             begin=datetime(2023, 11, 15, 8, 0, tzinfo=pytz.UTC),
             end=datetime(2023, 11, 15, 8, 30, tzinfo=pytz.UTC),
         )
@@ -107,7 +107,7 @@ class TestConfigurationBuilder:
             end=datetime(2023, 11, 15, 8, 30, tzinfo=pytz.UTC),
         )
 
-        assert builder._time_window == TimeWindow(
+        assert builder.time_window == TimeWindow(
             begin=datetime(2023, 11, 15, 8, 0, tzinfo=pytz.UTC),
             end=datetime(2023, 11, 15, 8, 30, tzinfo=pytz.UTC),
         )
@@ -117,20 +117,27 @@ class TestConfigurationBuilder:
         builder = ConfigurationBuilder()
         builder.set_satellites("/mock/tle", 'mock/frequency')
 
-        assert builder._satellites == [ Satellite(name='TestSatellite') ]
+        assert builder.satellites == [ Satellite(name='TestSatellite') ]
 
     def test_set_satellites_filter(self, monkeypatch):
         mock_satellite_loader(monkeypatch)
         builder = ConfigurationBuilder()
-        builder._satellites = [ Satellite(name='TestSatellite') ]
+        builder.satellites = [ Satellite(name='TestSatellite') ]
         filterer = (
             Filterer()
-            .add_filter(lambda sat: 'Test' not in sat.name)
+            .add_filter(lambda sat, ctx: 'Test' not in sat.name)
         )
         builder.set_satellites_filter(filterer)
         builder._filter_satellites()
 
-        assert builder._satellites == []
+    def test_add_satellites_filter(self, monkeypatch):
+        mock_satellite_loader(monkeypatch)
+        builder = ConfigurationBuilder()
+        builder.satellites = [ Satellite(name='TestSatellite') ]
+        builder.add_filter(lambda sat, ctx: 'Test' not in sat.name)
+        builder._filter_satellites()
+
+        assert builder.satellites == []
 
     def test_build_antenna_direction_path_target(self):
         builder = ConfigurationBuilder(path_finder_class=StubPathFinder)

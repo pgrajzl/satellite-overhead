@@ -1,6 +1,5 @@
 from sopp.sopp import Sopp
 from sopp.builder.configuration_builder import ConfigurationBuilder
-from sopp.satellites_filter.filterer import Filterer
 from sopp.satellites_filter.filters import (
     filter_name_does_not_contain,
     filter_orbit_is,
@@ -8,12 +7,6 @@ from sopp.satellites_filter.filters import (
 
 
 def main():
-    filterer = (
-        Filterer()
-        .add_filter(filter_name_does_not_contain('STARLINK'))
-        .add_filter(filter_orbit_is(orbit_type='leo'))
-    )
-
     configuration = (
         ConfigurationBuilder()
         .set_facility(
@@ -42,7 +35,8 @@ def main():
         # Alternatively set all of the above settings from a config file
         #.set_from_config_file(config_file='./supplements/config.json')
         .set_satellites(tle_file='./supplements/satellites.tle')
-        .set_satellites_filter(filterer)
+        .add_filter(filter_name_does_not_contain('STARLINK'))
+        .add_filter(filter_orbit_is(orbit_type='leo'))
         .build()
     )
 

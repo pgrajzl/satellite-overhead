@@ -64,7 +64,8 @@ configuration = (
     )
     .set_runtime_settings(
         concurrency_level=8,
-        time_continuity_resolution=1
+        time_continuity_resolution=1,
+        min_altitude=5.0,
     )
     # Alternatively set all of the above settings from a config file
     #.set_from_config_file(config_file='./supplements/config.json')
@@ -170,14 +171,27 @@ configuration.set_satellites_filter(
 )
 ```
 
+#### `add_filter()`
+
+Alternatively to constructing a `Filterer` object you can simply call `add_filter()`
+
+```python
+configuration.add_filter(filter_frequency())
+```
+
 #### `set_runtime_settings()`
 
-The `set_runtime_settings()` method specifies the time resolution for calculating satellite positions in seconds via the `time_continuity_resolution` parameter. Additionally, the `concurrency_level` parameter determines the number of parallel jobs during satellite position calculation, optimizing runtime speeds. This value should be not exceed the number of cores on the machine.
+The `set_runtime_settings()` method:
+- Specifies the time resolution for calculating satellite positions in seconds via the `time_continuity_resolution` parameter.
+- Specifies the `concurrency_level` parameter determines the number of parallel jobs during satellite position calculation, optimizing runtime speeds. This value should be not exceed the number of cores on the machine.
+- The `min_altitude` specifies the minimum altitude a satellite must be to be considered above the horizon. Useful for locations with obstructed horizons.
+- Runtime settings are optional, the defaults are: concurrency_level = 1, time_continuity_resolution = 1 and min_altitude = 0.0.
 
 ```python
 configuration.set_runtime_settings(
     concurrency_level=8,
-    time_continuity_resolution=1
+    time_continuity_resolution=1,
+    min_altitude=0.0,
 )
 ```
 
@@ -226,7 +240,8 @@ The JSON config file follows the following format:
   },
   "runtimeSettings": {
       "concurrency_level": 4,
-      "time_continuity_resolution": 1
+      "time_continuity_resolution": 1,
+      "min_altitude": 0.0
   }
 }
 ```
@@ -263,7 +278,9 @@ The `Satellite` class, containins details about the satellite and a list of Posi
 
 ### Filtering Satellites
 
-The list of satellites can be filtered by using a `Filterer` object, adding filters to it and then passing the `Filterer` object to a `ConfigurationBuilder`. The user can define any filtering logic wanted, however a few built in filters are provided. If the filtering condition evaluates to `True` the Satellite will be included in the final list. If None is passed to any of the filters, no filtering for that specific filter will be applied.
+The list of satellites can be filtered by using a `Filterer` object, adding filters to it and then passing the `Filterer` object to a `ConfigurationBuilder`. The user can define any filtering logic wanted, however a few built in filters are provided. If the filtering condition evaluates to `True` the Satellite will be included in the final list.
+If `None` is passed to any of the filters, no filtering for that specific filter will be applied.
+Alternatively to passing a `Filterer` object to the `ConfigurationBuilder` via `set_satellites_filter`, filters can simply be added with `add_filter(filter_frequency())`.
 
 The provided filters accessible from `sopp.satellites_filter.filters` include:
 
@@ -272,7 +289,8 @@ The provided filters accessible from `sopp.satellites_filter.filters` include:
 returns `True` if a satellite's downlink transmission frequency
 overlaps with the desired observation frequency. If there is no information
 on the satellite frequency, it will return True to err on the side of caution
-for potential interference. Accepts a `FrequencyRange` object.
+for potential interference. Accepts a `FrequencyRange` object, if none is provided it will
+default to the `Reservation` frequency, if available.
 
 #### `filter_name_contains()`:
 
@@ -324,7 +342,7 @@ filterer = (
     Filterer()
     .add_filter(filter_name_does_not_contain('STARLINK'))
     .add_filter(filter_orbit_is(orbit_type='leo'))
-    .add_filter(filter_frequency(FrequencyRange(135.5, 10)))
+    .add_filter(filter_frequency())
     .add_filter(filter_name_is(None)) # this filter will do nothing
 )
 ```
@@ -384,7 +402,6 @@ custom_path = [
 ```python
 from sopp.sopp import Sopp
 from sopp.builder.configuration_builder import ConfigurationBuilder
-from sopp.satellites_filter.filterer import Filterer
 from sopp.satellites_filter.filters import (
     filter_name_does_not_contain,
     filter_orbit_is,
@@ -392,12 +409,6 @@ from sopp.satellites_filter.filters import (
 
 
 def main():
-    filterer = (
-        Filterer()
-        .add_filter(filter_name_does_not_contain('STARLINK'))
-        .add_filter(filter_orbit_is(orbit_type='leo'))
-    )
-
     configuration = (
         ConfigurationBuilder()
         .set_facility(
@@ -426,7 +437,8 @@ def main():
         # Alternatively set all of the above settings from a config file
         #.set_from_config_file(config_file='./supplements/config.json')
         .set_satellites(tle_file='./supplements/satellites.tle')
-        .set_satellites_filter(filterer)
+        .add_filter(filter_name_does_not_contain('STARLINK'))
+        .add_filter(filter_orbit_is(orbit_type='leo'))
         .build()
     )
 

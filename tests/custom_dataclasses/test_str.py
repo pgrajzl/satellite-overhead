@@ -31,6 +31,7 @@ class TestCustomDataclassStr:
             'RuntimeSettings:\n'
             '  Time Interval:      0:00:01\n'
             '  Concurrency:        10'
+            '  Min. Altitude:      0.0'
         )
         assert str(self.runtime_settings) == expected
 

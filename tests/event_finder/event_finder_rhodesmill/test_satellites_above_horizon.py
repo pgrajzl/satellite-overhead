@@ -9,6 +9,7 @@ from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.event_finder.event_finder_rhodesmill.support.satellites_interference_filter import SatellitesAboveHorizonFilter, \
     AntennaPosition, SatellitesInterferenceFilter, SatellitesWithinMainBeamFilter
 from tests.event_finder.event_finder_rhodesmill.definitions import ARBITRARY_ANTENNA_POSITION, ARBITRARY_FACILITY, create_expected_windows, assert_windows_eq, ARBITRARY_SATELLITE_POSITION
+from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 
 
 class TestSatellitesAboveHorizon:
@@ -111,6 +112,32 @@ class TestSatellitesAboveHorizon:
         expected_windows = create_expected_windows(expected_positions)
 
         assert len(windows) == 1
+        assert_windows_eq(windows, expected_windows)
+
+    def test_satellite_is_above_horizon_below_min_alt(self):
+        satellite_above_horizon = self.satellite_above_horizon()
+
+        satellite_positions = [
+            satellite_above_horizon
+        ]
+
+        cutoff_time = satellite_above_horizon.time + timedelta(minutes=1)
+
+        slew = SatellitesInterferenceFilter(
+            facility=ARBITRARY_FACILITY,
+            antenna_positions= [
+                    AntennaPosition(satellite_positions=satellite_positions, antenna_direction=ARBITRARY_ANTENNA_POSITION)
+                ],
+                cutoff_time=cutoff_time,
+                filter_strategy=SatellitesAboveHorizonFilter,
+                runtime_settings=RuntimeSettings(min_altitude=105.0),
+        )
+
+        windows = slew.run()
+        expected_positions = []
+        expected_windows = create_expected_windows(expected_positions)
+
+        assert len(windows) == 0
         assert_windows_eq(windows, expected_windows)
 
 

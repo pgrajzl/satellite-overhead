@@ -91,6 +91,7 @@ class EventFinderRhodesmill(EventFinder):
             antenna_positions=antenna_positions,
             cutoff_time=self.reservation.time.end,
             filter_strategy=self._filter_strategy,
+            runtime_settings=self.runtime_settings,
         ).run()
 
         return [OverheadWindow(satellite=satellite, positions=positions) for positions in time_windows]

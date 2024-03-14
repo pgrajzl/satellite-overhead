@@ -68,7 +68,7 @@ class TestFilters:
 
     def test_orbit_is_type_invalid(self):
         with pytest.raises(ValueError) as _:
-            filter_orbit_is(orbit_type='error')
+            filter_orbit_is(orbit_type='error')(None)
 
     @property
     def sat0(self):
