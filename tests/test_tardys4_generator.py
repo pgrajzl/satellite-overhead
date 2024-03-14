@@ -39,7 +39,7 @@ class TestTards4Generator:
             end=end,
         )
 
-        actual = generator.generate()
+        actual = generator.tardys4
 
         expected = {
             "transactionId": generator._transaction_id,
