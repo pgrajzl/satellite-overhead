@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional
 
 from sopp.custom_dataclasses.observation_target import ObservationTarget
@@ -14,7 +14,7 @@ class Configuration:
     reservation: Reservation
     satellites: List[Satellite]
     antenna_direction_path: List[PositionTime]
-    runtime_settings: Optional[RuntimeSettings] = RuntimeSettings()
+    runtime_settings: RuntimeSettings = field(default_factory=RuntimeSettings)
 
     def __str__(self):
         return (
