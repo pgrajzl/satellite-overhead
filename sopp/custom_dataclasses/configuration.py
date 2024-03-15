@@ -14,7 +14,7 @@ class Configuration:
     reservation: Reservation
     satellites: List[Satellite]
     antenna_direction_path: List[PositionTime]
-    runtime_settings: Optional[RuntimeSettings] = field(default_factory=RuntimeSettings)
+    runtime_settings: RuntimeSettings = field(default_factory=RuntimeSettings)
 
     def __str__(self):
         return (

@@ -11,7 +11,7 @@ from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 @dataclass
 class ConfigurationFile:
     reservation: Reservation
-    runtime_settings: Optional[RuntimeSettings] = field(default_factory=RuntimeSettings)
+    runtime_settings: RuntimeSettings = field(default_factory=RuntimeSettings)
     antenna_position_times: Optional[List[PositionTime]] = None
     observation_target: Optional[ObservationTarget] = None
     static_antenna_position: Optional[Position] = None
