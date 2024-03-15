@@ -2,6 +2,10 @@
 
 
 
+## v0.7.0 (2024-03-15)
+
+
+
 ## v0.6.0 (2024-03-14)
 
 
@@ -11,6 +15,8 @@
 
 
 ### Feature
+
+* feat: Add TardyS4 resrevation request generator. ([`51a540f`](https://github.com/NSF-Swift/satellite-overhead/commit/51a540f7c3b42e0ddbaa48feaafe3c0ffa7b3ea8))
 
 * feat: Refactor filters to use fns instead of lambdas for more flexibility. Add ability to add filters with add_filter versus making filters. Add additional optional context parameter to filter functions for more complex filtering cases. ([`78f96c0`](https://github.com/NSF-Swift/satellite-overhead/commit/78f96c0b53f00350f0cbb0dfcc93d89c634e420e))
 
