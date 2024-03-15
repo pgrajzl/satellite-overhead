@@ -2,6 +2,15 @@
 
 
 
+## v0.7.1 (2024-03-15)
+
+
+### Fix
+
+* fix: Use default_factory for initialization of default field in dataclass. ([`8a38464`](https://github.com/NSF-Swift/satellite-overhead/commit/8a38464ab725d2754b307686dc0bc8fe55e01085))
+
+
+
 ## v0.7.0 (2024-03-15)
 
 
