@@ -1,6 +1,4 @@
-from datetime import datetime, timedelta
-
-import pytz
+from datetime import datetime, timedelta, timezone
 
 from sopp.custom_dataclasses.coordinates import Coordinates
 from sopp.custom_dataclasses.facility import Facility
@@ -10,9 +8,9 @@ from sopp.custom_dataclasses.overhead_window import OverheadWindow
 
 ARBITRARY_FACILITY = Facility(coordinates=Coordinates(latitude=0, longitude=0))
 
-ARBITRARY_ANTENNA_POSITION = PositionTime(position=Position(altitude=100, azimuth=100), time=datetime.now(tz=pytz.UTC))
+ARBITRARY_ANTENNA_POSITION = PositionTime(position=Position(altitude=100, azimuth=100), time=datetime.now(tz=timezone.utc))
 
-ARBITRARY_SATELLITE_POSITION = PositionTime(position=Position(altitude=100, azimuth=100), time=datetime.now(tz=pytz.UTC))
+ARBITRARY_SATELLITE_POSITION = PositionTime(position=Position(altitude=100, azimuth=100), time=datetime.now(tz=timezone.utc))
 
 def create_overhead_window(satellite, altitude, azimuth, start_time, num_positions):
     positions = [

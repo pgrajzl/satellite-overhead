@@ -1,13 +1,12 @@
 import json
 import os
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import datetime, timezone
 from io import TextIOWrapper
 from pathlib import Path
 from typing import ContextManager, List, Optional, Union
 from uuid import uuid4
 
-import pytz
 from dateutil import parser
 
 
@@ -25,12 +24,12 @@ def temporary_file(filepath: Optional[Path] = None) -> ContextManager[TextIOWrap
 
 
 def convert_datetime_to_utc(localtime: datetime) -> datetime:
-    if localtime.tzinfo == pytz.UTC:
+    if localtime.tzinfo == timezone.utc:
         return localtime
     elif localtime.tzinfo is None:
-        return localtime.replace(tzinfo=pytz.UTC)
+        return localtime.replace(tzinfo=timezone.utc)
     else:
-        return localtime.astimezone(pytz.UTC)
+        return localtime.astimezone(timezone.utc)
 
 
 def read_datetime_string_as_utc(string_value: str) -> datetime:

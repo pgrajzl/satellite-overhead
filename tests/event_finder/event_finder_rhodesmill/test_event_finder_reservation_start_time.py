@@ -1,6 +1,4 @@
-from datetime import datetime, timedelta
-
-import pytz
+from datetime import datetime, timedelta, timezone
 
 from sopp.custom_dataclasses.coordinates import Coordinates
 from sopp.custom_dataclasses.facility import Facility
@@ -20,7 +18,7 @@ from tests.event_finder.event_finder_rhodesmill.definitions import create_overhe
 class TestEventFinderReservationStartTime:
     def test_reservation_begins_part_way_through_antenna_position_time(self):
         arbitrary_satellite = Satellite(name='arbitrary')
-        arbitrary_datetime = datetime.now(tz=pytz.utc)
+        arbitrary_datetime = datetime.now(tz=timezone.utc)
         arbitrary_time_window = TimeWindow(begin=arbitrary_datetime,
                                            end=arbitrary_datetime + timedelta(seconds=2))
         arbitrary_reservation = Reservation(facility=Facility(coordinates=Coordinates(latitude=0, longitude=0)),
@@ -46,7 +44,7 @@ class TestEventFinderReservationStartTime:
 
     def test_antenna_positions_that_end_before_reservation_starts_are_not_included(self):
         arbitrary_satellite = Satellite(name='arbitrary')
-        arbitrary_datetime = datetime.now(tz=pytz.utc)
+        arbitrary_datetime = datetime.now(tz=timezone.utc)
         arbitrary_time_window = TimeWindow(begin=arbitrary_datetime,
                                            end=arbitrary_datetime + timedelta(seconds=2))
         arbitrary_reservation = Reservation(facility=Facility(coordinates=Coordinates(latitude=0, longitude=0)),

@@ -1,6 +1,5 @@
 import pytest
-import pytz
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sopp.sopp import Sopp
 from sopp.custom_dataclasses.overhead_window import OverheadWindow
@@ -53,19 +52,19 @@ class TestSopp:
                 positions=[
                     PositionTime(
                         position=Position(altitude=31.92827689000652, azimuth=322.2152123600712),
-                        time=datetime(2023, 3, 30, 14, 39, 32, tzinfo=pytz.UTC)
+                        time=datetime(2023, 3, 30, 14, 39, 32, tzinfo=timezone.utc)
                     ),
                     PositionTime(
                         position=Position(altitude=32.10476096624609, azimuth=321.73184343501606),
-                        time=datetime(2023, 3, 30, 14, 39, 33, tzinfo=pytz.UTC)
+                        time=datetime(2023, 3, 30, 14, 39, 33, tzinfo=timezone.utc)
                     ),
                     PositionTime(
                         position=Position(altitude=32.28029629612362, azimuth=321.24277001092725),
-                        time=datetime(2023, 3, 30, 14, 39, 34, tzinfo=pytz.UTC)
+                        time=datetime(2023, 3, 30, 14, 39, 34, tzinfo=timezone.utc)
                     ),
                     PositionTime(
                         position=Position(altitude=32.45481011166138, azimuth=320.74796378603236),
-                        time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=pytz.UTC)
+                        time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=timezone.utc)
                     )
                 ]
             ),
@@ -74,7 +73,7 @@ class TestSopp:
                 positions=[
                     PositionTime(
                         position=Position(altitude=0.011527751634842421, azimuth=31.169677715036304),
-                        time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=pytz.UTC)
+                        time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=timezone.utc)
                     )
                 ]
             )
@@ -86,15 +85,15 @@ class TestSopp:
                 positions=[
                     PositionTime(
                         position=Position(altitude=32.10476096624609, azimuth=321.73184343501606),
-                        time=datetime(2023, 3, 30, 14, 39, 33, tzinfo=pytz.UTC)
+                        time=datetime(2023, 3, 30, 14, 39, 33, tzinfo=timezone.utc)
                     ),
                     PositionTime(
                         position=Position(altitude=32.28029629612362, azimuth=321.24277001092725),
-                        time=datetime(2023, 3, 30, 14, 39, 34, tzinfo=pytz.UTC)
+                        time=datetime(2023, 3, 30, 14, 39, 34, tzinfo=timezone.utc)
                     ),
                     PositionTime(
                         position=Position(altitude=32.45481011166138, azimuth=320.74796378603236),
-                        time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=pytz.UTC)
+                        time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=timezone.utc)
                     )
                 ]
             )
@@ -120,8 +119,8 @@ class TestSopp:
 
     @property
     def _arbitrary_reservation(self) -> Reservation:
-        time_window = TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=14, minute=39, second=32, tzinfo=pytz.UTC),
-                                 end=datetime(year=2023, month=3, day=30, hour=14, minute=39, second=36, tzinfo=pytz.UTC))
+        time_window = TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=14, minute=39, second=32, tzinfo=timezone.utc),
+                                 end=datetime(year=2023, month=3, day=30, hour=14, minute=39, second=36, tzinfo=timezone.utc))
         return Reservation(
             facility=Facility(
                 beamwidth=3.5,
@@ -291,19 +290,19 @@ def overhead_windows():
             positions=[
                 PositionTime(
                     position=Position(altitude=31.92827689000652, azimuth=322.2152123600712),
-                    time=datetime(2023, 3, 30, 14, 39, 32, tzinfo=pytz.UTC)
+                    time=datetime(2023, 3, 30, 14, 39, 32, tzinfo=timezone.utc)
                 ),
                 PositionTime(
                     position=Position(altitude=32.10476096624609, azimuth=321.73184343501606),
-                    time=datetime(2023, 3, 30, 14, 39, 33, tzinfo=pytz.UTC)
+                    time=datetime(2023, 3, 30, 14, 39, 33, tzinfo=timezone.utc)
                 ),
                 PositionTime(
                     position=Position(altitude=32.28029629612362, azimuth=321.24277001092725),
-                    time=datetime(2023, 3, 30, 14, 39, 34, tzinfo=pytz.UTC)
+                    time=datetime(2023, 3, 30, 14, 39, 34, tzinfo=timezone.utc)
                 ),
                 PositionTime(
                     position=Position(altitude=32.45481011166138, azimuth=320.74796378603236),
-                    time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=pytz.UTC)
+                    time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=timezone.utc)
                 )
             ]
         ),
@@ -312,7 +311,7 @@ def overhead_windows():
             positions=[
                 PositionTime(
                     position=Position(altitude=0.011527751634842421, azimuth=31.169677715036304),
-                    time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=pytz.UTC)
+                    time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=timezone.utc)
                 )
             ]
         )

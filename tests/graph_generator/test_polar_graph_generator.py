@@ -1,7 +1,6 @@
 import pytest
-import pytz
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sopp.graph_generator.graph_polar import GraphGeneratorPolar
 from sopp.custom_dataclasses.position_time import PositionTime
@@ -10,19 +9,19 @@ from sopp.custom_dataclasses.position import Position
 observation_data = [
     PositionTime(
         position=Position(altitude=0.037991772033771, azimuth=225.42667523243927),
-        time=datetime(2023, 9, 15, 3, 13, 31, tzinfo=pytz.utc)),
+        time=datetime(2023, 9, 15, 3, 13, 31, tzinfo=timezone.utc)),
     PositionTime(
         position=Position(altitude=0.1004175887946367, azimuth=225.4135720960317),
-        time=datetime(2023, 9, 15, 3, 13, 32, tzinfo=pytz.utc)),
+        time=datetime(2023, 9, 15, 3, 13, 32, tzinfo=timezone.utc)),
     PositionTime(
         position=Position(altitude=0.16302916811324802, azimuth=225.40037964262117),
-        time=datetime(2023, 9, 15, 3, 13, 33, tzinfo=pytz.utc)),
+        time=datetime(2023, 9, 15, 3, 13, 33, tzinfo=timezone.utc)),
     PositionTime(
         position=Position(altitude=0.22582815942805465, azimuth=225.38709702253257),
-        time=datetime(2023, 9, 15, 3, 13, 34, tzinfo=pytz.utc)),
+        time=datetime(2023, 9, 15, 3, 13, 34, tzinfo=timezone.utc)),
     PositionTime(
         position=Position(altitude=0.28881623145852403, azimuth=225.37372337554274),
-        time=datetime(2023, 9, 15, 3, 13, 35, tzinfo=pytz.utc))
+        time=datetime(2023, 9, 15, 3, 13, 35, tzinfo=timezone.utc))
 ]
 
 

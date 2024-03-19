@@ -1,7 +1,6 @@
 import pytest
 
-from datetime import datetime
-import pytz
+from datetime import datetime, timezone
 
 from sopp.builder.configuration_builder import ConfigurationBuilder
 from sopp.custom_dataclasses.configuration import Configuration
@@ -96,20 +95,20 @@ class TestConfigurationBuilder:
         )
 
         assert builder.time_window == TimeWindow(
-            begin=datetime(2023, 11, 15, 8, 0, tzinfo=pytz.UTC),
-            end=datetime(2023, 11, 15, 8, 30, tzinfo=pytz.UTC),
+            begin=datetime(2023, 11, 15, 8, 0, tzinfo=timezone.utc),
+            end=datetime(2023, 11, 15, 8, 30, tzinfo=timezone.utc),
         )
 
     def test_set_time_window_datetime(self):
         builder = ConfigurationBuilder()
         builder.set_time_window(
-            begin=datetime(2023, 11, 15, 8, 0, tzinfo=pytz.UTC),
-            end=datetime(2023, 11, 15, 8, 30, tzinfo=pytz.UTC),
+            begin=datetime(2023, 11, 15, 8, 0, tzinfo=timezone.utc),
+            end=datetime(2023, 11, 15, 8, 30, tzinfo=timezone.utc),
         )
 
         assert builder.time_window == TimeWindow(
-            begin=datetime(2023, 11, 15, 8, 0, tzinfo=pytz.UTC),
-            end=datetime(2023, 11, 15, 8, 30, tzinfo=pytz.UTC),
+            begin=datetime(2023, 11, 15, 8, 0, tzinfo=timezone.utc),
+            end=datetime(2023, 11, 15, 8, 30, tzinfo=timezone.utc),
         )
 
     def test_set_satellites(self, monkeypatch):
@@ -245,7 +244,7 @@ def mock_satellite_loader(monkeypatch):
 def expected_position_time():
     return PositionTime(
         position=Position(altitude=.0, azimuth=.1),
-        time=datetime(2023, 11, 15, 8, 0, tzinfo=pytz.UTC),
+        time=datetime(2023, 11, 15, 8, 0, tzinfo=timezone.utc),
     )
 
 def expected_reservation():
@@ -257,8 +256,8 @@ def expected_reservation():
             name='HCRO'
         ),
         time=TimeWindow(
-            begin=datetime(2023, 11, 15, 8, 0, tzinfo=pytz.UTC),
-            end=datetime(2023, 11, 15, 8, 30, tzinfo=pytz.UTC),
+            begin=datetime(2023, 11, 15, 8, 0, tzinfo=timezone.utc),
+            end=datetime(2023, 11, 15, 8, 30, tzinfo=timezone.utc),
         ),
         frequency=FrequencyRange(
             bandwidth=10,

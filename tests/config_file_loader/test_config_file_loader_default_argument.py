@@ -1,10 +1,9 @@
 import os
 import shutil
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
-import pytz
 
 from sopp.config_file_loader.config_file_loader_factory import get_config_file_object
 from sopp.config_file_loader.support.config_file_loader_base import ConfigFileLoaderBase
@@ -59,8 +58,8 @@ class TestConfigFileDefaultArgument:
                     name='ARBITRARY_2',
                     elevation=1000,
                 ),
-                time=TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=10, tzinfo=pytz.UTC),
-                                end=datetime(year=2023, month=3, day=30, hour=11, tzinfo=pytz.UTC)),
+                time=TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=10, tzinfo=timezone.utc),
+                                end=datetime(year=2023, month=3, day=30, hour=11, tzinfo=timezone.utc)),
                 frequency=FrequencyRange(
                     frequency=135,
                     bandwidth=10

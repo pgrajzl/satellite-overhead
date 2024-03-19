@@ -1,5 +1,4 @@
-import pytz
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List
 
 from sopp.custom_dataclasses.coordinates import Coordinates
@@ -37,7 +36,7 @@ class SatellitePositionsWithRespectToFacilityRetrieverStub:
 class TestEventFinderRhodesmill:
     def test_single_satellite(self):
         arbitrary_satellite = Satellite(name='arbitrary')
-        arbitrary_datetime = datetime.now(tz=pytz.utc)
+        arbitrary_datetime = datetime.now(tz=timezone.utc)
         arbitrary_time_window = TimeWindow(begin=arbitrary_datetime,
                                            end=arbitrary_datetime + timedelta(seconds=2))
         arbitrary_reservation = Reservation(facility=Facility(coordinates=Coordinates(latitude=0, longitude=0)),
@@ -58,7 +57,7 @@ class TestEventFinderRhodesmill:
 
     def test_multiple_satellites(self):
         arbitrary_satellites = [Satellite(name='arbitrary'), Satellite(name='arbitrary2')]
-        arbitrary_datetime = datetime.now(tz=pytz.utc)
+        arbitrary_datetime = datetime.now(tz=timezone.utc)
         arbitrary_time_window = TimeWindow(begin=arbitrary_datetime,
                                            end=arbitrary_datetime + timedelta(seconds=2))
         arbitrary_reservation = Reservation(facility=Facility(coordinates=Coordinates(latitude=0, longitude=0)),
@@ -80,7 +79,7 @@ class TestEventFinderRhodesmill:
 
     def test_multiple_antenna_positions_with_azimuth_filtering(self):
         arbitrary_satellite = Satellite(name='arbitrary')
-        arbitrary_datetime = datetime.now(tz=pytz.utc)
+        arbitrary_datetime = datetime.now(tz=timezone.utc)
 
         arbitrary_time_window = TimeWindow(
             begin=arbitrary_datetime,
