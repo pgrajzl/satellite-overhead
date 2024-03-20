@@ -1,8 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
-import pytz
 
 from sopp.config_file_loader.config_file_loader_factory import get_config_file_object
 from sopp.config_file_loader.support.config_file_loader_base import ConfigFileLoaderBase
@@ -33,8 +32,8 @@ class TestConfigFileProvidedArgument:
                     name='ARBITRARY_1',
                     elevation=1000,
                 ),
-                time=TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=10, tzinfo=pytz.UTC),
-                                end=datetime(year=2023, month=3, day=30, hour=11, tzinfo=pytz.UTC)),
+                time=TimeWindow(begin=datetime(year=2023, month=3, day=30, hour=10, tzinfo=timezone.utc),
+                                end=datetime(year=2023, month=3, day=30, hour=11, tzinfo=timezone.utc)),
                 frequency=FrequencyRange(
                     frequency=135,
                     bandwidth=10
@@ -49,9 +48,9 @@ class TestConfigFileProvidedArgument:
         config = self._get_config_file_object(config_filename='config_file_json/arbitrary_config_file_with_antenna_position_times.json')
         assert config.configuration.antenna_position_times == [
             PositionTime(position=Position(altitude=.0, azimuth=.1),
-                         time=datetime(year=2023, month=3, day=30, hour=10, minute=1, tzinfo=pytz.UTC)),
+                         time=datetime(year=2023, month=3, day=30, hour=10, minute=1, tzinfo=timezone.utc)),
             PositionTime(position=Position(altitude=.1, azimuth=.2),
-                         time=datetime(year=2023, month=3, day=30, hour=10, minute=2, tzinfo=pytz.UTC))
+                         time=datetime(year=2023, month=3, day=30, hour=10, minute=2, tzinfo=timezone.utc))
         ]
 
     def test_json_runtime_settings(self):

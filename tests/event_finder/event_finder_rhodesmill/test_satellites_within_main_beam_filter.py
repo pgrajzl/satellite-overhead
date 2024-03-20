@@ -1,8 +1,6 @@
 from dataclasses import replace
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
-
-import pytz
 
 from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.custom_dataclasses.time_window import TimeWindow
@@ -165,7 +163,7 @@ class TestSatellitesWithinMainBeam:
 
     @property
     def _arbitrary_cutoff_time(self) -> datetime:
-        return datetime.now(tz=pytz.UTC)
+        return datetime.now(tz=timezone.utc)
 
     @staticmethod
     def _replace_antenna_position(antenna_position: PositionTime,

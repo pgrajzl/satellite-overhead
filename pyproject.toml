@@ -2,7 +2,6 @@
 name = "sopp"
 dynamic = ["version"]
 dependencies = [
-    "pytz~=2022.7",
     "sgp4~=2.21",
     "skyfield~=1.47",
     "requests~=2.31.0",

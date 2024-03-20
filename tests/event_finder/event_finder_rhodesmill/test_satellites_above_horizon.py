@@ -1,7 +1,5 @@
 from dataclasses import replace
-from datetime import timedelta, datetime
-
-import pytz
+from datetime import timedelta, datetime, timezone
 
 from sopp.custom_dataclasses.time_window import TimeWindow
 from sopp.custom_dataclasses.position import Position
@@ -143,8 +141,8 @@ class TestSatellitesAboveHorizon:
 
     def satellite_above_horizon(self, time_offset=0):
         time_offset = timedelta(minutes=time_offset)
-        return PositionTime(position=Position(altitude=100, azimuth=100), time=datetime.now(tz=pytz.UTC) + time_offset)
+        return PositionTime(position=Position(altitude=100, azimuth=100), time=datetime.now(tz=timezone.utc) + time_offset)
 
     def satellite_below_horizon(self, time_offset=0):
         time_offset = timedelta(minutes=time_offset)
-        return PositionTime(position=Position(altitude=-100, azimuth=100), time=datetime.now(tz=pytz.UTC) + time_offset)
+        return PositionTime(position=Position(altitude=-100, azimuth=100), time=datetime.now(tz=timezone.utc) + time_offset)

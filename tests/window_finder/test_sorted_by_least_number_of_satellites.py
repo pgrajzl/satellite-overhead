@@ -1,10 +1,9 @@
 from dataclasses import replace
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List
 from pathlib import Path
 
 import pytest
-import pytz
 from sopp.utilities import get_script_directory
 from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
 from sopp.custom_dataclasses.frequency_range.support.get_frequency_data_from_csv import \
@@ -49,31 +48,31 @@ class TestSortedByLeastNumberOfSatellites:
     def _expected_suggestions_search(self) -> List[SuggestedReservation]:
         return [
             SuggestedReservation(
-                suggested_start_time=datetime(year=2022, month=11, day=20, hour=1, tzinfo=pytz.UTC),
+                suggested_start_time=datetime(year=2022, month=11, day=20, hour=1, tzinfo=timezone.utc),
                 ideal_reservation=self._ideal_reservation,
                 overhead_satellites=[]
             ),
 
             SuggestedReservation(
-                suggested_start_time=datetime(year=2022, month=11, day=20, hour=5, tzinfo=pytz.UTC),
+                suggested_start_time=datetime(year=2022, month=11, day=20, hour=5, tzinfo=timezone.utc),
                 ideal_reservation=self._ideal_reservation,
                 overhead_satellites=[]
             ),
 
             SuggestedReservation(
-                suggested_start_time=datetime(year=2022, month=11, day=19, hour=17, tzinfo=pytz.UTC),
+                suggested_start_time=datetime(year=2022, month=11, day=19, hour=17, tzinfo=timezone.utc),
                 ideal_reservation=self._ideal_reservation,
                 overhead_satellites=[]
             ),
 
             SuggestedReservation(
-                suggested_start_time=datetime(year=2022, month=11, day=20, hour=13, tzinfo=pytz.UTC),
+                suggested_start_time=datetime(year=2022, month=11, day=20, hour=13, tzinfo=timezone.utc),
                 ideal_reservation=self._ideal_reservation,
                 overhead_satellites=[]
             ),
 
             SuggestedReservation(
-                suggested_start_time=datetime(year=2022, month=11, day=19, hour=21, tzinfo=pytz.UTC),
+                suggested_start_time=datetime(year=2022, month=11, day=19, hour=21, tzinfo=timezone.utc),
                 ideal_reservation=self._ideal_reservation,
                 overhead_satellites=[OverheadWindow(
                     satellite=Satellite(
@@ -107,15 +106,15 @@ class TestSortedByLeastNumberOfSatellites:
 
                     ),
                     overhead_time=TimeWindow(
-                        begin=datetime(year=2022, month=11, day=19, hour=23, minute=45, second=7, microsecond=540745, tzinfo=pytz.UTC),
-                        end=datetime(year=2022, month=11, day=19, hour=23, minute=45, second=21, microsecond=540745, tzinfo=pytz.UTC)
+                        begin=datetime(year=2022, month=11, day=19, hour=23, minute=45, second=7, microsecond=540745, tzinfo=timezone.utc),
+                        end=datetime(year=2022, month=11, day=19, hour=23, minute=45, second=21, microsecond=540745, tzinfo=timezone.utc)
                     )
 
             )]
             ),
 
             SuggestedReservation(
-                suggested_start_time=datetime(year=2022, month=11, day=20, hour=9, tzinfo=pytz.UTC),
+                suggested_start_time=datetime(year=2022, month=11, day=20, hour=9, tzinfo=timezone.utc),
                 ideal_reservation=self._ideal_reservation,
                 overhead_satellites=[OverheadWindow(
                     satellite=Satellite(
@@ -149,8 +148,8 @@ class TestSortedByLeastNumberOfSatellites:
 
                     ),
                     overhead_time=TimeWindow(
-                        begin=datetime(year=2022, month=11, day=20, hour=12, minute=57, second=59, microsecond=107439, tzinfo=pytz.UTC),
-                        end=datetime(year=2022, month=11, day=20, hour=12, minute=58, second=47, microsecond=107439, tzinfo=pytz.UTC)
+                        begin=datetime(year=2022, month=11, day=20, hour=12, minute=57, second=59, microsecond=107439, tzinfo=timezone.utc),
+                        end=datetime(year=2022, month=11, day=20, hour=12, minute=58, second=47, microsecond=107439, tzinfo=timezone.utc)
 
                     )
 
@@ -180,7 +179,7 @@ class TestSortedByLeastNumberOfSatellites:
     def _ideal_reservation(self) -> Reservation:
         return Reservation(
             facility=ARBITRARY_FACILITY,
-            time=TimeWindow(begin=datetime(year=2022, month=11, day=20, hour=1, tzinfo=pytz.UTC), end=datetime(year=2022, month=11, day=20, hour=5, tzinfo=pytz.UTC)),
+            time=TimeWindow(begin=datetime(year=2022, month=11, day=20, hour=1, tzinfo=timezone.utc), end=datetime(year=2022, month=11, day=20, hour=5, tzinfo=timezone.utc)),
             frequency=FrequencyRange(
                 frequency=None,
                 bandwidth=None

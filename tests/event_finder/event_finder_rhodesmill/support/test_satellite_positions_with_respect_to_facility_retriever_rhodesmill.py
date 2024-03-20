@@ -1,7 +1,5 @@
 from dataclasses import replace
-from datetime import datetime
-
-import pytz
+from datetime import datetime, timezone
 
 from sopp.custom_dataclasses.coordinates import Coordinates
 from sopp.custom_dataclasses.facility import Facility
@@ -16,19 +14,19 @@ from sopp.event_finder.event_finder_rhodesmill.support.satellite_positions_with_
 
 class TestSatellitePositionsWithRespectToFacilityRetrieverRhodesmill:
     def test_altitude_can_be_negative(self):
-        timestamp = datetime(year=2023, month=6, day=7, tzinfo=pytz.UTC)
+        timestamp = datetime(year=2023, month=6, day=7, tzinfo=timezone.utc)
         facility = Facility(Coordinates(latitude=0, longitude=0))
         position = self._get_satellite_position(facility=facility, timestamp=timestamp)
         assert position.position.altitude < 0
 
     def test_azimuth_can_be_greater_than_180(self):
-        timestamp = datetime(year=2023, month=6, day=7, tzinfo=pytz.UTC)
+        timestamp = datetime(year=2023, month=6, day=7, tzinfo=timezone.utc)
         facility = Facility(Coordinates(latitude=0, longitude=0))
         position = self._get_satellite_position(facility=facility, timestamp=timestamp)
         assert position.position.azimuth > 180
 
     def test_altitude_decreases_as_elevation_increases(self):
-        timestamp = datetime(year=2023, month=6, day=7, tzinfo=pytz.UTC)
+        timestamp = datetime(year=2023, month=6, day=7, tzinfo=timezone.utc)
         facility_where_satellite_has_zero_altitude = Facility(Coordinates(latitude=0, longitude=-24.66605))
         same_facility_with_higher_elevation = replace(facility_where_satellite_has_zero_altitude, elevation=1000)
         position_at_horizon = self._get_satellite_position(facility=facility_where_satellite_has_zero_altitude,
