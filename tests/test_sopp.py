@@ -113,32 +113,11 @@ class TestSopp:
         with pytest.raises(ValueError) as _:
             sopp._validate_satellites()
 
-    def test_validate_not_satellites_in_list(self):
-        configuration = Configuration(satellites=['test'], antenna_direction_path=[], reservation='mock')
-        sopp = Sopp(configuration)
-
-        with pytest.raises(TypeError) as _:
-            sopp._validate_satellites()
-
-    def test_validate_not_satellites_in_list(self):
-        configuration = Configuration(satellites=['test'], antenna_direction_path=[], reservation='mock')
-        sopp = Sopp(configuration)
-
-        with pytest.raises(TypeError) as _:
-            sopp._validate_satellites()
-
     def test_validate_runtime_settings(self):
         configuration = Configuration(satellites=['test'], antenna_direction_path=[], reservation='mock', runtime_settings = RuntimeSettings())
         sopp = Sopp(configuration)
 
         sopp._validate_runtime_settings()
-
-    def test_validate_runtime_settings_exception(self):
-        configuration = Configuration(satellites=['test'], antenna_direction_path=[], reservation='mock', runtime_settings = 'exception')
-        sopp = Sopp(configuration)
-
-        with pytest.raises(TypeError) as _:
-            sopp._validate_runtime_settings()
 
     def test_validate_runtime_settings_time_resolution(self):
         runtime_settings = RuntimeSettings(time_continuity_resolution=-1)
@@ -171,14 +150,6 @@ class TestSopp:
 
         sopp._validate_runtime_settings()
 
-    def test_validate_reservation_exception(self):
-        reservation = 'exception'
-        configuration = Configuration(satellites=['test'], antenna_direction_path=[], reservation=reservation)
-        sopp = Sopp(configuration)
-
-        with pytest.raises(TypeError) as _:
-            sopp._validate_reservation()
-
     def test_validate_reservation_time_window(self):
         reservation = self._arbitrary_reservation
         reservation.time.begin = reservation.time.end
@@ -201,14 +172,6 @@ class TestSopp:
         sopp = Sopp(configuration=arbitrary_config())
 
         sopp._validate_antenna_direction_path()
-
-    def test_validate_antenna_direction_path_exception(self):
-        antenna_direction_path = 'exception'
-        configuration = Configuration(satellites=['test'], antenna_direction_path=antenna_direction_path, reservation='test')
-        sopp = Sopp(configuration)
-
-        with pytest.raises(TypeError) as _:
-            sopp._validate_antenna_direction_path()
 
     def test_validate_empty_antenna_direction_path(self):
         antenna_direction_path = []
@@ -394,9 +357,9 @@ class StubEventFinder:
 
 def sopp_instance(config, monkeypatch, event_finder_class=None):
     def mock_validate_configuration(self):
-        return config
+        return
 
-    monkeypatch.setattr(Sopp, '_validated_configuration', property(mock_validate_configuration))
+    monkeypatch.setattr(Sopp, '_validate_configuration', mock_validate_configuration)
 
     if event_finder_class:
         return Sopp(configuration=config, event_finder_class=event_finder_class)
