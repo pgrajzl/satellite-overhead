@@ -38,5 +38,5 @@ class Filterer:
             self._filters.append(filter_lambda)
         return self
 
-    def apply_filters(self, elements: List[T], context: Optional[Any] = None):
-        return [element for element in elements if all(f(element, context) for f in self._filters)]
+    def apply_filters(self, elements: List[T]):
+        return [element for element in elements if all(f(element) for f in self._filters)]
