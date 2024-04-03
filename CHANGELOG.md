@@ -2,6 +2,25 @@
 
 
 
+## v0.8.0 (2024-04-03)
+
+
+### Build
+
+* build: Add python 3.11 and 3.12 to the testing matrix. ([`09a1d55`](https://github.com/NSF-Swift/satellite-overhead/commit/09a1d55ec2bd26998c4c4943426390d8874eac66))
+
+
+### Feature
+
+* feat: Add regex name filtering for satellites list. Available via filter_name_regex() ([`818d007`](https://github.com/NSF-Swift/satellite-overhead/commit/818d007e2d529d1048686f5a55f391c641f75f1f))
+
+
+### Refactor
+
+* refactor: Remove dependency on pytz and instead use the timezone support now included as part of the standard library since python 3.9. ([`4b8ad2a`](https://github.com/NSF-Swift/satellite-overhead/commit/4b8ad2ac71596076a82505a14d94a5bc34d965e5))
+
+
+
 ## v0.7.1 (2024-03-15)
 
 
@@ -187,5 +206,5 @@
 
 
 
-## v0.1.0 (2024-01-10)
+## v0.1.0 (2024-01-09)
 
