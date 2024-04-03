@@ -8,6 +8,7 @@ from sopp.satellites_filter.filters import (
     filter_name_does_not_contain,
     filter_name_is,
     filter_orbit_is,
+    filter_name_regex,
 )
 
 
@@ -69,6 +70,36 @@ class TestFilters:
     def test_orbit_is_type_invalid(self):
         with pytest.raises(ValueError) as _:
             filter_orbit_is(orbit_type='error')(None)
+
+    def test_name_regex_contains(self):
+        expected = [self.sat0, self.sat1]
+        actual = list(filter(filter_name_regex('Satellite'), self.satellites))
+        assert actual == expected
+
+    def test_name_regex_or(self):
+        expected = [self.sat0, self.sat1, self.sat2]
+        actual = list(filter(filter_name_regex('Test|ISS'), self.satellites))
+        assert actual == expected
+
+    def test_name_regex_not_contains(self):
+        expected = [self.sat2, self.sat3]
+        actual = list(filter(filter_name_regex('^(?!.*TestSatellite).*$'), self.satellites))
+        assert actual == expected
+
+    def test_name_regex_starts_with(self):
+        expected = [self.sat2]
+        actual = list(filter(filter_name_regex('^ISS'), self.satellites))
+        assert actual == expected
+
+    def test_name_regex_ends_with(self):
+        expected = [self.sat0, self.sat1]
+        actual = list(filter(filter_name_regex('0$|1$'), self.satellites))
+        assert actual == expected
+
+    def test_name_regex_exact_match(self):
+        expected = [self.sat0]
+        actual = list(filter(filter_name_regex('^TestSatellite0$'), self.satellites))
+        assert actual == expected
 
     @property
     def sat0(self):
