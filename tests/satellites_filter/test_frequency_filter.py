@@ -6,24 +6,6 @@ import pytest
 from pytest_mock import mocker
 
 class TestFrequencyFilter:
-    def test_freq_filter_with_ctx(self, mocker):
-        ctx_mock = mocker.Mock()
-        ctx_mock.frequency_range = self._arbitrary_frequency
-
-        frequency_filtered_sats = [
-            satellite for satellite in [self._arbitrary_satellite_in_band, self._arbitrary_satellite_out_of_band()]
-            if filter_frequency()(satellite, ctx_mock)
-        ]
-        assert frequency_filtered_sats == [
-            Satellite(
-                name='name',
-                frequency=[FrequencyRange(
-                    frequency=136,
-                    bandwidth=None
-                )]
-            )
-        ]
-
     def test_single_sat_no_bandwidth(self):
         frequency_filtered_sats = list(filter(filter_frequency(self._arbitrary_frequency), [self._arbitrary_satellite_in_band]))
         assert frequency_filtered_sats == [

@@ -159,7 +159,7 @@ class ConfigurationBuilder:
         return self
 
     def _filter_satellites(self):
-        self.satellites = self._filterer.apply_filters(self.satellites, self)
+        self.satellites = self._filterer.apply_filters(self.satellites)
 
     def _build_reservation(self):
         self.reservation = Reservation(

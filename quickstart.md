@@ -176,7 +176,7 @@ configuration.set_satellites_filter(
 Alternatively to constructing a `Filterer` object you can simply call `add_filter()`
 
 ```python
-configuration.add_filter(filter_frequency())
+configuration.add_filter(filter_frequency(FrequencyRange(10, 10)))
 ```
 
 #### `set_runtime_settings()`
@@ -280,17 +280,29 @@ The `Satellite` class, containins details about the satellite and a list of Posi
 
 The list of satellites can be filtered by using a `Filterer` object, adding filters to it and then passing the `Filterer` object to a `ConfigurationBuilder`. The user can define any filtering logic wanted, however a few built in filters are provided. If the filtering condition evaluates to `True` the Satellite will be included in the final list.
 If `None` is passed to any of the filters, no filtering for that specific filter will be applied.
-Alternatively to passing a `Filterer` object to the `ConfigurationBuilder` via `set_satellites_filter`, filters can simply be added with `add_filter(filter_frequency())`.
+Alternatively to passing a `Filterer` object to the `ConfigurationBuilder` via `set_satellites_filter`, filters can simply be added with `add_filter(filter_name_contains('STARLINK'))`.
 
 The provided filters accessible from `sopp.satellites_filter.filters` include:
 
 #### `filter_frequency()`:
 
+Parameters:
+    - observation_frequency (FrequencyRange): The observation frequency range.
+
 returns `True` if a satellite's downlink transmission frequency
 overlaps with the desired observation frequency. If there is no information
 on the satellite frequency, it will return True to err on the side of caution
-for potential interference. Accepts a `FrequencyRange` object, if none is provided it will
-default to the `Reservation` frequency, if available.
+for potential interference. Requires a `FrequencyRange` object.
+
+#### `filter_name_regex()`:
+
+Parameters:
+    - regex (str): The regex to match for in the satellite names.
+
+returns `True` if a given regex matches in the name of a Satellite.
+
+Example: filter_name_regex('YAM|ZARYA') will return a list of satellites that
+contain YAM or ZARYA within their name.
 
 #### `filter_name_contains()`:
 
