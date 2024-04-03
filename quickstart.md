@@ -294,6 +294,16 @@ overlaps with the desired observation frequency. If there is no information
 on the satellite frequency, it will return True to err on the side of caution
 for potential interference. Requires a `FrequencyRange` object.
 
+#### `filter_name_regex()`:
+
+Parameters:
+    - regex (str): The regex to match for in the satellite names.
+
+returns `True` if a given regex matches in the name of a Satellite.
+
+Example: filter_name_regex('YAM|ZARYA') will return a list of satellites that
+contain YAM or ZARYA within their name.
+
 #### `filter_name_contains()`:
 
 Parameters:
