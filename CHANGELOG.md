@@ -2,6 +2,10 @@
 
 
 
+## v0.8.1 (2024-04-04)
+
+
+
 ## v0.8.0 (2024-04-03)
 
 
@@ -15,9 +19,19 @@
 * feat: Add regex name filtering for satellites list. Available via filter_name_regex() ([`818d007`](https://github.com/NSF-Swift/satellite-overhead/commit/818d007e2d529d1048686f5a55f391c641f75f1f))
 
 
+### Fix
+
+* fix: Add validation for Sopp class parameters. ([`4bdf787`](https://github.com/NSF-Swift/satellite-overhead/commit/4bdf787817d466a75ee56f2753343577c0c99d04))
+
+
 ### Refactor
 
 * refactor: Remove dependency on pytz and instead use the timezone support now included as part of the standard library since python 3.9. ([`4b8ad2a`](https://github.com/NSF-Swift/satellite-overhead/commit/4b8ad2ac71596076a82505a14d94a5bc34d965e5))
+
+
+### Test
+
+* test: Add validation tests for Sopp parameter validation. ([`ba077db`](https://github.com/NSF-Swift/satellite-overhead/commit/ba077db3a13b7c1ab4d6266db67e4b7ac390b422))
 
 
 
