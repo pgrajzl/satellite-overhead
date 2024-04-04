@@ -15,6 +15,7 @@ from sopp.custom_dataclasses.satellite.international_designator import Internati
 from sopp.custom_dataclasses.satellite.mean_motion import MeanMotion
 from sopp.custom_dataclasses.satellite.tle_information import TleInformation
 from sopp.custom_dataclasses.time_window import TimeWindow
+from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 
 
 def assert_overhead_windows_eq(actual: OverheadWindow, expected: OverheadWindow) -> None:
@@ -26,13 +27,15 @@ def assert_overhead_windows_eq(actual: OverheadWindow, expected: OverheadWindow)
 
 
 class TestSopp:
-    def test_get_satellites_above_horizon(self):
-        assert overhead_windows() == self._sopp.get_satellites_above_horizon()
+    def test_get_satellites_above_horizon(self, monkeypatch):
+        sopp = sopp_instance(arbitrary_config(), monkeypatch, event_finder_class=StubEventFinder)
+        assert overhead_windows() == sopp.get_satellites_above_horizon()
 
-    def test_get_satellites_crossing_main_beam(self):
-        assert overhead_windows() == self._sopp.get_satellites_crossing_main_beam()
+    def test_get_satellites_crossing_main_beam(self, monkeypatch):
+        sopp = sopp_instance(arbitrary_config(), monkeypatch, event_finder_class=StubEventFinder)
+        assert overhead_windows() == sopp.get_satellites_crossing_main_beam()
 
-    def test_arbitray_inputs_match_expected_output(self):
+    def test_arbitray_inputs_match_expected_output(self, monkeypatch):
         antenna_positions = [PositionTime(position=Position(altitude=32, azimuth=320), time=self._arbitrary_reservation.time.begin)]
 
         configuration = Configuration(
@@ -41,7 +44,7 @@ class TestSopp:
             antenna_direction_path=antenna_positions,
         )
 
-        sopp = Sopp(configuration)
+        sopp = sopp_instance(configuration, monkeypatch)
 
         actual_satellites_above_horizon = sopp.get_satellites_above_horizon()
         actual_interference_windows = sopp.get_satellites_crossing_main_beam()
@@ -103,19 +106,89 @@ class TestSopp:
         assert_overhead_windows_eq(actual_satellites_above_horizon[1], expected_satellites_above_horizon[1])
         assert_overhead_windows_eq(actual_interference_windows[0], expected_interference_windows[0])
 
-    @property
-    def _sopp(self):
-        sopp = Sopp(configuration=self._configuration, event_finder_class=StubEventFinder)
-        return sopp
+    def test_validate_empty_satellites_list(self):
+        configuration = Configuration(satellites=[], antenna_direction_path=[], reservation='mock')
+        sopp = Sopp(configuration)
 
-    @property
-    def _configuration(self):
-        configuration = Configuration(
-            satellites='holder',
-            antenna_direction_path='holder',
-            reservation='holder',
-        )
-        return configuration
+        with pytest.raises(ValueError) as _:
+            sopp._validate_satellites()
+
+    def test_validate_runtime_settings(self):
+        configuration = Configuration(satellites=['test'], antenna_direction_path=[], reservation='mock', runtime_settings = RuntimeSettings())
+        sopp = Sopp(configuration)
+
+        sopp._validate_runtime_settings()
+
+    def test_validate_runtime_settings_time_resolution(self):
+        runtime_settings = RuntimeSettings(time_continuity_resolution=-1)
+        configuration = Configuration(satellites=['test'], antenna_direction_path=[], reservation='mock', runtime_settings = runtime_settings)
+        sopp = Sopp(configuration)
+
+        with pytest.raises(ValueError) as _:
+            sopp._validate_runtime_settings()
+
+    def test_validate_runtime_settings_concurrency(self):
+        runtime_settings = RuntimeSettings(concurrency_level=0)
+        configuration = Configuration(satellites=['test'], antenna_direction_path=[], reservation='mock', runtime_settings = runtime_settings)
+        sopp = Sopp(configuration)
+
+        with pytest.raises(ValueError) as _:
+            sopp._validate_runtime_settings()
+
+    def test_validate_minimum_altitude(self):
+        runtime_settings = RuntimeSettings(min_altitude=-1)
+        configuration = Configuration(satellites=['test'], antenna_direction_path=[], reservation='mock', runtime_settings = runtime_settings)
+        sopp = Sopp(configuration)
+
+        with pytest.raises(ValueError) as _:
+            sopp._validate_runtime_settings()
+
+    def test_validate_reservation(self):
+        reservation = self._arbitrary_reservation
+        configuration = Configuration(satellites=['test'], antenna_direction_path=[], reservation=reservation)
+        sopp = Sopp(configuration)
+
+        sopp._validate_runtime_settings()
+
+    def test_validate_reservation_time_window(self):
+        reservation = self._arbitrary_reservation
+        reservation.time.begin = reservation.time.end
+        configuration = Configuration(satellites=['test'], antenna_direction_path=[], reservation=reservation)
+        sopp = Sopp(configuration)
+
+        with pytest.raises(ValueError) as _:
+            sopp._validate_reservation()
+
+    def test_validate_reservation_beamwidth(self):
+        reservation = self._arbitrary_reservation
+        reservation.facility.beamwidth = 0
+        configuration = Configuration(satellites=['test'], antenna_direction_path=[], reservation=reservation)
+        sopp = Sopp(configuration)
+
+        with pytest.raises(ValueError) as _:
+            sopp._validate_reservation()
+
+    def test_validate_antenna_direction_path(self):
+        sopp = Sopp(configuration=arbitrary_config())
+
+        sopp._validate_antenna_direction_path()
+
+    def test_validate_empty_antenna_direction_path(self):
+        antenna_direction_path = []
+        configuration = Configuration(satellites=['test'], antenna_direction_path=antenna_direction_path, reservation='test')
+        sopp = Sopp(configuration)
+
+        with pytest.raises(ValueError) as _:
+            sopp._validate_antenna_direction_path()
+
+    def test_validate_antenna_direction_path_increasing_times(self):
+        config = arbitrary_config()
+        config.antenna_direction_path.append(config.antenna_direction_path[0])
+
+        sopp = Sopp(config)
+
+        with pytest.raises(ValueError) as _:
+            sopp._validate_antenna_direction_path()
 
     @property
     def _arbitrary_reservation(self) -> Reservation:
@@ -282,6 +355,29 @@ class StubEventFinder:
     def get_satellites_crossing_main_beam(self):
         return overhead_windows()
 
+def sopp_instance(config, monkeypatch, event_finder_class=None):
+    def mock_validate_configuration(self):
+        return
+
+    monkeypatch.setattr(Sopp, '_validate_configuration', mock_validate_configuration)
+
+    if event_finder_class:
+        return Sopp(configuration=config, event_finder_class=event_finder_class)
+    else:
+        return Sopp(configuration=config)
+
+def arbitrary_config():
+    configuration = Configuration(
+        satellites='holder',
+        antenna_direction_path=[
+            PositionTime(
+                position=Position(altitude=0.011527751634842421, azimuth=31.169677715036304),
+                time=datetime(2023, 3, 30, 14, 39, 35, tzinfo=timezone.utc)
+            )
+        ],
+        reservation='holder',
+    )
+    return configuration
 
 def overhead_windows():
     return [
