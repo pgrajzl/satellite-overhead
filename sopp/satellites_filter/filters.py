@@ -19,14 +19,13 @@ def filter_frequency(observation_frequency: FrequencyRange) -> Callable[[Satelli
     - A lambda function that takes a Satellite object and returns True if the conditions
       for frequency filtering are met, False otherwise.
     """
-    def filter_function(satellite: Satellite, ctx: Optional[Any] = None) -> bool:
-        frequency_range = observation_frequency or (ctx and ctx.frequency_range)
-        if frequency_range:
+    def filter_function(satellite: Satellite) -> bool:
+        if observation_frequency:
             return (
                 not satellite.frequency
                 or any(sf.frequency is None for sf in satellite.frequency)
                 or any(
-                    sf.status != 'inactive' and frequency_range.overlaps(sf)
+                    sf.status != 'inactive' and observation_frequency.overlaps(sf)
                     for sf in satellite.frequency
                 )
             )
