@@ -50,8 +50,8 @@ class TestFromCsv:
                 status='active'
             ),
             FrequencyRange(
-                frequency=500,
-                bandwidth=200,
+                frequency=700,
+                bandwidth=10,
                 status='active'
             )
         ]
