@@ -25,8 +25,7 @@ class GetFrequencyDataFromCsv:
     ________________________________________________________________________________________________________
     | LineNo |   ID   |   Name   |   Frequency   |   Bandwidth   |   Status   |   Description   |  Source  |
 
-    With all values in the frequency column of the same order of magnitude (typically MHz). The same goes for bandwidth. These columns should have the
-    integer value alone.
+    With all values in the frequency column of the same order of magnitude (typically MHz). The same goes for bandwidth. These columns should have the integer value alone.
 
 
     '''
@@ -60,7 +59,8 @@ class GetFrequencyDataFromCsv:
     def _get_bandwidth(line: Dict[str, str]):
         bandwidth = line[FrequencyCsvKeys.BANDWIDTH.value]
         try:
-            return float(bandwidth.split()[0])
+            bandwidth = float(bandwidth.split()[0])
+            return GetFrequencyDataFromCsv.convert_khz_to_mhz(bandwidth)
         except (TypeError, ValueError, IndexError):
             return None
 
@@ -68,6 +68,10 @@ class GetFrequencyDataFromCsv:
     def _get_status(line: Dict[str, str]):
         status = line[FrequencyCsvKeys.STATUS.value].lower()
         return status
+
+    @staticmethod
+    def convert_khz_to_mhz(khz: float):
+        return khz / 1000
 
     @property
     def _data(self) -> List[Dict[str, str]]:
