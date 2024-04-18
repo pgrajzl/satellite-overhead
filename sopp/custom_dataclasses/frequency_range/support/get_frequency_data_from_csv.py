@@ -47,30 +47,26 @@ class GetFrequencyDataFromCsv:
 
         return frequencies
 
-    @staticmethod
-    def _get_frequency(line: Dict[str, str]):
+    def _get_frequency(self, line: Dict[str, str]):
         frequency = line[FrequencyCsvKeys.FREQUENCY.value]
         try:
             return float(frequency)
         except (TypeError, ValueError):
             return None
 
-    @staticmethod
-    def _get_bandwidth(line: Dict[str, str]):
+    def _get_bandwidth(self, line: Dict[str, str]):
         bandwidth = line[FrequencyCsvKeys.BANDWIDTH.value]
         try:
             bandwidth = float(bandwidth.split()[0])
-            return GetFrequencyDataFromCsv.convert_khz_to_mhz(bandwidth)
+            return self._convert_khz_to_mhz(bandwidth)
         except (TypeError, ValueError, IndexError):
             return None
 
-    @staticmethod
-    def _get_status(line: Dict[str, str]):
+    def _get_status(self, line: Dict[str, str]):
         status = line[FrequencyCsvKeys.STATUS.value].lower()
         return status
 
-    @staticmethod
-    def convert_khz_to_mhz(khz: float):
+    def _convert_khz_to_mhz(self, khz: float):
         return khz / 1000
 
     @property
