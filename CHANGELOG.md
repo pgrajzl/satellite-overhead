@@ -2,6 +2,15 @@
 
 
 
+## v0.8.2 (2024-04-18)
+
+
+### Fix
+
+* fix: Convert bandwidth data read from FrequencyData.csv to MHz. ([`28091ea`](https://github.com/NSF-Swift/satellite-overhead/commit/28091ea603533b343ab26fde98024cdaca160ae5))
+
+
+
 ## v0.8.1 (2024-04-04)
 
 
