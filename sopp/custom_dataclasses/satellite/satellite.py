@@ -11,6 +11,9 @@ from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRan
 from sopp.custom_dataclasses.satellite.tle_information import TleInformation
 from sopp.utilities import temporary_file
 
+from transmitter import Transmitter
+from antenna import Antenna
+
 '''
 The Satellite data class stores all of the TLE information for each satellite, which is loaded from a TLE file using the class method from_tle_file()
 and can be converted to a Skyfield API object EarthSatellite using the to_rhodesmill() method. It also stores all the frequency information
@@ -34,6 +37,8 @@ class Satellite:
     name: str
     tle_information: Optional[TleInformation] = None
     frequency: List[FrequencyRange] = field(default_factory=list)
+    transmitter: Transmitter = field(default_factory=Transmitter) 
+    antenna: Antenna = field(default_factory=Antenna)
 
     def to_rhodesmill(self) -> EarthSatellite:
         line1, line2 = self.tle_information.to_tle_lines()
