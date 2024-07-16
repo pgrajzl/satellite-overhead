@@ -1,4 +1,6 @@
 import numpy as np
+from healpix import HealpixGainPattern
+from healpix import HealpixLoader
 
 class FrequencyRange:
     def __init__(self, min_frequency, max_frequency):
@@ -6,21 +8,27 @@ class FrequencyRange:
         self.max_frequency = max_frequency
 
 class Antenna:
-    def __init__(self, frequency_range, gain_pattern=5.0, direction=6.0, steering_angle=0.0, polarization='linear', phased_array=None):
-        self.gain_pattern = gain_pattern  # Function representing gain pattern
+    def __init__(self, frequency_range, healpix_gain_pattern=None, direction=6.0, steering_angle=0.0, polarization='linear', phased_array=None):
         self.direction = direction  # Dictionary for steering angle and satellite direction
         self.steering_angle = steering_angle
         self.frequency_range = frequency_range  # FrequencyRange object for frequency band
         self.polarization = polarization  # Polarization type (default: linear)
         self.phased_array = phased_array  # Phased array properties (optional)
 
+        # Initialize gain pattern with HEALPix if provided
+        if healpix_gain_pattern is not None:
+            self.gain_pattern = HealpixGainPattern(healpix_gain_pattern)
+        else:
+            self.gain_pattern = 5.0  # Default gain pattern if HEALPix not provided
+
     def get_gain(self, theta, phi):
         """
-        Calculate gain of the antenna at a given direction (theta, phi).
-        Theta is the elevation angle (0 to pi).
-        Phi is the azimuth angle (0 to 2*pi).
+        Get antenna gain at specific spherical coordinates (theta, phi).
         """
-        return self.gain_pattern(theta, phi)
+        if isinstance(self.gain_pattern, float):  # Handle default gain pattern case
+            return self.gain_pattern
+        else:
+            return self.gain_pattern.get_gain(theta, phi)
 
     def set_direction(self, steering_angle, satellite_direction):
         """
@@ -82,3 +90,25 @@ if __name__ == "__main__":
     }
     antenna.set_phased_array_properties(new_phased_array_properties)
     print(f"New phased array properties: {antenna.phased_array}")
+
+    # Example usage
+if __name__ == "__main__":
+    # Example CSV file path
+    csv_file = 'antenna_gain_pattern.csv'
+
+    # Create HealpixLoader instance
+    healpix_loader = HealpixLoader(csv_file)
+
+    # Load HEALPix gain pattern
+    healpix_gain = healpix_loader.load_healpix_gain_pattern()
+
+    # Create Antenna instance with HEALPix gain pattern
+    frequency_range = {'min': 5.0, 'max': 6.0}  # Example frequency range
+    antenna = Antenna(frequency_range, healpix_gain_pattern=healpix_gain)
+
+    # Example usage: get gain at specific spherical coordinates
+    theta_example = 45  # Elevation angle in degrees
+    phi_example = 90   # Azimuth angle in degrees
+    gain_example = antenna.get_gain(theta_example, phi_example)
+
+    print(f"Gain at (theta={theta_example}°, phi={phi_example}°): {gain_example}")

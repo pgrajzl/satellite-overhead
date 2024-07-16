@@ -18,6 +18,8 @@ from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 from sopp.custom_dataclasses.power_time import PowerTime
 from sopp.custom_dataclasses.power_window import PowerWindow
 
+from sopp.custom_dataclasses.antenna import Antenna
+
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.event_finder.event_finder_rhodesmill.support.satellite_positions_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever_rhodesmill import \
     SatellitePositionsWithRespectToFacilityRetrieverRhodesmill
@@ -101,8 +103,8 @@ class SatellitesInterferenceFilter:
         return segments_of_power_times
     
     def convert_position_to_power(self, satellite: Satellite, position_time: PositionTime) -> PowerTime:
-        rec_gain = Facility.receiver.antenna_gain
-        trans_gain = satellite.transmitter.gain
+        rec_gain = Facility.antenna.gain_pattern.get_gain
+        trans_gain = satellite.antenna.gain_pattern.get_gain
         trans_pow = satellite.transmitter.power
         distance = position_time.position.distance_km
         wavelength = 10
