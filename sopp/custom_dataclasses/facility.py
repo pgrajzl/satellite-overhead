@@ -4,8 +4,8 @@ from typing import List, Optional
 
 from sopp.custom_dataclasses.position_time import PositionTime
 
-from antenna import Antenna
-from receiver import Receiver
+from sopp.custom_dataclasses.antenna import Antenna
+from sopp.custom_dataclasses.receiver import Receiver
 
 @dataclass
 class Facility:

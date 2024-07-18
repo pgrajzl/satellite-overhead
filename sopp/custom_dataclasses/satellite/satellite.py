@@ -11,8 +11,9 @@ from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRan
 from sopp.custom_dataclasses.satellite.tle_information import TleInformation
 from sopp.utilities import temporary_file
 
-from transmitter import Transmitter
-from antenna import Antenna
+from sopp.custom_dataclasses.satellite.transmitter import Transmitter
+from sopp.custom_dataclasses.antenna import Antenna
+
 
 '''
 The Satellite data class stores all of the TLE information for each satellite, which is loaded from a TLE file using the class method from_tle_file()

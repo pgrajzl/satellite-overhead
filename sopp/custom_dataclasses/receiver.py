@@ -1,6 +1,6 @@
 class Receiver:
-    def __init__(self, modulation='QAM', noise_figure=5, frequency=2.4e9, bandwidth=20e6,
-                 antenna_gain=20, system_temperature=300, data_rate=None):
+    def __init__(self, modulation: str, noise_figure: float, frequency: float, bandwidth: float,
+                 antenna_gain: float, system_temperature: float, data_rate=None):
         self.modulation = modulation  # Modulation type
         self.noise_figure = noise_figure  # Noise figure in dB
         self.frequency = frequency  # Operating frequency in Hertz
