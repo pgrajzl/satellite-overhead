@@ -1,4 +1,7 @@
 import math
+import numpy as np
+
+from typing import List
 
 from sopp.custom_dataclasses.configuration import Configuration
 from sopp.custom_dataclasses.position_time import PositionTime
@@ -6,6 +9,80 @@ from sopp.custom_dataclasses.satellite.satellite import Satellite
 
 R = 6371.0  # approximate radius of Earth in km
 base_alt = 500 # relative average of altitude in km, tbd might need to change or alter value
+
+class CartesianCoordinate:
+    def __init__(self, x: float, y: float, z: float):
+        self.x = x  # x-coordinate
+        self.y = y  # y-coordinate
+        self.z = z  # z-coordinate
+
+    def set_coordinates(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def get_coordinates(self):
+        return self.x, self.y, self.z
+    
+    def pass_to_rotation_matrix(self, gamma: float, phi: float):
+        matrixOne = np.array([
+            [np.cos(gamma), -np.sin(gamma), 0],
+            [np.sin(gamma), np.cos(gamma), 0],
+            [0, 0, 1]
+        ])
+
+        matrixTwo = np.array([
+            [np.cos(phi), 0, np.sin(phi)],
+            [0, 1, 0],
+            [-np.sin(phi), 0, np.cos(phi)]
+        ])
+        origMatrix = np.matmul(matrixOne, matrixTwo)
+        totMatrix = origMatrix.T
+        cartesianArray = np.array([self.x,self.y,self.z])
+        return self.apply_rotation(totMatrix,cartesianArray)
+    
+    def apply_rotation(matrix: np.ndarray, vector: np.ndarray) -> np.ndarray:
+        """
+        Apply rotation matrix to a vector of Cartesian coordinates.
+    
+        Args:
+        - matrix (np.ndarray): 3x3 rotation matrix
+        - vector (np.ndarray): 1x3 vector of Cartesian coordinates [x, y, z]
+    
+        Returns:
+        - np.ndarray: Resulting vector after rotation
+        """
+        return np.matmul(matrix, vector)
+    
+    def cartesian_to_spherical(self) -> List[float]:
+        """
+        Convert Cartesian coordinates to spherical coordinates.
+        """
+
+        x = self.x
+        y = self.y
+        z = self.z
+
+        r = np.sqrt(x**2 + y**2 + z**2)  # Radial distance
+
+        theta = np.arccos(z/r)
+
+        if x > 0:
+            phi = np.arctan(y/x)
+        if x < 0 and y >= 0:
+            phi = np.arctan(y/x) + np.pi
+        if x < 0 and y < 0:
+            phi = np.arctan(y/x) - np.pi
+        if x == 0 and y > 0:
+            phi = np.pi/2
+        if x == 0 and y < 0:
+            phi = -np.pi/2
+        if x == 0 and y == 0:
+            phi = 0 # default value because this is undefined, maybe change this to some other value?
+
+        return [theta, phi]
+
+
 
 class SatelliteLinkBudgetAngleCalculator:
     def __init__(self, ground_antenna_direction: PositionTime, satellite_position: PositionTime, satellite: Satellite):
@@ -15,11 +92,35 @@ class SatelliteLinkBudgetAngleCalculator:
 
     def get_link_angles(self):
         results = []
-        results.append(self.calculate_altitude_difference_ground)
-        results.append(self.calculate_azimuth_difference_ground)
-        results.append(self.calculate_altitude_difference_space)
-        results.append(self.calculate_azimuth_difference_space)
-        return results  #results are in alt, az for home antenna first and then alt, az for satellite antenna
+        ground_ab = self.calculate_ab_ground()
+        sat_ab = self.calculate_ab_sat()
+        results.append(ground_ab[0])
+        results.append(ground_ab[1])
+        results.append(sat_ab[0])
+        results.append(sat_ab[1])
+        return results  #results are in alpha, beta for each 
+    
+    def calculate_ab_ground(self) -> List[float]: #calculates the alpha and beta angles for gain pattern of the ground antenna
+        satellite_cartesian = self.satellite_position.position.to_cartesian()
+        rotated_vector = satellite_cartesian.pass_to_rotation_matrix(self.ground_antenna_direction.position.azimuth, (90-self.ground_antenna_direction.position.altitude))
+        x = rotated_vector[0]
+        y = rotated_vector[1]
+        z = rotated_vector[2]
+        new_coordinate = CartesianCoordinate(x,y,z)
+        return new_coordinate.cartesian_to_spherical()
+    
+    def calculate_ab_sat(self) -> List[float]: #calculates the alpha and beta angles for gain pattern of the satellite antenna
+        #assuming that we can just invert the cartesian coordinate system, this works in the exact same way as above
+        ground_cartesian = self.satellite_position.position.to_cartesian()
+        rotated_vector = ground_cartesian.pass_to_rotation_matrix(self.satellite.antenna.direction.azimuth, (90-self.satellite.antenna.direction.altitude))
+        x = rotated_vector[0]
+        y = rotated_vector[1]
+        z = rotated_vector[2]
+        new_coordinate = CartesianCoordinate(x,y,z)
+        return new_coordinate.cartesian_to_spherical()
+
+
+    #### some of the functions below this were used before and might become useful for additional algorithms in the future, but are not in use in this file
 
 
     def calculate_azimuth_difference_ground(self): #between antenna direction and direction to satellite
@@ -64,6 +165,7 @@ class SatelliteLinkBudgetAngleCalculator:
         to_ret = pointing_complement - satellite_azimuth
 
         return to_ret
+    
 
     def law_of_cosines_angle_c(a, b, c):
         # Ensure sides are positive (valid triangle sides)
