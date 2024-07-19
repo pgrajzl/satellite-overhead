@@ -93,7 +93,7 @@ class HealpixGainPattern:
     def __init__(self, healpix_gain):
         self.healpix_gain = healpix_gain
 
-    def get_gain(self, theta, phi):
+    def get_gain(self, theta: float, phi: float):
         """
         Get gain at specific spherical coordinates (theta, phi).
         """

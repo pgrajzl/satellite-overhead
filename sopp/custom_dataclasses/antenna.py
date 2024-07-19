@@ -3,13 +3,15 @@ import numpy as np
 from sopp.healpix  import HealpixGainPattern
 from sopp.healpix  import HealpixLoader
 
+from sopp.custom_dataclasses.position import Position
+
 class FrequencyRange:
     def __init__(self, min_frequency, max_frequency):
         self.min_frequency = min_frequency
         self.max_frequency = max_frequency
 
 class Antenna:
-    def __init__(self, frequency_range: FrequencyRange, healpix_gain_pattern: HealpixGainPattern, direction: float, steering_angle: float, polarization='linear', phased_array=None):
+    def __init__(self, frequency_range: FrequencyRange, healpix_gain_pattern: HealpixGainPattern, direction: Position, steering_angle: float, polarization='linear', phased_array=None):
         self.direction = direction  # Dictionary for steering angle and satellite direction
         self.steering_angle = steering_angle
         self.frequency_range = frequency_range  # FrequencyRange object for frequency band

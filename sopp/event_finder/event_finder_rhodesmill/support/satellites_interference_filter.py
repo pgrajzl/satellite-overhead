@@ -24,6 +24,7 @@ from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.event_finder.event_finder_rhodesmill.support.satellite_positions_with_respect_to_facility_retriever.satellite_positions_with_respect_to_facility_retriever_rhodesmill import \
     SatellitePositionsWithRespectToFacilityRetrieverRhodesmill
 
+from sopp.event_finder.event_finder_rhodesmill.support.satellite_link_budget_angle_calc import SatelliteLinkBudgetAngleCalculator
 
 DEGREES_IN_A_CIRCLE = 360
 
@@ -92,7 +93,7 @@ class SatellitesInterferenceFilter:
                 in_view = self._filter_strategy.is_in_view(satellite_position.position, antenna_position.antenna_direction.position)
 
                 if in_view:
-                    power_times_in_view.append(self.convert_position_to_power(satellite, satellite_position))
+                    power_times_in_view.append(self.convert_position_to_power(antenna_position.antenna_direction, satellite, satellite_position))
                 elif power_times_in_view:
                     segments_of_power_times.append(power_times_in_view)
                     power_times_in_view = []
@@ -102,16 +103,17 @@ class SatellitesInterferenceFilter:
 
         return segments_of_power_times
     
-    def convert_position_to_power(self, satellite: Satellite, position_time: PositionTime) -> PowerTime:
-        rec_gain = Facility.antenna.gain_pattern.get_gain
-        trans_gain = satellite.antenna.gain_pattern.get_gain
+    def convert_position_to_power(self, antenna_position: PositionTime, satellite: Satellite, position_time: PositionTime) -> PowerTime:
+        calculator_instance = SatelliteLinkBudgetAngleCalculator(antenna_position, position_time, satellite)
+        link_array = calculator_instance.get_link_angles
+        rec_gain = Facility.antenna.gain_pattern.get_gain(link_array[0],link_array[1]) # in altitude and azimuth, currently
+        trans_gain = satellite.antenna.gain_pattern.get_gain(link_array[2],link_array[3]) # also in altitude and azimuth, currently
         trans_pow = satellite.transmitter.power
         distance = position_time.position.distance_km
-        wavelength = 10
+        wavelength = (299792458)/satellite.transmitter.frequency
         freespace_loss = ((4 * math.pi * distance)/wavelength)**2
         power_value = (trans_pow * trans_gain * rec_gain)/(freespace_loss)
         return PowerTime(power=power_value, time=position_time.time)
-        
 
     @cached_property
     def _antenna_positions_by_time(self) -> List[AntennaPosition]:
