@@ -109,9 +109,38 @@ class SatelliteLinkBudgetAngleCalculator:
         new_coordinate = CartesianCoordinate(x,y,z)
         return new_coordinate.cartesian_to_spherical()
     
+    ## maybe have to add a negative or keep the previous coordinate frame for this: 
+    
+    ## Non-rotated version, keeping same coordinate frame as before
     def calculate_ab_sat(self) -> List[float]: #calculates the alpha and beta angles for gain pattern of the satellite antenna
-        #assuming that we can just invert the cartesian coordinate system, this works in the exact same way as above
+        
         ground_cartesian = self.satellite_position.position.to_cartesian()
+        ground_cartesian.x = -x
+        ground_cartesian.y = -y
+        ground_cartesian.z = -z
+        rotated_vector = ground_cartesian.pass_to_rotation_matrix(self.satellite.antenna.direction.azimuth, (90-self.satellite.antenna.direction.altitude))
+        x = rotated_vector[0]
+        y = rotated_vector[1]
+        z = rotated_vector[2]
+        new_coordinate = CartesianCoordinate(x,y,z)
+        return new_coordinate.cartesian_to_spherical()
+    
+    ## Rotated version,such that x and y remain the same but now we must add a negative to the z (180 degree rotation of xy plane)
+    def calculate_ab_satRot(self) -> List[float]: #calculates the alpha and beta angles for gain pattern of the satellite antenna
+        
+        ground_cartesian = self.satellite_position.position.to_cartesian()
+        ground_cartesian.z = -z
+        rotated_vector = ground_cartesian.pass_to_rotation_matrix(self.satellite.antenna.direction.azimuth, (90-self.satellite.antenna.direction.altitude))
+        x = rotated_vector[0]
+        y = rotated_vector[1]
+        z = rotated_vector[2]
+        new_coordinate = CartesianCoordinate(x,y,z)
+        return new_coordinate.cartesian_to_spherical()
+
+    def calculate_ab_sat_sFrame(self) -> List[float]: #calculates the alpha and beta angles for gain pattern of the satellite antenna
+        # sat z is down towards Earth, sat x is in the opposite direction of our ground x, and y is in the same direction
+        ground_cartesian = self.satellite_position.position.to_cartesian()
+        ground_cartesian.y = -y
         rotated_vector = ground_cartesian.pass_to_rotation_matrix(self.satellite.antenna.direction.azimuth, (90-self.satellite.antenna.direction.altitude))
         x = rotated_vector[0]
         y = rotated_vector[1]

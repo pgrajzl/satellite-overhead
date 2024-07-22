@@ -9,6 +9,8 @@ from sopp.event_finder.event_finder_rhodesmill.support.satellite_positions_with_
     SatellitePositionsWithRespectToFacilityRetriever
 from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 
+from sopp.custom_dataclasses.power_window import PowerWindow
+
 
 class EventFinder(ABC):
     '''
@@ -41,4 +43,8 @@ class EventFinder(ABC):
 
     @abstractmethod
     def get_satellites_crossing_main_beam(self) -> List[OverheadWindow]:
+        pass
+
+    @abstractmethod
+    def get_satellite_power(self) -> List[PowerWindow]:
         pass
