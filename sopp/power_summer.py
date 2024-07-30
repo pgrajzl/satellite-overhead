@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 from sopp.custom_dataclasses.power_window import PowerWindow
 from sopp.custom_dataclasses.power_time import PowerTime
 
+### TO BE USED WITH POWER WINDOWS ###
+
 def sum_power(powerwindows: List[PowerWindow]):
     # Dictionary to store accumulated power for each second
     power_sum = defaultdict(float)

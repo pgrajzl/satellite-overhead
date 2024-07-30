@@ -19,6 +19,7 @@ from sopp.custom_dataclasses.power_time import PowerTime
 from sopp.custom_dataclasses.power_window import PowerWindow
 
 from sopp.power_summer import sum_power
+from sopp.custom_dataclasses.power_array import PowerArray
 
 
 class PowerSopp:
@@ -91,11 +92,44 @@ config = Configuration()
 
 # Create an instance of PowerSopp
 power_sopp = PowerSopp(config, PowerFinderRhodesmill)
+sums = sum_power(power_sopp.get_power_from_sats())
+power_array = power_sopp._event_finder.power_array #contains the array of powers for each time, with index 0 corresponding to start time, in seconds
 
+"""
+    Plot float values as bars with indices on the x-axis and float values on the y-axis.
+    
+    Parameters:
+    float_values (list or array): A list or array of float values to be plotted.
+"""
+# Generate the x values (indices)
+indices = list(range(len(power_array)))
+    
+# Create the plot
+plt.figure(figsize=(10, 6))
+plt.bar(indices, power_array, color='skyblue', edgecolor='black', label='Power Values')
+    
+# Add title and labels
+plt.title('Power Values vs. Time')
+plt.xlabel('Time')
+plt.ylabel('Power')
+    
+# Add grid, legend, and show the plot
+#plt.grid(axis='y', linestyle='--', alpha=0.7)  # Add grid lines only for y-axis
+#plt.legend()
+plt.show()
+
+
+
+
+
+
+
+"""""
 # Plot power vs. time
-sums = sum_power(power_sopp.get_power_from_sats)
+sums = sum_power(power_sopp.get_power_from_sats())
 times = list(sums.keys())
 powers = list(sums.values())
+
 
 # Plotting
 plt.figure(figsize=(10, 6))
@@ -107,3 +141,4 @@ plt.grid(True)
 plt.legend()
 plt.tight_layout()
 plt.show()
+"""""

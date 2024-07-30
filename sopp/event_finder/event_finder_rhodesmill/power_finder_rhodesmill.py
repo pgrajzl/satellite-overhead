@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from typing import List, Type
 import multiprocessing
 
+import numpy as np
+
 from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.custom_dataclasses.reservation import Reservation
 from sopp.custom_dataclasses.time_window import TimeWindow
@@ -22,6 +24,8 @@ from sopp.custom_dataclasses.satellite.satellite import Satellite
 from sopp.custom_dataclasses.runtime_settings import RuntimeSettings
 from sopp.custom_dataclasses.power_time import PowerTime
 from sopp.custom_dataclasses.power_window import PowerWindow
+
+from sopp.custom_dataclasses.power_array import PowerArray
 
 
 class PowerFinderRhodesmill(EventFinder):
@@ -56,11 +60,12 @@ class PowerFinderRhodesmill(EventFinder):
             facility=reservation.facility,
             datetimes=datetimes
         )
-
+        self.power_array = PowerArray(self.reservation.time.end.timestamp()-self.reservation.time.begin.timestamp()+1)
         self._filter_strategy = None
 
     @abstractmethod
-    def get_satellites_above_power_threshold(self) -> List[PowerWindow]:
+    def get_satellite_power_array(self) -> PowerArray:
+        self._filter_strategy = SatellitesAboveHorizonFilter
         pass
 
     @abstractmethod
@@ -101,9 +106,10 @@ class PowerFinderRhodesmill(EventFinder):
             facility=self.reservation.facility,
             antenna_positions=antenna_positions,
             cutoff_time=self.reservation.time.end,
+            start_time=self.reservation.time.begin,
             filter_strategy=self._filter_strategy,
             runtime_settings=self.runtime_settings,
-        ).power_run(satellite)
+        ).power_run(satellite, self.power_array)
 
         return [PowerWindow(satellite=satellite, powertimes=times) for times in time_windows]
 

@@ -46,7 +46,7 @@ class EventFinderRhodesmill(EventFinder):
             facility=reservation.facility,
             datetimes=datetimes
         )
-
+        
         self._filter_strategy = None
 
     def get_satellites_above_horizon(self):

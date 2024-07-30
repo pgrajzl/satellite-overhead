@@ -1,5 +1,6 @@
 import math
 import numpy as np
+from numpy import matmul
 
 from typing import List
 
@@ -7,8 +8,15 @@ from sopp.custom_dataclasses.configuration import Configuration
 from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 
+from sopp.event_finder.event_finder_rhodesmill.support.gcrs_geodetic_local_switcher import compute_rotation_matrix_gcrs_to_geodetic
+from sopp.event_finder.event_finder_rhodesmill.support.gcrs_geodetic_local_switcher import compute_rotation_matrix_geodetic_to_local
+
+from skyfield.api import load
+
 R = 6371.0  # approximate radius of Earth in km
 base_alt = 500 # relative average of altitude in km, tbd might need to change or alter value
+
+ts = load.timescale()
 
 class CartesianCoordinate:
     def __init__(self, x: float, y: float, z: float):
@@ -40,6 +48,12 @@ class CartesianCoordinate:
         totMatrix = origMatrix.T
         cartesianArray = np.array([self.x,self.y,self.z])
         return self.apply_rotation(totMatrix,cartesianArray)
+    
+    def pass_to_gsrc_local_matrix(self, matrixOne: np.array, matrixTwo: np.array):
+        origMatrix = np.matmul(matrixOne,matrixTwo)
+        #totMatrix = origMatrix.T
+        cartesianArray = np.array([self.x,self.y,self.z])
+        return self.apply_rotation(origMatrix,cartesianArray)
     
     def apply_rotation(matrix: np.ndarray, vector: np.ndarray) -> np.ndarray:
         """
@@ -109,45 +123,28 @@ class SatelliteLinkBudgetAngleCalculator:
         new_coordinate = CartesianCoordinate(x,y,z)
         return new_coordinate.cartesian_to_spherical()
     
-    ## maybe have to add a negative or keep the previous coordinate frame for this: 
-    
-    ## Non-rotated version, keeping same coordinate frame as before
     def calculate_ab_sat(self) -> List[float]: #calculates the alpha and beta angles for gain pattern of the satellite antenna
-        
+        t = ts.now()
+        earth_sat = self.satellite.to_rhodesmill()
+        position, velocity, _, error = earth_sat._at(t) # gives the velocity in x,y,z for the geocentric coordinate system
+        velocity_cartesian = CartesianCoordinate(velocity[0],velocity[1],velocity[2])
+        matOne = compute_rotation_matrix_gcrs_to_geodetic() #make sure to imput lat and lon of the reservation here!!!
+        matTwo = compute_rotation_matrix_geodetic_to_local()
+        rotated_velocity = velocity_cartesian.pass_to_gsrc_local_matrix(matOne,matTwo)
+        theta = self.calculate_altitude_difference_space() #altitude difference
+        vert_angle = 360 - (self.ground_antenna_direction.position.altitude + theta + 90)
+        phi = self.calculate_azimuth_difference_space(rotated_velocity) #azimuth difference
+        horiz_angle = phi + self.ground_antenna_direction.position.azimuth
         ground_cartesian = self.satellite_position.position.to_cartesian()
         ground_cartesian.x = -x
         ground_cartesian.y = -y
         ground_cartesian.z = -z
-        rotated_vector = ground_cartesian.pass_to_rotation_matrix(self.satellite.antenna.direction.azimuth, (90-self.satellite.antenna.direction.altitude))
+        rotated_vector = ground_cartesian.pass_to_rotation_matrix(horiz_angle, vert_angle)
         x = rotated_vector[0]
         y = rotated_vector[1]
         z = rotated_vector[2]
         new_coordinate = CartesianCoordinate(x,y,z)
         return new_coordinate.cartesian_to_spherical()
-    
-    ## Rotated version,such that x and y remain the same but now we must add a negative to the z (180 degree rotation of xy plane)
-    def calculate_ab_satRot(self) -> List[float]: #calculates the alpha and beta angles for gain pattern of the satellite antenna
-        
-        ground_cartesian = self.satellite_position.position.to_cartesian()
-        ground_cartesian.z = -z
-        rotated_vector = ground_cartesian.pass_to_rotation_matrix(self.satellite.antenna.direction.azimuth, (90-self.satellite.antenna.direction.altitude))
-        x = rotated_vector[0]
-        y = rotated_vector[1]
-        z = rotated_vector[2]
-        new_coordinate = CartesianCoordinate(x,y,z)
-        return new_coordinate.cartesian_to_spherical()
-
-    def calculate_ab_sat_sFrame(self) -> List[float]: #calculates the alpha and beta angles for gain pattern of the satellite antenna
-        # sat z is down towards Earth, sat x is in the opposite direction of our ground x, and y is in the same direction
-        ground_cartesian = self.satellite_position.position.to_cartesian()
-        ground_cartesian.y = -y
-        rotated_vector = ground_cartesian.pass_to_rotation_matrix(self.satellite.antenna.direction.azimuth, (90-self.satellite.antenna.direction.altitude))
-        x = rotated_vector[0]
-        y = rotated_vector[1]
-        z = rotated_vector[2]
-        new_coordinate = CartesianCoordinate(x,y,z)
-        return new_coordinate.cartesian_to_spherical()
-
 
     #### some of the functions below this were used before and might become useful for additional algorithms in the future, but are not in use in this file
 
@@ -183,17 +180,16 @@ class SatelliteLinkBudgetAngleCalculator:
     
         return self.law_of_cosines_angle_c(dist, (R + base_alt), R)
     
-    def calculate_azimuth_difference_space(self): #between satellite pointing direction and direction to ground antenna
+    def calculate_azimuth_difference_space(self, coord: CartesianCoordinate): #between satellite pointing direction and direction to ground antenna
         R = 6371.0  # approximate radius of Earth in km
         base_alt = 500 # relative average of altitude in km, tbd might need to change or alter value
 
-        satellite_azimuth = self.satellite_position.position.azimuth
-        satellite_pointing_azimuth = self.satellite.antenna.direction.azimuth
-        pointing_complement = (360 - satellite_pointing_azimuth)
-
-        to_ret = pointing_complement - satellite_azimuth
-
-        return to_ret
+        angle_radians = math.atan2(coord.x, coord.y)
+    
+        # Convert the angle to degrees
+        angle_degrees = math.degrees(angle_radians)
+    
+        return angle_degrees
     
 
     def law_of_cosines_angle_c(a, b, c):

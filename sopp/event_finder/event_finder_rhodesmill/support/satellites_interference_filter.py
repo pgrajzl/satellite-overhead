@@ -25,6 +25,8 @@ from sopp.event_finder.event_finder_rhodesmill.support.satellite_positions_with_
     SatellitePositionsWithRespectToFacilityRetrieverRhodesmill
 
 from sopp.event_finder.event_finder_rhodesmill.support.satellite_link_budget_angle_calc import SatelliteLinkBudgetAngleCalculator
+from sopp.custom_dataclasses.power_array import PowerArray
+from sopp.event_finder.event_finder_rhodesmill.power_finder_rhodesmill import PowerFinderRhodesmill
 
 DEGREES_IN_A_CIRCLE = 360
 
@@ -49,10 +51,12 @@ class SatellitesInterferenceFilter:
         facility: Facility,
         antenna_positions: List[AntennaPosition],
         cutoff_time: datetime,
+        start_time: datetime,
         filter_strategy: SatellitesFilterStrategy,
         runtime_settings: RuntimeSettings = RuntimeSettings(),
     ):
         self._cutoff_time = cutoff_time
+        self._start_time = start_time
         self._facility = facility
         self._antenna_positions = antenna_positions
         self._filter_strategy = filter_strategy(facility=facility, runtime_settings=runtime_settings)
@@ -80,7 +84,7 @@ class SatellitesInterferenceFilter:
 
         return segments_of_satellite_positions
     
-    def power_run(self, satellite: Satellite) -> List[List[PowerTime]]:
+    def power_run(self, satellite: Satellite, power_array: PowerArray) -> List[List[PowerTime]]:
         segments_of_power_times = []
         power_times_in_view = []
 
@@ -94,6 +98,9 @@ class SatellitesInterferenceFilter:
 
                 if in_view:
                     power_times_in_view.append(self.convert_position_to_power(antenna_position.antenna_direction, satellite, satellite_position))
+                    index_offset = self._start_time.timestamp()
+                    time = satellite_position.time.timestamp()
+                    power_array.add_power((time-index_offset),self.convert_position_to_power(antenna_position.antenna_direction, satellite, satellite_position))
                 elif power_times_in_view:
                     segments_of_power_times.append(power_times_in_view)
                     power_times_in_view = []
@@ -102,6 +109,7 @@ class SatellitesInterferenceFilter:
             segments_of_power_times.append(power_times_in_view)
 
         return segments_of_power_times
+    
     
     def convert_position_to_power(self, antenna_position: PositionTime, satellite: Satellite, position_time: PositionTime) -> PowerTime:
         calculator_instance = SatelliteLinkBudgetAngleCalculator(antenna_position, position_time, satellite)
@@ -147,3 +155,35 @@ class SatellitesWithinMainBeamFilter(SatellitesFilterStrategy):
         positions_to_compare_next_modulus = (numpy.array(positions_to_compare_original) + DEGREES_IN_A_CIRCLE).tolist()
         positions_to_compare = itertools.combinations(positions_to_compare_original + positions_to_compare_next_modulus, 2)
         return any([isclose(*positions, abs_tol=self._facility.half_beamwidth) for positions in positions_to_compare])
+
+
+
+## potential use of the power array 
+"""
+def power_run_array(self, satellite: Satellite, power_array: PowerArray):
+        segments_of_power_times = []
+        power_times_in_view = []
+
+        for antenna_position in self._antenna_positions:
+            for satellite_position in self._sort_satellite_positions_by_time(satellite_positions=antenna_position.satellite_positions):
+
+                if satellite_position.time >= self._cutoff_time:
+                    break
+
+                in_view = self._filter_strategy.is_in_view(satellite_position.position, antenna_position.antenna_direction.position)
+
+                if in_view:
+                    power_times_in_view.append(self.convert_position_to_power(antenna_position.antenna_direction, satellite, satellite_position))
+                    index_offset = self._start_time.timestamp()
+                    time = satellite_position.time.timestamp()
+                    power_array.add_power((time-index_offset),self.convert_position_to_power(antenna_position.antenna_direction, satellite, satellite_position))
+                    
+                elif power_times_in_view:
+                    segments_of_power_times.append(power_times_in_view)
+                    power_times_in_view = []
+
+        if power_times_in_view:
+            segments_of_power_times.append(power_times_in_view)
+
+        #return segments_of_power_times
+"""
