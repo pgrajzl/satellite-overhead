@@ -59,13 +59,5 @@ class Satellite:
             tle_information=TleInformation.from_tle_lines(line1=lines[name_line_index + 1],
                                                           line2=lines[name_line_index + 2])
         ) for name_line_index in name_line_indices]
-    
-    def calculate_velocity_vector(self) -> tuple:
-        # Delegate velocity calculation to TleInformation
-        return self.tle_information.calculate_velocity_vector() #in geocentric coordinates
-    
-    def calculate_velocity_vector(self) -> tuple:
-        satellite = self.tle_information.to_rhodesmill()
-        position, velocity = satellite.radec()
-        return tuple(velocity)
+
 

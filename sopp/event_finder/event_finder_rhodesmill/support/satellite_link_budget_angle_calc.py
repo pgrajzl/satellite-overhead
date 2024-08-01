@@ -4,12 +4,16 @@ from numpy import matmul
 
 from typing import List
 
-from sopp.custom_dataclasses.configuration import Configuration
 from sopp.custom_dataclasses.position_time import PositionTime
 from sopp.custom_dataclasses.satellite.satellite import Satellite
 
+from sopp.custom_dataclasses.position import CartesianCoordinate
+from sopp.custom_dataclasses.facility import Facility
+
 from sopp.event_finder.event_finder_rhodesmill.support.gcrs_geodetic_local_switcher import compute_rotation_matrix_gcrs_to_geodetic
 from sopp.event_finder.event_finder_rhodesmill.support.gcrs_geodetic_local_switcher import compute_rotation_matrix_geodetic_to_local
+
+
 
 from skyfield.api import load
 
@@ -18,88 +22,9 @@ base_alt = 500 # relative average of altitude in km, tbd might need to change or
 
 ts = load.timescale()
 
-class CartesianCoordinate:
-    def __init__(self, x: float, y: float, z: float):
-        self.x = x  # x-coordinate
-        self.y = y  # y-coordinate
-        self.z = z  # z-coordinate
-
-    def set_coordinates(self, x, y, z):
-        self.x = x
-        self.y = y
-        self.z = z
-
-    def get_coordinates(self):
-        return self.x, self.y, self.z
-    
-    def pass_to_rotation_matrix(self, gamma: float, phi: float):
-        matrixOne = np.array([
-            [np.cos(gamma), -np.sin(gamma), 0],
-            [np.sin(gamma), np.cos(gamma), 0],
-            [0, 0, 1]
-        ])
-
-        matrixTwo = np.array([
-            [np.cos(phi), 0, np.sin(phi)],
-            [0, 1, 0],
-            [-np.sin(phi), 0, np.cos(phi)]
-        ])
-        origMatrix = np.matmul(matrixOne, matrixTwo)
-        totMatrix = origMatrix.T
-        cartesianArray = np.array([self.x,self.y,self.z])
-        return self.apply_rotation(totMatrix,cartesianArray)
-    
-    def pass_to_gsrc_local_matrix(self, matrixOne: np.array, matrixTwo: np.array):
-        origMatrix = np.matmul(matrixOne,matrixTwo)
-        #totMatrix = origMatrix.T
-        cartesianArray = np.array([self.x,self.y,self.z])
-        return self.apply_rotation(origMatrix,cartesianArray)
-    
-    def apply_rotation(matrix: np.ndarray, vector: np.ndarray) -> np.ndarray:
-        """
-        Apply rotation matrix to a vector of Cartesian coordinates.
-    
-        Args:
-        - matrix (np.ndarray): 3x3 rotation matrix
-        - vector (np.ndarray): 1x3 vector of Cartesian coordinates [x, y, z]
-    
-        Returns:
-        - np.ndarray: Resulting vector after rotation
-        """
-        return np.matmul(matrix, vector)
-    
-    def cartesian_to_spherical(self) -> List[float]:
-        """
-        Convert Cartesian coordinates to spherical coordinates.
-        """
-
-        x = self.x
-        y = self.y
-        z = self.z
-
-        r = np.sqrt(x**2 + y**2 + z**2)  # Radial distance
-
-        theta = np.arccos(z/r)
-
-        if x > 0:
-            phi = np.arctan(y/x)
-        if x < 0 and y >= 0:
-            phi = np.arctan(y/x) + np.pi
-        if x < 0 and y < 0:
-            phi = np.arctan(y/x) - np.pi
-        if x == 0 and y > 0:
-            phi = np.pi/2
-        if x == 0 and y < 0:
-            phi = -np.pi/2
-        if x == 0 and y == 0:
-            phi = 0 # default value because this is undefined, maybe change this to some other value?
-
-        return [theta, phi]
-
-
-
 class SatelliteLinkBudgetAngleCalculator:
-    def __init__(self, ground_antenna_direction: PositionTime, satellite_position: PositionTime, satellite: Satellite):
+    def __init__(self, facility: Facility, ground_antenna_direction: PositionTime, satellite_position: PositionTime, satellite: Satellite):
+        self.facility = facility
         self.ground_antenna_direction = ground_antenna_direction
         self.satellite_position = satellite_position
         self.satellite = satellite
@@ -124,15 +49,15 @@ class SatelliteLinkBudgetAngleCalculator:
         return new_coordinate.cartesian_to_spherical()
     
     def calculate_ab_sat(self) -> List[float]: #calculates the alpha and beta angles for gain pattern of the satellite antenna
-        t = ts.now()
+        t = self.satellite_position.time
         earth_sat = self.satellite.to_rhodesmill()
         position, velocity, _, error = earth_sat._at(t) # gives the velocity in x,y,z for the geocentric coordinate system
         velocity_cartesian = CartesianCoordinate(velocity[0],velocity[1],velocity[2])
-        matOne = compute_rotation_matrix_gcrs_to_geodetic() #make sure to imput lat and lon of the reservation here!!!
-        matTwo = compute_rotation_matrix_geodetic_to_local()
+        matOne = compute_rotation_matrix_gcrs_to_geodetic(self.facility.coordinates.latitude,self.facility.coordinates.longitude)
+        matTwo = compute_rotation_matrix_geodetic_to_local(self.facility.coordinates.latitude,self.facility.coordinates.longitude)
         rotated_velocity = velocity_cartesian.pass_to_gsrc_local_matrix(matOne,matTwo)
         theta = self.calculate_altitude_difference_space() #altitude difference
-        vert_angle = 360 - (self.ground_antenna_direction.position.altitude + theta + 90)
+        vert_angle = 360 - (self.satellite_position.position.altitude + theta + 90)
         phi = self.calculate_azimuth_difference_space(rotated_velocity) #azimuth difference
         horiz_angle = phi + self.ground_antenna_direction.position.azimuth
         ground_cartesian = self.satellite_position.position.to_cartesian()

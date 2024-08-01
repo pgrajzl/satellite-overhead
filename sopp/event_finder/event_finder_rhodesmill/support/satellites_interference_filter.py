@@ -26,7 +26,6 @@ from sopp.event_finder.event_finder_rhodesmill.support.satellite_positions_with_
 
 from sopp.event_finder.event_finder_rhodesmill.support.satellite_link_budget_angle_calc import SatelliteLinkBudgetAngleCalculator
 from sopp.custom_dataclasses.power_array import PowerArray
-from sopp.event_finder.event_finder_rhodesmill.power_finder_rhodesmill import PowerFinderRhodesmill
 
 DEGREES_IN_A_CIRCLE = 360
 
@@ -100,7 +99,7 @@ class SatellitesInterferenceFilter:
                     power_times_in_view.append(self.convert_position_to_power(antenna_position.antenna_direction, satellite, satellite_position))
                     index_offset = self._start_time.timestamp()
                     time = satellite_position.time.timestamp()
-                    power_array.add_power((time-index_offset),self.convert_position_to_power(antenna_position.antenna_direction, satellite, satellite_position))
+                    power_array.add_power((time-index_offset),self.convert_position_to_power(self._facility, antenna_position.antenna_direction, satellite, satellite_position).power)
                 elif power_times_in_view:
                     segments_of_power_times.append(power_times_in_view)
                     power_times_in_view = []
@@ -111,13 +110,13 @@ class SatellitesInterferenceFilter:
         return segments_of_power_times
     
     
-    def convert_position_to_power(self, antenna_position: PositionTime, satellite: Satellite, position_time: PositionTime) -> PowerTime:
-        calculator_instance = SatelliteLinkBudgetAngleCalculator(antenna_position, position_time, satellite)
+    def convert_position_to_power(self, facility: Facility, antenna_position: PositionTime, satellite: Satellite, position_time: PositionTime) -> PowerTime:
+        calculator_instance = SatelliteLinkBudgetAngleCalculator(facility, antenna_position, position_time, satellite)
         link_array = calculator_instance.get_link_angles()
         rec_gain = Facility.antenna.gain_pattern.get_gain(link_array[0],link_array[1]) # in altitude and azimuth, currently
         trans_gain = satellite.antenna.gain_pattern.get_gain(link_array[2],link_array[3]) # also in altitude and azimuth, currently
         trans_pow = satellite.transmitter.power
-        distance = position_time.position.distance_km
+        distance = position_time.position.distance_km*1000
         wavelength = (299792458)/satellite.transmitter.frequency
         freespace_loss = ((4 * math.pi * distance)/wavelength)**2
         power_value = (trans_pow * trans_gain * rec_gain)/(freespace_loss)
