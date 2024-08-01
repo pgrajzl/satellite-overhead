@@ -85,7 +85,7 @@ class PowerSopp:
         for current_time, next_time in zip(antenna_direction_path, antenna_direction_path[1:]):
             if current_time.time >= next_time.time:
                 raise ValueError('Times in antenna_direction_path must be increasing.')
-            
+"""
 # Example usage:
 # Create a Configuration instance (replace with actual configuration)
 config = Configuration()
@@ -95,12 +95,10 @@ power_sopp = PowerSopp(config, PowerFinderRhodesmill)
 sums = sum_power(power_sopp.get_power_from_sats())
 power_array = power_sopp._event_finder.power_array #contains the array of powers for each time, with index 0 corresponding to start time, in seconds
 
-"""
     Plot float values as bars with indices on the x-axis and float values on the y-axis.
     
     Parameters:
     float_values (list or array): A list or array of float values to be plotted.
-"""
 # Generate the x values (indices)
 indices = list(range(len(power_array)))
     
@@ -117,6 +115,7 @@ plt.ylabel('Power')
 #plt.grid(axis='y', linestyle='--', alpha=0.7)  # Add grid lines only for y-axis
 #plt.legend()
 plt.show()
+"""
 
 
 

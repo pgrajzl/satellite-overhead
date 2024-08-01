@@ -47,7 +47,7 @@ def compute_rotation_matrix_gcrs_to_geodetic(latitude, longitude):
     R = np.dot(Ry, Rz)
     
     return R
-
+"""
 # Example usage
 latitude = 45.0   # Latitude in degrees
 longitude = 30.0  # Longitude in degrees
@@ -61,3 +61,4 @@ print(rotation_matrix_geodetic_to_local)
 rotation_matrix_gcrs_to_geodetic = compute_rotation_matrix_gcrs_to_geodetic(latitude, longitude)
 print("\nGCRS to Geodetic Rotation Matrix:")
 print(rotation_matrix_gcrs_to_geodetic)
+"""
