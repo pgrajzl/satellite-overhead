@@ -38,7 +38,7 @@ class EventFinder(ABC):
         self.satellite_positions_with_respect_to_facility_retriever_class = satellite_positions_with_respect_to_facility_retriever_class
         self.runtime_settings = runtime_settings
 
-        self.power_array = PowerArray(self.reservation.time.end.timestamp()-self.reservation.time.begin.timestamp()+1)
+        self.power_array = PowerArray(int(self.reservation.time.end.timestamp()-self.reservation.time.begin.timestamp()+1))
 
     @abstractmethod
     def get_satellites_above_horizon(self) -> List[OverheadWindow]:

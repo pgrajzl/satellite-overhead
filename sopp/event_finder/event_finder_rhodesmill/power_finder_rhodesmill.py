@@ -26,6 +26,7 @@ from sopp.custom_dataclasses.power_time import PowerTime
 from sopp.custom_dataclasses.power_window import PowerWindow
 
 from sopp.custom_dataclasses.power_array import PowerArray
+from sopp.custom_dataclasses.overhead_window import OverheadWindow
 
 
 class PowerFinderRhodesmill(EventFinder):
@@ -60,15 +61,13 @@ class PowerFinderRhodesmill(EventFinder):
             facility=reservation.facility,
             datetimes=datetimes
         )
-        self.power_array = PowerArray(self.reservation.time.end.timestamp()-self.reservation.time.begin.timestamp()+1)
+        self.power_array = PowerArray(int(self.reservation.time.end.timestamp()-self.reservation.time.begin.timestamp()+1))
         self._filter_strategy = None
 
-    @abstractmethod
     def get_satellite_power_array(self) -> PowerArray:
         self._filter_strategy = SatellitesAboveHorizonFilter
         pass
 
-    @abstractmethod
     def get_satellite_power(self) -> List[PowerWindow]:
         self._filter_strategy = SatellitesAboveHorizonFilter
         return self._get_satellites_interference()
@@ -126,3 +125,11 @@ class PowerFinderRhodesmill(EventFinder):
             for positions in satellite_positions
             if time_window.begin <= positions.time < time_window.end
         ]
+    
+    def get_satellites_above_horizon(self) -> List[OverheadWindow]:
+        self._filter_strategy = SatellitesAboveHorizonFilter
+        pass
+
+    def get_satellites_crossing_main_beam(self) -> List[OverheadWindow]:
+        self._filter_strategy = SatellitesAboveHorizonFilter
+        pass

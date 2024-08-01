@@ -14,6 +14,9 @@ from sopp.utilities import temporary_file
 from sopp.custom_dataclasses.satellite.transmitter import Transmitter
 from sopp.custom_dataclasses.antenna import Antenna
 
+from sopp.healpix import HealpixGainPattern
+from sopp.healpix import HealpixLoader
+
 
 '''
 The Satellite data class stores all of the TLE information for each satellite, which is loaded from a TLE file using the class method from_tle_file()
@@ -32,6 +35,10 @@ for each satellite.
 
 NUMBER_OF_LINES_PER_TLE_OBJECT = 3
 
+satellite_gain = 'gain_test.csv'
+healpix_loader = HealpixLoader(satellite_gain)
+healpix_gain = healpix_loader.load_healpix_gain_pattern()
+healpix_pattern_sat = HealpixGainPattern(healpix_gain)
 
 @dataclass
 class Satellite:
@@ -39,7 +46,7 @@ class Satellite:
     tle_information: Optional[TleInformation] = None
     frequency: List[FrequencyRange] = field(default_factory=list)
     transmitter: Transmitter = field(default_factory=Transmitter) 
-    antenna: Antenna = field(default_factory=Antenna)
+    antenna: Antenna = field(default_factory=lambda: Antenna(healpix_pattern_sat))
 
     def to_rhodesmill(self) -> EarthSatellite:
         line1, line2 = self.tle_information.to_tle_lines()

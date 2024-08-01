@@ -1,11 +1,12 @@
 class Transmitter:
-    def __init__(self, modulation: str, noise_temperature: float, frequency: float, bandwidth: float,  gain: float, power: float = 10):
-        self.modulation = modulation
-        self.noise_temperature = noise_temperature  # in Kelvin
-        self.frequency = frequency  # in Hertz
-        self.bandwidth = bandwidth  # in Hertz
+    def __init__(self, power: float = 10):
+    #def __init__(self, modulation: str, noise_temperature: float, frequency: float, bandwidth: float,  gain: float, power: float = 10):
+        #self.modulation = modulation
+        #self.noise_temperature = noise_temperature  # in Kelvin
+        #self.frequency = frequency  # in Hertz
+        #self.bandwidth = bandwidth  # in Hertz
         self.power = power
-        self.gain = gain
+        #self.gain = gain
 
     def set_modulation(self, modulation):
         """

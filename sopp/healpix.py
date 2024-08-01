@@ -14,9 +14,9 @@ class HealpixLoader:
         Assumes the CSV file has columns 'Azimuth', 'Elevation', and 'Gain_dB'.
         """
         df = pd.read_csv(self.csv_file)
-        azimuth = df['Azimuth'].values
-        elevation = df['Elevation'].values
-        gain_dB = df['Gain_dB'].values
+        elevation = df['alpha'].values #elevation - technically, the zenith angle 
+        azimuth = df['beta'].values #azimuth
+        gain_dB = df['gain'].values
         return azimuth, elevation, gain_dB
 
     def create_healpix_object(self, azimuth, elevation, gain_dB):
@@ -24,19 +24,19 @@ class HealpixLoader:
         Create HEALPix object for antenna gain.
         """
         # Convert azimuth and elevation to spherical coordinates
-        theta = np.radians(90 - elevation)
+        theta = np.radians(elevation) #not 90-elevation because we now measure this with the zenith angle, measured from the main lobe direction
         phi = np.radians(azimuth)
 
         # Convert gain from dB to linear scale
-        gain_linear = 10 ** (gain_dB / 10.0)
+        #gain_linear = 10 ** (gain_dB / 10.0)
 
         # Initialize HEALPix map
         healpix_gain = np.zeros(hp.nside2npix(self.nside))
 
         # Aggregate gains to HEALPix pixels
         pixel_indices = hp.ang2pix(self.nside, theta, phi)
-        for i in range(len(gain_linear)):
-            healpix_gain[pixel_indices[i]] += gain_linear[i]
+        for i in range(len(gain_dB)):
+            healpix_gain[pixel_indices[i]] += gain_dB[i]
 
         return healpix_gain
 

@@ -114,7 +114,8 @@ class SatellitesInterferenceFilter:
         calculator_instance = SatelliteLinkBudgetAngleCalculator(facility, antenna_position, position_time, satellite)
         link_array = calculator_instance.get_link_angles()
         rec_gain = Facility.antenna.gain_pattern.get_gain(link_array[0],link_array[1]) # in altitude and azimuth, currently
-        trans_gain = satellite.antenna.gain_pattern.get_gain(link_array[2],link_array[3]) # also in altitude and azimuth, currently
+        ###trans_gain = satellite.antenna.gain_pattern.get_gain(link_array[2],link_array[3]) # also in altitude and azimuth, currently
+        trans_gain = 5
         trans_pow = satellite.transmitter.power
         distance = position_time.position.distance_km*1000
         wavelength = (299792458)/satellite.transmitter.frequency

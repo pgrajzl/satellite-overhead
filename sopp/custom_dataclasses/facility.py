@@ -23,7 +23,7 @@ class Facility:
     elevation: float = 0
     name: Optional[str] = 'Unnamed Facility'
     antenna: Antenna = field(default_factory=Antenna)
-    receiver: Receiver = field(default_factory=Receiver)
+    #receiver: Receiver = field(default_factory=Receiver)
 
     @property
     def half_beamwidth(self) -> float:
