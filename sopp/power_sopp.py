@@ -37,7 +37,7 @@ class PowerSopp:
     def get_satellites_crossing_main_beam(self) -> List[OverheadWindow]:
         return self._event_finder.get_satellites_crossing_main_beam()
     
-    def get_power_from_sats(self) -> List[PowerWindow]:
+    def get_power_from_sats(self) -> PowerArray:
         return self._event_finder.get_satellite_power()
 
     @cached_property

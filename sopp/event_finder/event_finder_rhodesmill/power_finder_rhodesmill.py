@@ -68,9 +68,12 @@ class PowerFinderRhodesmill(EventFinder):
         self._filter_strategy = SatellitesAboveHorizonFilter
         pass
 
-    def get_satellite_power(self) -> List[PowerWindow]:
+    #def get_satellite_power(self) -> List[PowerWindow]:
+    def get_satellite_power(self) -> PowerArray:
         self._filter_strategy = SatellitesAboveHorizonFilter
-        return self._get_satellites_interference()
+        # return self._get_satellites_interference()
+        self._get_satellites_interference()
+        return self.power_array
 
     def _get_satellites_interference(self) -> List[PowerWindow]:
         processes = int(self.runtime_settings.concurrency_level) if self.runtime_settings.concurrency_level > 1 else 1

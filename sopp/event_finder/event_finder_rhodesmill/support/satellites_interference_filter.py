@@ -100,7 +100,7 @@ class SatellitesInterferenceFilter:
                     index_offset = self._start_time.timestamp()
                     time = satellite_position.time.timestamp()
                     power_array.add_power(int(time-index_offset),self.convert_position_to_power(self._facility, antenna_position.antenna_direction, satellite, satellite_position).power)
-                    print("We got to this point cool")
+                    # print("We got to this point cool: The power added is: " + str(self.convert_position_to_power(self._facility, antenna_position.antenna_direction, satellite, satellite_position).power))
                 elif power_times_in_view:
                     segments_of_power_times.append(power_times_in_view)
                     power_times_in_view = []
