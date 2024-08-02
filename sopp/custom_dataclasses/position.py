@@ -46,7 +46,7 @@ class CartesianCoordinate:
         cartesianArray = np.array([self.x,self.y,self.z])
         return self.apply_rotation(origMatrix,cartesianArray)
     
-    def apply_rotation(matrix: np.ndarray, vector: np.ndarray) -> np.ndarray:
+    def apply_rotation(self, matrix: np.ndarray, vector: np.ndarray) -> np.ndarray:
         """
         Apply rotation matrix to a vector of Cartesian coordinates.
     

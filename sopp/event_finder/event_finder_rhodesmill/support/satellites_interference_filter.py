@@ -96,7 +96,7 @@ class SatellitesInterferenceFilter:
                 in_view = self._filter_strategy.is_in_view(satellite_position.position, antenna_position.antenna_direction.position)
 
                 if in_view:
-                    power_times_in_view.append(self.convert_position_to_power(antenna_position.antenna_direction, satellite, satellite_position))
+                    power_times_in_view.append(self.convert_position_to_power(self._facility, antenna_position.antenna_direction, satellite, satellite_position))
                     index_offset = self._start_time.timestamp()
                     time = satellite_position.time.timestamp()
                     power_array.add_power((time-index_offset),self.convert_position_to_power(self._facility, antenna_position.antenna_direction, satellite, satellite_position).power)
