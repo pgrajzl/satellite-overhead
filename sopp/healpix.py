@@ -90,16 +90,18 @@ class HealpixInterLoader(HealpixLoader):
 
 
 class HealpixGainPattern:
-    def __init__(self, healpix_gain):
+    def __init__(self, healpix_gain: np.ndarray):
         self.healpix_gain = healpix_gain
+        self.nside = 64
 
-    def get_gain(self, theta: float, phi: float):
+    def get_gain(self, theta: float, phi: float) -> float:
         """
         Get gain at specific spherical coordinates (theta, phi).
         """
-        pixel_index = hp.ang2pix(len(self.healpix_gain), np.radians(theta), np.radians(phi))
+        npix = hp.nside2npix(self.nside)
+        pixel_index = hp.ang2pix(self.nside, np.radians(theta), np.radians(phi))
         return self.healpix_gain[pixel_index]
-
+    
 
 # Example usage IF the data is already in Healpix format
 if __name__ == "__main__":

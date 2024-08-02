@@ -49,7 +49,8 @@ class SatelliteLinkBudgetAngleCalculator:
         return new_coordinate.cartesian_to_spherical()
     
     def calculate_ab_sat(self) -> List[float]: #calculates the alpha and beta angles for gain pattern of the satellite antenna
-        t = self.satellite_position.time
+        dt = self.satellite_position.time
+        t = ts.utc(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
         earth_sat = self.satellite.to_rhodesmill()
         position, velocity, _, error = earth_sat._at(t) # gives the velocity in x,y,z for the geocentric coordinate system
         velocity_cartesian = CartesianCoordinate(velocity[0],velocity[1],velocity[2])
@@ -58,12 +59,13 @@ class SatelliteLinkBudgetAngleCalculator:
         rotated_velocity = velocity_cartesian.pass_to_gsrc_local_matrix(matOne,matTwo)
         theta = self.calculate_altitude_difference_space() #altitude difference
         vert_angle = 360 - (self.satellite_position.position.altitude + theta + 90)
-        phi = self.calculate_azimuth_difference_space(rotated_velocity) #azimuth difference
+        rotated_velocity_coord = CartesianCoordinate(rotated_velocity[0],rotated_velocity[1],rotated_velocity[2])
+        phi = self.calculate_azimuth_difference_space(rotated_velocity_coord) #azimuth difference
         horiz_angle = phi + self.ground_antenna_direction.position.azimuth
         ground_cartesian = self.satellite_position.position.to_cartesian()
-        ground_cartesian.x = -x
-        ground_cartesian.y = -y
-        ground_cartesian.z = -z
+        ground_cartesian.x = -(ground_cartesian.x)
+        ground_cartesian.y = -(ground_cartesian.y)
+        ground_cartesian.z = -(ground_cartesian.z)
         rotated_vector = ground_cartesian.pass_to_rotation_matrix(horiz_angle, vert_angle)
         x = rotated_vector[0]
         y = rotated_vector[1]
@@ -96,8 +98,8 @@ class SatelliteLinkBudgetAngleCalculator:
         R = 6371.0  # approximate radius of Earth in km
         base_alt = 500 # relative average of altitude in km, tbd might need to change or alter value
 
-        satellite_altitude = self.satellite_position.position.altitude
-        satellite_pointing_altitude = self.satellite.antenna.direction.altitude
+        # satellite_altitude = self.satellite_position.position.altitude
+        #satellite_pointing_altitude = self.satellite.antenna.direction.altitude
 
         # altitude_difference = satellite_altitude - satellite_pointing_altitude #sign is going to be important here so we are not calculating absolute value
 
@@ -117,7 +119,7 @@ class SatelliteLinkBudgetAngleCalculator:
         return angle_degrees
     
 
-    def law_of_cosines_angle_c(a, b, c):
+    def law_of_cosines_angle_c(self, a, b, c):
         # Ensure sides are positive (valid triangle sides)
         if a <= 0 or b <= 0 or c <= 0:
             raise ValueError("Side lengths must be positive.")
