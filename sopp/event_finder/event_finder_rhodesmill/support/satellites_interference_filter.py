@@ -99,7 +99,8 @@ class SatellitesInterferenceFilter:
                     power_times_in_view.append(self.convert_position_to_power(self._facility, antenna_position.antenna_direction, satellite, satellite_position))
                     index_offset = self._start_time.timestamp()
                     time = satellite_position.time.timestamp()
-                    power_array.add_power((time-index_offset),self.convert_position_to_power(self._facility, antenna_position.antenna_direction, satellite, satellite_position).power)
+                    power_array.add_power(int(time-index_offset),self.convert_position_to_power(self._facility, antenna_position.antenna_direction, satellite, satellite_position).power)
+                    print("We got to this point cool")
                 elif power_times_in_view:
                     segments_of_power_times.append(power_times_in_view)
                     power_times_in_view = []
@@ -113,7 +114,8 @@ class SatellitesInterferenceFilter:
     def convert_position_to_power(self, facility: Facility, antenna_position: PositionTime, satellite: Satellite, position_time: PositionTime) -> PowerTime:
         calculator_instance = SatelliteLinkBudgetAngleCalculator(facility, antenna_position, position_time, satellite)
         link_array = calculator_instance.get_link_angles()
-        rec_gain = facility.antenna.gain_pattern.get_gain(link_array[0],link_array[1]) # in altitude and azimuth, currently
+        rec_gain = 5
+        ###rec_gain = facility.antenna.gain_pattern.get_gain(link_array[0],link_array[1]) # in altitude and azimuth, currently
         ###trans_gain = satellite.antenna.gain_pattern.get_gain(link_array[2],link_array[3]) # also in altitude and azimuth, currently
         trans_gain = 5
         trans_pow = satellite.transmitter.power

@@ -96,7 +96,7 @@ class SatelliteLinkBudgetAngleCalculator:
 
     def calculate_altitude_difference_space(self): #between satellite pointing direction and direction to ground antenna
         R = 6371.0  # approximate radius of Earth in km
-        base_alt = 500 # relative average of altitude in km, tbd might need to change or alter value
+        base_alt = 350 # relative average of altitude in km, tbd might need to change or alter value
 
         # satellite_altitude = self.satellite_position.position.altitude
         #satellite_pointing_altitude = self.satellite.antenna.direction.altitude
@@ -104,7 +104,7 @@ class SatelliteLinkBudgetAngleCalculator:
         # altitude_difference = satellite_altitude - satellite_pointing_altitude #sign is going to be important here so we are not calculating absolute value
 
         dist = self.satellite_position.position.distance_km
-    
+        # print("Distance to the satellite is: " + str(dist)) This one works so don't worry this is ok
         return self.law_of_cosines_angle_c(dist, (R + base_alt), R)
     
     def calculate_azimuth_difference_space(self, coord: CartesianCoordinate): #between satellite pointing direction and direction to ground antenna
