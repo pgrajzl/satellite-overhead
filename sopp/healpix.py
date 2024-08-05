@@ -3,6 +3,8 @@ import pandas as pd
 import healpy as hp
 from scipy.interpolate import griddata
 
+import matplotlib.pyplot as plt
+
 class HealpixLoader:
     def __init__(self, csv_file, nside=64):
         self.csv_file = csv_file
@@ -32,11 +34,18 @@ class HealpixLoader:
 
         # Initialize HEALPix map
         healpix_gain = np.zeros(hp.nside2npix(self.nside))
+        counts = np.zeros(hp.nside2npix(self.nside)) ##added for averaging***
 
         # Aggregate gains to HEALPix pixels
         pixel_indices = hp.ang2pix(self.nside, theta, phi)
+        
         for i in range(len(gain_dB)):
             healpix_gain[pixel_indices[i]] += gain_dB[i]
+            #healpix_gain[pixel_indices[i]] = gain_dB[i]
+            counts[pixel_indices[i]] += 1   ###added for averaging***
+        ### this stuff added for averaging
+        with np.errstate(divide='ignore', invalid='ignore'):
+            healpix_gain = np.divide(healpix_gain, counts, where=(counts > 0))
 
         return healpix_gain
 
@@ -52,7 +61,7 @@ class HealpixInterLoader(HealpixLoader):
         Interpolate antenna gain data to ensure even sampling.
         """
         # Convert azimuth and elevation to radians
-        theta = np.radians(90 - elevation)
+        theta = np.radians(elevation)
         phi = np.radians(azimuth)
 
         # Define grid for interpolation
@@ -76,7 +85,7 @@ class HealpixInterLoader(HealpixLoader):
         phi_mesh = np.radians(azimuth_mesh)
 
         # Convert gain from dB to linear scale
-        gain_linear = 10 ** (gain_interpolated / 10.0)
+        # gain_linear = 10 ** (gain_interpolated / 10.0)
 
         # Initialize HEALPix map
         healpix_gain = np.zeros(hp.nside2npix(self.nside))
@@ -84,7 +93,7 @@ class HealpixInterLoader(HealpixLoader):
         # Aggregate gains to HEALPix pixels
         pixel_indices = hp.ang2pix(self.nside, theta_mesh.ravel(), phi_mesh.ravel())
         for i, pixel_index in enumerate(pixel_indices):
-            healpix_gain[pixel_index] += gain_linear.ravel()[i]
+            healpix_gain[pixel_index] += gain_interpolated.ravel()[i]
 
         return healpix_gain
 
@@ -102,7 +111,7 @@ class HealpixGainPattern:
         pixel_index = hp.ang2pix(self.nside, np.radians(theta), np.radians(phi))
         return self.healpix_gain[pixel_index]
     
-
+"""
 # Example usage IF the data is already in Healpix format
 if __name__ == "__main__":
     # Example CSV file path
@@ -144,3 +153,4 @@ if __name__ == "__main__":
     gain_example = healpix_pattern.get_gain(theta_example, phi_example)
 
     print(f"Gain at (theta={theta_example}°, phi={phi_example}°): {gain_example}")
+"""

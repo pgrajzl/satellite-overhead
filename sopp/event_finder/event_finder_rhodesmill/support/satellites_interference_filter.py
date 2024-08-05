@@ -114,13 +114,14 @@ class SatellitesInterferenceFilter:
     def convert_position_to_power(self, facility: Facility, antenna_position: PositionTime, satellite: Satellite, position_time: PositionTime) -> PowerTime:
         calculator_instance = SatelliteLinkBudgetAngleCalculator(facility, antenna_position, position_time, satellite)
         link_array = calculator_instance.get_link_angles()
-        rec_gain = 5
-        ###rec_gain = facility.antenna.gain_pattern.get_gain(link_array[0],link_array[1]) # in altitude and azimuth, currently
+        ### rec_gain = 5
+        rec_gain = facility.antenna.gain_pattern.get_gain(link_array[0],link_array[1]) # in altitude and azimuth, currently
         ###trans_gain = satellite.antenna.gain_pattern.get_gain(link_array[2],link_array[3]) # also in altitude and azimuth, currently
-        trans_gain = 5
-        trans_pow = satellite.transmitter.power
+        main_lobe_trans_gain = 44 #in dB
+        trans_gain = 10**(main_lobe_trans_gain / 10.0)
+        trans_pow = satellite.transmitter.power # in dBW
         distance = position_time.position.distance_km*1000
-        wavelength = (299792458)/satellite.transmitter.frequency
+        wavelength = (299792458)/(satellite.transmitter.frequency*1000000) #converts the MHz value to Hz
         freespace_loss = ((4 * math.pi * distance)/wavelength)**2
         power_value = (trans_pow * trans_gain * rec_gain)/(freespace_loss)
         return PowerTime(power=power_value, time=position_time.time)

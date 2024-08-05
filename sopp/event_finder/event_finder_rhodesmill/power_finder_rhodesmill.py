@@ -76,6 +76,9 @@ class PowerFinderRhodesmill(EventFinder):
         return self.power_array
 
     def _get_satellites_interference(self) -> List[PowerWindow]:
+        for sat in self.list_of_satellites:
+            self._get_satellite_power_windows(sat)
+        """
         processes = int(self.runtime_settings.concurrency_level) if self.runtime_settings.concurrency_level > 1 else 1
         pool = multiprocessing.Pool(processes=processes)
         results = pool.map(self._get_satellite_power_windows, self.list_of_satellites)
@@ -83,6 +86,7 @@ class PowerFinderRhodesmill(EventFinder):
         pool.join()
 
         return [power_window for result in results for power_window in result]
+        """
 
     def _get_satellite_power_windows(self, satellite: Satellite) -> List[PowerWindow]:
         antenna_direction_end_times = (

@@ -40,8 +40,9 @@ class SatelliteLinkBudgetAngleCalculator:
         return results  #results are in alpha, beta for each 
     
     def calculate_ab_ground(self) -> List[float]: #calculates the alpha and beta angles for gain pattern of the ground antenna
+        self.satellite_position.position.azimuth = -(self.satellite_position.position.azimuth) #flips the azimuth into a right handed coordinate system
         satellite_cartesian = self.satellite_position.position.to_cartesian()
-        rotated_vector = satellite_cartesian.pass_to_rotation_matrix(self.ground_antenna_direction.position.azimuth, (90-self.ground_antenna_direction.position.altitude))
+        rotated_vector = satellite_cartesian.pass_to_rotation_matrix(-self.ground_antenna_direction.position.azimuth, (90-self.ground_antenna_direction.position.altitude)) #negative is because we are using right handed system, and azimuth not measured right handedly
         x = rotated_vector[0]
         y = rotated_vector[1]
         z = rotated_vector[2]
@@ -96,7 +97,10 @@ class SatelliteLinkBudgetAngleCalculator:
 
     def calculate_altitude_difference_space(self): #between satellite pointing direction and direction to ground antenna
         R = 6371.0  # approximate radius of Earth in km
-        base_alt = 350 # relative average of altitude in km, tbd might need to change or alter value
+        dist = self.satellite_position.position.distance_km
+        theta_deg = self.satellite_position.position.altitude
+        theta_rad = math.radians(theta_deg)
+        base_alt = dist * math.sin(theta_rad) # relative average of altitude in km, tbd might need to change or alter value
 
         # satellite_altitude = self.satellite_position.position.altitude
         #satellite_pointing_altitude = self.satellite.antenna.direction.altitude
