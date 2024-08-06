@@ -4,6 +4,7 @@ import healpy as hp
 from scipy.interpolate import griddata
 
 import matplotlib.pyplot as plt
+from scipy.interpolate import RegularGridInterpolator
 
 class HealpixLoader:
     def __init__(self, csv_file, nside=64):
@@ -56,44 +57,50 @@ class HealpixLoader:
 
 
 class HealpixInterLoader(HealpixLoader):
-    def interpolate_data(self, azimuth, elevation, gain_dB, method='linear', grid_resolution=100):
+    def interpolate_data(self, azimuth, elevation, gain_dB, method='linear'):
         """
         Interpolate antenna gain data to ensure even sampling.
         """
         # Convert azimuth and elevation to radians
-        theta = np.radians(elevation)
-        phi = np.radians(azimuth)
+        # theta = np.radians(elevation)
+        # phi = np.radians(azimuth)
 
+        theta = elevation
+        phi = azimuth
         # Define grid for interpolation
-        azimuth_grid = np.linspace(0, 360, grid_resolution)
-        elevation_grid = np.linspace(-90, 90, grid_resolution)
-        azimuth_mesh, elevation_mesh = np.meshgrid(azimuth_grid, elevation_grid)
+        # azimuth_grid = np.linspace(0, 360, grid_resolution)
+        # elevation_grid = np.linspace(-90, 90, grid_resolution)
+        # azimuth_mesh, elevation_mesh = np.meshgrid(azimuth_grid, elevation_grid)
 
         # Interpolate gain values
-        gain_interpolated = griddata((azimuth, elevation), gain_dB, (azimuth_mesh, elevation_mesh), method=method, fill_value=0.0)
+        gain_interpolated = RegularGridInterpolator((phi,theta), gain_dB)
+        # gain_interpolated = griddata((theta, phi), gain_dB, (azimuth_mesh, elevation_mesh), method=method, fill_value=0.0)
 
-        return azimuth_mesh, elevation_mesh, gain_interpolated
+        # return azimuth_mesh, elevation_mesh, gain_interpolated
+        return gain_interpolated
 
-    def create_healpix_object(self, azimuth, elevation, gain_dB, method='linear', grid_resolution=100):
+    def create_healpix_object(self, azimuth, elevation, gain_dB, method='linear'):
         """
         Create HEALPix object for antenna gain with interpolation.
         """
-        azimuth_mesh, elevation_mesh, gain_interpolated = self.interpolate_data(azimuth, elevation, gain_dB, method=method, grid_resolution=grid_resolution)
+        gain_interpolated = self.interpolate_data(azimuth, elevation, gain_dB, method=method)
 
         # Convert interpolated azimuth and elevation to spherical coordinates
-        theta_mesh = np.radians(90 - elevation_mesh)
-        phi_mesh = np.radians(azimuth_mesh)
-
-        # Convert gain from dB to linear scale
-        # gain_linear = 10 ** (gain_interpolated / 10.0)
+        # theta_mesh = np.radians(90 - elevation_mesh)
+        # phi_mesh = np.radians(azimuth_mesh)
 
         # Initialize HEALPix map
         healpix_gain = np.zeros(hp.nside2npix(self.nside))
+        npix_mesh = hp.nside2npix(self.nside)
+
+        for i in enumerate(npix_mesh):
+            theta_s,phi_s = hp.pix2ang(self.nside, i)
+            healpix_gain[i] = gain_interpolated[phi_s,theta_s]
 
         # Aggregate gains to HEALPix pixels
-        pixel_indices = hp.ang2pix(self.nside, theta_mesh.ravel(), phi_mesh.ravel())
-        for i, pixel_index in enumerate(pixel_indices):
-            healpix_gain[pixel_index] += gain_interpolated.ravel()[i]
+        # pixel_indices = hp.ang2pix(self.nside, theta_mesh.ravel(), phi_mesh.ravel())
+        # for i, pixel_index in enumerate(pixel_indices):
+        #    healpix_gain[pixel_index] += gain_interpolated.ravel()[i]
 
         return healpix_gain
 

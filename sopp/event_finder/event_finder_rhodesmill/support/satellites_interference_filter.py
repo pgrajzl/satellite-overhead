@@ -119,7 +119,7 @@ class SatellitesInterferenceFilter:
         ###trans_gain = satellite.antenna.gain_pattern.get_gain(link_array[2],link_array[3]) # also in altitude and azimuth, currently
         main_lobe_trans_gain = 44 #in dB
         trans_gain = 10**(main_lobe_trans_gain / 10.0)
-        trans_pow = satellite.transmitter.power # in dBW
+        trans_pow = satellite.transmitter.power # in Watts
         distance = position_time.position.distance_km*1000
         wavelength = (299792458)/(satellite.transmitter.frequency*1000000) #converts the MHz value to Hz
         freespace_loss = ((4 * math.pi * distance)/wavelength)**2
