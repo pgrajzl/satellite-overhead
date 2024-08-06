@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import RegularGridInterpolator
 
 class HealpixLoader:
-    def __init__(self, csv_file, nside=64):
+    def __init__(self, csv_file, nside=1024):
         self.csv_file = csv_file
         self.nside = nside  # Resolution parameter, can be changed as needed
     
@@ -68,6 +68,12 @@ class HealpixInterLoader(HealpixLoader):
         npix_mesh = hp.nside2npix(self.nside)
         elevation_mesh = np.zeros(npix_mesh)
         azimuth_mesh = np.zeros(npix_mesh)
+
+        for i in range(npix_mesh):
+            theta_s,phi_s = hp.pix2ang(self.nside, i)
+            elevation_mesh[i] = theta_s
+            azimuth_mesh[i] = phi_s
+
         # Define grid for interpolation
         # azimuth_grid = np.linspace(0, 360, grid_resolution)
         # elevation_grid = np.linspace(-90, 90, grid_resolution)
@@ -98,7 +104,7 @@ class HealpixInterLoader(HealpixLoader):
             theta_s,phi_s = hp.pix2ang(self.nside, i)
             ## now that we have an angle, we must convert the angle to an index that corresponds to a query point
 
-            healpix_gain[i] = gain_interpolated[phi_s,theta_s] #index accesses the index of the query point (third argument)
+            healpix_gain[i] = gain_interpolated[i] #index accesses the index of the query point (third argument)
 
         # Aggregate gains to HEALPix pixels
         # pixel_indices = hp.ang2pix(self.nside, theta_mesh.ravel(), phi_mesh.ravel())
@@ -111,7 +117,7 @@ class HealpixInterLoader(HealpixLoader):
 class HealpixGainPattern:
     def __init__(self, healpix_gain: np.ndarray):
         self.healpix_gain = healpix_gain
-        self.nside = 64
+        self.nside = 1024
 
     def get_gain(self, theta: float, phi: float) -> float:
         """
