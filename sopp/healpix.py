@@ -62,19 +62,20 @@ class HealpixInterLoader(HealpixLoader):
         Interpolate antenna gain data to ensure even sampling.
         """
         # Convert azimuth and elevation to radians
-        # theta = np.radians(elevation)
-        # phi = np.radians(azimuth)
+        theta = np.radians(elevation)
+        phi = np.radians(azimuth)
 
-        theta = elevation
-        phi = azimuth
+        npix_mesh = hp.nside2npix(self.nside)
+        elevation_mesh = np.zeros(npix_mesh)
+        azimuth_mesh = np.zeros(npix_mesh)
         # Define grid for interpolation
         # azimuth_grid = np.linspace(0, 360, grid_resolution)
         # elevation_grid = np.linspace(-90, 90, grid_resolution)
         # azimuth_mesh, elevation_mesh = np.meshgrid(azimuth_grid, elevation_grid)
 
         # Interpolate gain values
-        gain_interpolated = RegularGridInterpolator((phi,theta), gain_dB)
-        # gain_interpolated = griddata((theta, phi), gain_dB, (azimuth_mesh, elevation_mesh), method=method, fill_value=0.0)
+        # gain_interpolated = RegularGridInterpolator((phi,theta), gain_dB)
+        gain_interpolated = griddata((phi,theta), gain_dB, (azimuth_mesh, elevation_mesh), method=method, fill_value=0.0)
 
         # return azimuth_mesh, elevation_mesh, gain_interpolated
         return gain_interpolated
@@ -93,9 +94,11 @@ class HealpixInterLoader(HealpixLoader):
         healpix_gain = np.zeros(hp.nside2npix(self.nside))
         npix_mesh = hp.nside2npix(self.nside)
 
-        for i in enumerate(npix_mesh):
+        for i in range(len(healpix_gain)):
             theta_s,phi_s = hp.pix2ang(self.nside, i)
-            healpix_gain[i] = gain_interpolated[phi_s,theta_s]
+            ## now that we have an angle, we must convert the angle to an index that corresponds to a query point
+
+            healpix_gain[i] = gain_interpolated[phi_s,theta_s] #index accesses the index of the query point (third argument)
 
         # Aggregate gains to HEALPix pixels
         # pixel_indices = hp.ang2pix(self.nside, theta_mesh.ravel(), phi_mesh.ravel())
