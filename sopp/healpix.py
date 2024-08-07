@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import RegularGridInterpolator
 
 class HealpixLoader:
-    def __init__(self, csv_file, nside=2048):
+    def __init__(self, csv_file, nside=512):
         self.csv_file = csv_file
         self.nside = nside  # Resolution parameter, can be changed as needed
     
@@ -62,10 +62,8 @@ class HealpixInterLoader(HealpixLoader):
         Interpolate antenna gain data to ensure even sampling.
         """
         # Convert azimuth and elevation to radians
-        theta = np.radians(90 - elevation)
+        theta = np.radians(elevation)
         phi = np.radians(azimuth)
-
-        
 
         npix_mesh = hp.nside2npix(self.nside)
         elevation_mesh = np.zeros(npix_mesh)
@@ -83,16 +81,19 @@ class HealpixInterLoader(HealpixLoader):
 
         # Interpolate gain values
         # gain_interpolated = RegularGridInterpolator((phi,theta), gain_dB)
-        gain_interpolated = griddata((phi,theta), gain_dB, (azimuth_mesh, elevation_mesh), method=method, fill_value=0.0)
+        grid_points = np.column_stack((azimuth_mesh, elevation_mesh))
+
+
+        gain_interpolated = griddata((phi,theta), gain_dB, grid_points, method=method, fill_value=0.0)
 
         # return azimuth_mesh, elevation_mesh, gain_interpolated
-        return gain_interpolated
+        return gain_interpolated, grid_points
 
     def create_healpix_object(self, azimuth, elevation, gain_dB, method='linear'):
         """
         Create HEALPix object for antenna gain with interpolation.
         """
-        gain_interpolated = self.interpolate_data(azimuth, elevation, gain_dB, method=method)
+        gain_interpolated, grid_points = self.interpolate_data(azimuth, elevation, gain_dB, method=method)
 
         # Convert interpolated azimuth and elevation to spherical coordinates
         # theta_mesh = np.radians(90 - elevation_mesh)
@@ -105,8 +106,21 @@ class HealpixInterLoader(HealpixLoader):
         for i in range(len(healpix_gain)):
             theta_s,phi_s = hp.pix2ang(self.nside, i)
             ## now that we have an angle, we must convert the angle to an index that corresponds to a query point
+             # Convert theta_s and phi_s to radians (already in radians)
+            query_point = np.array([phi_s, theta_s])
 
-            healpix_gain[i] = 10* np.log10(gain_interpolated[i]) #index accesses the index of the query point (third argument)
+            # Retrieve interpolated gain value
+            if np.isnan(gain_interpolated).all():
+                # Handle case where all interpolated values are NaN
+                healpix_gain[i] = np.nan
+                print("somethings wrong here")
+            else:
+                # Use np.where to find closest index in grid_points
+                distances = np.linalg.norm(grid_points - query_point, axis=1)
+                closest_index = np.argmin(distances)
+                healpix_gain[i] = gain_interpolated[closest_index]
+            # healpix_gain[i] = 10* np.log10(gain_interpolated[i]) #index accesses the index of the query point (third argument)
+            # healpix_gain[i] = gain_interpolated[i]
         # Aggregate gains to HEALPix pixels
         # pixel_indices = hp.ang2pix(self.nside, theta_mesh.ravel(), phi_mesh.ravel())
         # for i, pixel_index in enumerate(pixel_indices):
@@ -118,14 +132,15 @@ class HealpixInterLoader(HealpixLoader):
 class HealpixGainPattern:
     def __init__(self, healpix_gain: np.ndarray):
         self.healpix_gain = healpix_gain
-        self.nside = 2048
+        self.nside = 512
 
     def get_gain(self, theta: float, phi: float) -> float:
         """
         Get gain at specific spherical coordinates (theta, phi).
         """
         npix = hp.nside2npix(self.nside)
-        pixel_index = hp.ang2pix(self.nside, np.radians(90-theta), np.radians(phi))
+        #pixel_index = hp.ang2pix(self.nside, np.radians(90-theta), np.radians(phi))
+        pixel_index = hp.ang2pix(self.nside, np.radians(theta), np.radians(phi))
         return self.healpix_gain[pixel_index]
     
 """

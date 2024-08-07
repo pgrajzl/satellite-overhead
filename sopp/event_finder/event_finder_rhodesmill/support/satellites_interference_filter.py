@@ -117,14 +117,14 @@ class SatellitesInterferenceFilter:
         ### rec_gain = 5
         rec_gain = facility.antenna.gain_pattern.get_gain(link_array[0],link_array[1]) # in altitude and azimuth, currently
         ###trans_gain = satellite.antenna.gain_pattern.get_gain(link_array[2],link_array[3]) # also in altitude and azimuth, currently
-        main_lobe_trans_gain = 39.3 #in dB
-        trans_gain = 10**(main_lobe_trans_gain / 10.0)
+        main_lobe_trans_gain = 39.3#in dB
+        trans_gain = 10**((main_lobe_trans_gain-30)/ 10.0)
         trans_pow = satellite.transmitter.power # in Watts
         distance = position_time.position.distance_km*1000
         wavelength = (299792458)/(satellite.transmitter.frequency*1000000) #converts the MHz value to Hz
         freespace_loss = ((4 * math.pi * distance)/wavelength)**2
         power_value = (trans_pow * trans_gain * rec_gain)/(freespace_loss)
-        print("The receiver gain is: " + str(trans_gain))
+        print("The receiver gain is: " + str(rec_gain))
         return PowerTime(power=power_value, time=position_time.time)
 
     @cached_property
