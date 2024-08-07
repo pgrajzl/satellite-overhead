@@ -99,7 +99,8 @@ class SatellitesInterferenceFilter:
                     power_times_in_view.append(self.convert_position_to_power(self._facility, antenna_position.antenna_direction, satellite, satellite_position))
                     index_offset = self._start_time.timestamp()
                     time = satellite_position.time.timestamp()
-                    power_array.add_power(int(time-index_offset),self.convert_position_to_power(self._facility, antenna_position.antenna_direction, satellite, satellite_position).power)
+                    # power_array.add_power(int(time-index_offset),self.convert_position_to_power(self._facility, antenna_position.antenna_direction, satellite, satellite_position).power)
+                    power_array.add_power(int(time-index_offset),power_times_in_view[-1].power)
                     # print("We got to this point cool: The power added is: " + str(self.convert_position_to_power(self._facility, antenna_position.antenna_direction, satellite, satellite_position).power))
                 elif power_times_in_view:
                     segments_of_power_times.append(power_times_in_view)
@@ -124,7 +125,7 @@ class SatellitesInterferenceFilter:
         wavelength = (299792458)/(satellite.transmitter.frequency*1000000) #converts the MHz value to Hz
         freespace_loss = ((4 * math.pi * distance)/wavelength)**2
         power_value = (trans_pow * trans_gain * rec_gain)/(freespace_loss)
-        # print("The receiver gain is: " + str(rec_gain))
+        print("The receiver gain is: " + str(rec_gain) + " and the angles here are " + str(link_array[0]) + "," + str(link_array[1]))
         return PowerTime(power=power_value, time=position_time.time)
 
     @cached_property

@@ -85,7 +85,7 @@ class CartesianCoordinate:
         if x == 0 and y == 0:
             phi = 0 # default value because this is undefined, maybe change this to some other value?
 
-        return [theta, phi]
+        return [np.degrees(theta), np.degrees(phi)]
 
 @dataclass
 class Position:

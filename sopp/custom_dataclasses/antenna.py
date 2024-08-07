@@ -16,13 +16,14 @@ class Antenna:
         #self.frequency_range = frequency_range  # FrequencyRange object for frequency band
         #self.polarization = polarization  # Polarization type (default: linear)
         #self.phased_array = phased_array  # Phased array properties (optional)
-
+        self.gain_pattern = gain_pattern
+        """
         # Initialize gain pattern with HEALPix if provided
         if healpix_gain is not None:
             self.gain_pattern = HealpixGainPattern(healpix_gain)
         else:
             self.gain_pattern = 5.0  # Default gain pattern if HEALPix not provided
-
+        """
     def get_gain(self, theta, phi):
         """
         Get antenna gain at specific spherical coordinates (theta, phi).
