@@ -1,6 +1,6 @@
 import math
 class Transmitter:
-    def __init__(self, power: float = 40 * 0.8, frequency: float = 11325):
+    def __init__(self, power: float = (10 ** (-15/10))*300, frequency: float = 11325):
     #def __init__(self, modulation: str, noise_temperature: float, frequency: float, bandwidth: float,  gain: float, power: float = 10):
         #self.modulation = modulation
         #self.noise_temperature = noise_temperature  # in Kelvin

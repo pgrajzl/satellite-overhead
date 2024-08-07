@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import RegularGridInterpolator
 
 class HealpixLoader:
-    def __init__(self, csv_file, nside=1024):
+    def __init__(self, csv_file, nside=2048):
         self.csv_file = csv_file
         self.nside = nside  # Resolution parameter, can be changed as needed
     
@@ -62,8 +62,10 @@ class HealpixInterLoader(HealpixLoader):
         Interpolate antenna gain data to ensure even sampling.
         """
         # Convert azimuth and elevation to radians
-        theta = np.radians(elevation)
+        theta = np.radians(90 - elevation)
         phi = np.radians(azimuth)
+
+        
 
         npix_mesh = hp.nside2npix(self.nside)
         elevation_mesh = np.zeros(npix_mesh)
@@ -104,8 +106,7 @@ class HealpixInterLoader(HealpixLoader):
             theta_s,phi_s = hp.pix2ang(self.nside, i)
             ## now that we have an angle, we must convert the angle to an index that corresponds to a query point
 
-            healpix_gain[i] = gain_interpolated[i] #index accesses the index of the query point (third argument)
-
+            healpix_gain[i] = 10* np.log10(gain_interpolated[i]) #index accesses the index of the query point (third argument)
         # Aggregate gains to HEALPix pixels
         # pixel_indices = hp.ang2pix(self.nside, theta_mesh.ravel(), phi_mesh.ravel())
         # for i, pixel_index in enumerate(pixel_indices):
@@ -117,14 +118,14 @@ class HealpixInterLoader(HealpixLoader):
 class HealpixGainPattern:
     def __init__(self, healpix_gain: np.ndarray):
         self.healpix_gain = healpix_gain
-        self.nside = 1024
+        self.nside = 2048
 
     def get_gain(self, theta: float, phi: float) -> float:
         """
         Get gain at specific spherical coordinates (theta, phi).
         """
         npix = hp.nside2npix(self.nside)
-        pixel_index = hp.ang2pix(self.nside, np.radians(theta), np.radians(phi))
+        pixel_index = hp.ang2pix(self.nside, np.radians(90-theta), np.radians(phi))
         return self.healpix_gain[pixel_index]
     
 """
