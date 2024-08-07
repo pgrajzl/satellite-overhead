@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import RegularGridInterpolator
 
 class HealpixLoader:
-    def __init__(self, csv_file, nside=128):
+    def __init__(self, csv_file, nside=2048):
         self.csv_file = csv_file
         self.nside = nside  # Resolution parameter, can be changed as needed
     
@@ -129,13 +129,14 @@ class HealpixInterLoader(HealpixLoader):
         # for i, pixel_index in enumerate(pixel_indices):
         #    healpix_gain[pixel_index] += gain_interpolated.ravel()[i]
         """
-        return gain_interpolated
+        # return gain_interpolated
+        return healpix_gain
 
 
 class HealpixGainPattern:
     def __init__(self, healpix_gain: np.ndarray):
         self.healpix_gain = healpix_gain
-        self.nside = 128
+        self.nside = 2048
 
     def get_gain(self, theta: float, phi: float) -> float:
         """

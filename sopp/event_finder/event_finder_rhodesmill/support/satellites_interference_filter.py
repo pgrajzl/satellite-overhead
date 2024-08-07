@@ -124,7 +124,7 @@ class SatellitesInterferenceFilter:
         wavelength = (299792458)/(satellite.transmitter.frequency*1000000) #converts the MHz value to Hz
         freespace_loss = ((4 * math.pi * distance)/wavelength)**2
         power_value = (trans_pow * trans_gain * rec_gain)/(freespace_loss)
-        print("The receiver gain is: " + str(rec_gain))
+        # print("The receiver gain is: " + str(rec_gain))
         return PowerTime(power=power_value, time=position_time.time)
 
     @cached_property

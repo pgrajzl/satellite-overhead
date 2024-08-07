@@ -5,9 +5,11 @@ from sopp.healpix  import HealpixLoader
 
 from sopp.custom_dataclasses.position import Position
 from sopp.custom_dataclasses.frequency_range.frequency_range import FrequencyRange
+from sopp.gain_pattern import GainPattern
 
 class Antenna:
-    def __init__(self, healpix_gain: np.ndarray):
+    def __init__(self, gain_pattern: GainPattern):
+    #def __init__(self, healpix_gain: np.ndarray):
     #def __init__(self, frequency_range: FrequencyRange, healpix_gain_pattern: HealpixGainPattern, direction: Position, steering_angle: float, polarization='linear', phased_array=None):
         #self.direction = direction  # Direction of the satellite in general: this is going to be set as directly downwards, i.e. nadir (opposite of zenith)
         #self.steering_angle = steering_angle # Phased array steering, which is going to encapsulate random steering of the beam
