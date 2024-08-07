@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import RegularGridInterpolator
 
 class HealpixLoader:
-    def __init__(self, csv_file, nside=512):
+    def __init__(self, csv_file, nside=128):
         self.csv_file = csv_file
         self.nside = nside  # Resolution parameter, can be changed as needed
     
@@ -66,13 +66,15 @@ class HealpixInterLoader(HealpixLoader):
         phi = np.radians(azimuth)
 
         npix_mesh = hp.nside2npix(self.nside)
-        elevation_mesh = np.zeros(npix_mesh)
-        azimuth_mesh = np.zeros(npix_mesh)
+        #elevation_mesh = np.zeros(npix_mesh)
+        elevation_mesh = []
+        #azimuth_mesh = np.zeros(npix_mesh)
+        azimuth_mesh = []
 
         for i in range(npix_mesh):
             theta_s,phi_s = hp.pix2ang(self.nside, i)
-            elevation_mesh[i] = theta_s
-            azimuth_mesh[i] = phi_s
+            elevation_mesh.append(theta_s)
+            azimuth_mesh.append(phi_s)
 
         # Define grid for interpolation
         # azimuth_grid = np.linspace(0, 360, grid_resolution)
@@ -102,10 +104,11 @@ class HealpixInterLoader(HealpixLoader):
         # Initialize HEALPix map
         healpix_gain = np.zeros(hp.nside2npix(self.nside))
         npix_mesh = hp.nside2npix(self.nside)
-
+        """
         for i in range(len(healpix_gain)):
             theta_s,phi_s = hp.pix2ang(self.nside, i)
-            ## now that we have an angle, we must convert the angle to an index that corresponds to a query point
+            ## now that we have an angle, we must conif (gain_value == 0):
+        print("oops")vert the angle to an index that corresponds to a query point
              # Convert theta_s and phi_s to radians (already in radians)
             query_point = np.array([phi_s, theta_s])
 
@@ -125,14 +128,14 @@ class HealpixInterLoader(HealpixLoader):
         # pixel_indices = hp.ang2pix(self.nside, theta_mesh.ravel(), phi_mesh.ravel())
         # for i, pixel_index in enumerate(pixel_indices):
         #    healpix_gain[pixel_index] += gain_interpolated.ravel()[i]
-
-        return healpix_gain
+        """
+        return gain_interpolated
 
 
 class HealpixGainPattern:
     def __init__(self, healpix_gain: np.ndarray):
         self.healpix_gain = healpix_gain
-        self.nside = 512
+        self.nside = 128
 
     def get_gain(self, theta: float, phi: float) -> float:
         """
